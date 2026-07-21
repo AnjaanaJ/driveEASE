@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const crypto=require('crypto');
 
 // @desc   Register a new user
 // @route  POST /api/auth/register
@@ -127,10 +128,83 @@ const changePassword=async (req,res)=>{
     res.status(200).json({
       message: 'Password changed successfully'
     });
-  }catch(error){
+  } catch (error) {
     res.status(500).json({
-      message: 'server error ', error:error.message
+      message: 'server error ', error: error.message
     });
   }
 };
-module.exports = { registerUser, loginUser, logoutUser, changePassword };
+
+// @desc   Request password reset (generates token)
+// @route  POST /api/auth/forgot-password
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Please provide an email' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Same response whether user exists or not - prevents email enumeration
+      return res.status(200).json({ message: 'If that email exists, a reset token has been generated' });
+    }
+
+    // 1. Generate a random raw token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    // 2. Hash it before storing (never store the raw token in DB)
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    // 3. Save hashed token + expiry (15 minutes from now)
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    // In production, this would be emailed. For this project, we return it directly.
+    res.status(200).json({
+      message: 'Reset token generated',
+      resetToken, // the RAW token - normally this goes in an email link
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res.status(400).json({ message: 'Please provide a new password' });
+    }
+
+    // 1. Hash the incoming token to compare against stored hashed version
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    // 2. Find user with matching token that hasn't expired
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // 3. Set new password, clear reset fields
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, changePassword, forgotPassword, resetPassword };

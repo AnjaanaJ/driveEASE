@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const ActivityLog = require('../models/ActivityLog');
+const Settings=require('../models/Settings');
 
 //    Get all users (admin only)
 //   GET /api/admin/users
@@ -82,4 +83,22 @@ const getActivityLogs = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs };
+
+//update system settings
+const updateSettings = async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+
+    if (!settings) {
+      settings = await Settings.create(req.body);
+    } else {
+      Object.assign(settings, req.body);
+      await settings.save();
+    }
+
+    res.status(200).json({ message: 'Settings updated successfully', settings });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings };

@@ -10,13 +10,24 @@ function HomePage() {
       {/* Hero Section */}
       <section className="max-w-[1500px] mx-auto px-6 pt-20 pb-16 grid md:grid-cols-2 gap-12 items-center">
         {/* Left: Text content */}
-        <div>
+        <div className ="md:pl-10 lg:pl-16">
           {/* Company name */}
-          <p className="text-6xl md:text-6xl font-bold text-primary mb-6">
+          
+          <p
+           className="text-7xl md:text-9xl font-extrabold text-gradient-brand mb-6 -mt-6"
+           
+           >
             driveEASE
           </p>
+          
+          
 
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+           {/* Platform label */}
+          <span className="inline-block px-6 py-2.5 rounded-full text-sm md:text-base font-medium bg-accent/10 text-accent border border-accent/20 mb-6">
+            🇱🇰 Sri Lanka&apos;s most popular smart driving school platform
+          </span>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4 mt-8">
             Learn smart.
             <br />
             Drive{" "}
@@ -24,18 +35,18 @@ function HomePage() {
           </h1>
 
           <p className="text-text-secondary text-base md:text-lg mb-8 max-w-md">
-            driveEASE brings booking, payments, progress tracking and certified
-            instructors together in one platform 
+          Every great driver starts with the right guidance. driveEASE brings expert instructors,
+           smart scheduling, and real progress tracking together-{""}
+           <span className="font-semibold text-text-primary">
+           No paperwork. No guesswork. Just you, the road, and the confidence to own it.
+           </span>
             </p>
 
-          {/* Platform label */}
-          <span className="inline-block px-6 py-2.5 rounded-full text-sm md:text-base font-medium bg-accent/10 text-accent border border-accent/20 mb-6">
-            🇱🇰 Sri Lanka&apos;s most popular smart driving school platform
-          </span>
+         
         </div>
 
         {/* Right: Logo and buttons */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center -mt-8">
           {/* Logo panel */}
           <div className="relative flex items-center justify-center">
             {/* Background glow */}
@@ -155,6 +166,33 @@ function HomePage() {
                 </a>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+      {/* Stats footer */}
+      <section className="max-w-[1500px] mx-auto px-6 pb-24== -mt-14">
+        <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-black/30 px-6 py-14">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+          <div className="pointer-events-none absolute -top-24 -left-24 w-64 h-64 rounded-full bg-primary/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-accent/20 blur-3xl" />
+
+          <div className="relative grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <p className="text-2xl md:text-3xl font-bold text-text-primary">50+</p>
+              <p className="text-xs text-text-secondary mt-1">Fleet vehicles</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-bold text-text-primary">2000+</p>
+              <p className="text-xs text-text-secondary mt-1">Students trained</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-bold text-text-primary">30+</p>
+              <p className="text-xs text-text-secondary mt-1">Certified instructors</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-bold text-accent">20+</p>
+              <p className="text-xs text-text-secondary mt-1">Years of experience</p>
+            </div>
           </div>
         </div>
       </section>

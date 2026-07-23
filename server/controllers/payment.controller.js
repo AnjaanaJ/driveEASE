@@ -56,4 +56,31 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
-module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, };
+const getMonthlySummary = async (req, res) => {
+  try {
+    const summary = await Payment.aggregate([
+      {
+        $match: { status: 'Paid' }, 
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
+          totalIncome: { $sum: '$amount' },
+          totalPayments: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { '_id.year': -1, '_id.month': -1 }, 
+      },
+    ]);
+
+    res.status(200).json(summary);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, getMonthlySummary, };

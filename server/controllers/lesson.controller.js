@@ -67,4 +67,23 @@ const cancelLesson = async (req, res) => {
     res.status(500).json({ message: 'Failed to cancel lesson', error: error.message });
   }
 };
-module.exports = { createLesson,getLessons,getLessonById,updateLesson,cancelLesson };
+const getAvailableSlots = async (req, res) => {
+  try {
+    const { date, instructorId, vehicleId } = req.query;
+
+    if (!date || !instructorId || !vehicleId) {
+      return res.status(400).json({ message: 'date, instructorId, and vehicleId are all required' });
+    }
+
+    const bookedLessons = await Lesson.find({
+      date: date,
+      status: { $ne: 'Cancelled' },
+      $or: [{ instructorId: instructorId }, { vehicleId: vehicleId }],
+    }).select('startTime endTime -_id');
+
+    res.status(200).json({ date, bookedSlots: bookedLessons });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch available slots', error: error.message });
+  }
+};
+module.exports = { createLesson,getLessons,getLessonById,updateLesson,cancelLesson,getAvailableSlots };

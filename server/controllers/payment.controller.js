@@ -1,5 +1,6 @@
 const Payment = require('../models/Payment');
 const crypto = require('crypto');
+const generateInvoicePDF = require('../utils/pdfGenerator');
 
 const createPayment = async (req, res) => {
   try {
@@ -83,4 +84,17 @@ const getMonthlySummary = async (req, res) => {
   }
 };
 
-module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, getMonthlySummary, };
+const getInvoice = async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.id).populate('studentId', 'name email');
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    generateInvoicePDF(payment, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, getMonthlySummary, getInvoice, };

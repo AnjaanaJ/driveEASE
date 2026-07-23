@@ -1,4 +1,6 @@
 const Lesson = require('../models/Lesson');
+const Notification = require('../models/Notification');
+
 const createLesson = async (req, res) => {
   try {
     const { studentId, instructorId, vehicleId, date, startTime, endTime } = req.body;
@@ -10,6 +12,12 @@ const createLesson = async (req, res) => {
       startTime,
       endTime,
     });
+    await Notification.create({
+      userId: studentId,
+      message: `Your lesson on ${date} at ${startTime} has been booked and confirmed.`,
+      type: 'Booking',
+    });
+
     res.status(201).json({ message: 'Lesson booked successfully', lesson });
   } catch (error) {
     res.status(400).json({ message: 'Failed to book lesson', error: error.message });
@@ -86,4 +94,22 @@ const getAvailableSlots = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch available slots', error: error.message });
   }
 };
-module.exports = { createLesson,getLessons,getLessonById,updateLesson,cancelLesson,getAvailableSlots };
+const getLessonsByStudent = async (req, res) => {
+  try {
+    const lessons = await Lesson.find({ studentId: req.params.studentId }).sort({ date: -1 });
+    res.status(200).json(lessons);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
+  }
+};
+
+const getLessonsByInstructor = async (req, res) => {
+  try {
+    const lessons = await Lesson.find({ instructorId: req.params.instructorId }).sort({ date: -1 });
+    res.status(200).json(lessons);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
+  }
+};
+
+module.exports = { createLesson,getLessons,getLessonById,updateLesson,cancelLesson,getAvailableSlots,getLessonsByStudent, getLessonsByInstructor };

@@ -1,5 +1,6 @@
 const Payment = require('../models/Payment');
 const crypto = require('crypto');
+const generateInvoicePDF = require('../utils/pdfGenerator');
 
 const createPayment = async (req, res) => {
   try {
@@ -56,4 +57,44 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
-module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, };
+const getMonthlySummary = async (req, res) => {
+  try {
+    const summary = await Payment.aggregate([
+      {
+        $match: { status: 'Paid' }, 
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
+          totalIncome: { $sum: '$amount' },
+          totalPayments: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { '_id.year': -1, '_id.month': -1 }, 
+      },
+    ]);
+
+    res.status(200).json(summary);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const getInvoice = async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.id).populate('studentId', 'name email');
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    generateInvoicePDF(payment, res);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, getMonthlySummary, getInvoice, };

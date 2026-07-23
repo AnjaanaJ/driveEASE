@@ -22,6 +22,18 @@ const getAllPayments = async (req, res) => {
   }
 };
 
+const getPaymentById = async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.id).populate('studentId','name email');
+    if(!payment) {
+      return res.status(404).json({ message: 'Payment not found'});
+    }
+    res.status(200).json(payment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error',error: error.message});
+  }
+};
+
 const getPaymentsByStudent = async (req, res) => {
   try {
     const payments = await Payment.find({ studentId: req.params.studentId });
@@ -44,4 +56,4 @@ const updatePaymentStatus = async (req, res) => {
   }
 };
 
-module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus };
+module.exports = { createPayment, getAllPayments, getPaymentsByStudent, updatePaymentStatus, getPaymentById, };

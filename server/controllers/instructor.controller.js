@@ -116,10 +116,63 @@ const deleteInstructor = async (req, res) => {
   }
 };
 
+const getInstructorAvailability = async (req, res) => {
+  try {
+    const instructor = await Instructor.findById(req.params.id);
+
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        message: "Instructor not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: instructor.availability,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateInstructorAvailability = async (req, res) => {
+  try {
+    const instructor = await Instructor.findById(req.params.id);
+
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        message: "Instructor not found",
+      });
+    }
+
+    instructor.availability = req.body.availability;
+
+    await instructor.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Availability updated successfully",
+      data: instructor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createInstructor,
   getInstructors,
   getInstructorById,
   updateInstructor,
   deleteInstructor,
+  getInstructorAvailability,
+  updateInstructorAvailability,
 };

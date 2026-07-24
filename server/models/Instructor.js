@@ -32,6 +32,20 @@ const instructorSchema = new mongoose.Schema({
     required: [true, "Qualification is required"],
     trim: true,
 },
+
+    availability: [
+  {
+    day: {
+      type: String,
+    },
+    startTime: {
+      type: String,
+    },
+    endTime: {
+      type: String,
+    },
+  },
+],
     status: {
       type: String,
       enum: ["Active", "Inactive"],

@@ -115,6 +115,58 @@ const deleteVehicle = async (req, res) => {
     });
   }
 };
+// Update Vehicle Maintenance Log
+const updateVehicleMaintenance = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        message: "Vehicle not found",
+      });
+    }
+
+    vehicle.maintenanceLog.push(req.body);
+
+    await vehicle.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Maintenance log updated successfully",
+      data: vehicle,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get Vehicle Maintenance History
+const getVehicleHistory = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        message: "Vehicle not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: vehicle.maintenanceLog,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createVehicle,
@@ -122,4 +174,6 @@ module.exports = {
   getVehicleById,
   updateVehicle,
   deleteVehicle,
+  updateVehicleMaintenance,
+  getVehicleHistory,
 };

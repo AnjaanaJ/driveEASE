@@ -96,6 +96,9 @@ const getAvailableSlots = async (req, res) => {
 };
 const getLessonsByStudent = async (req, res) => {
   try {
+    if (req.user.id !== req.params.studentId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     const lessons = await Lesson.find({ studentId: req.params.studentId }).sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
@@ -105,6 +108,9 @@ const getLessonsByStudent = async (req, res) => {
 
 const getLessonsByInstructor = async (req, res) => {
   try {
+    if (req.user.id !== req.params.instructorId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     const lessons = await Lesson.find({ instructorId: req.params.instructorId }).sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {

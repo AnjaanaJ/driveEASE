@@ -4,6 +4,10 @@ const Notification = require('../models/Notification');
 const createLesson = async (req, res) => {
   try {
     const { studentId, instructorId, vehicleId, date, startTime, endTime } = req.body;
+
+    if (!studentId || !instructorId || !vehicleId || !date || !startTime || !endTime) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
     const lesson = await Lesson.create({
       studentId,
       instructorId,
@@ -55,6 +59,11 @@ const updateLesson = async (req, res) => {
     if (status) lesson.status = status;
 
     await lesson.save();
+    await Notification.create({
+      userId: lesson.studentId,
+      message: `Your lesson has been rescheduled to ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime}.`,
+      type: 'Reminder',
+    });
 
     res.status(200).json({ message: 'Lesson updated successfully', lesson });
   } catch (error) {
@@ -67,8 +76,18 @@ const cancelLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
+    if (new Date(lesson.date) < new Date()) {
+      return res.status(400).json({ message: 'Cannot cancel a lesson that has already occurred' });
+    }
     lesson.status = 'Cancelled';
     await lesson.save();
+    await Notification.create({
+      userId: lesson.studentId,
+      message: `Your lesson on ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime} has been cancelled.`,
+      type: 'Cancellation',
+    });
+
+
 
     res.status(200).json({ message: 'Lesson cancelled successfully', lesson });
   } catch (error) {

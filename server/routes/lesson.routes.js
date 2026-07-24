@@ -12,7 +12,7 @@ router.get('/student/:studentId', verifyToken, getLessonsByStudent);
 router.get('/instructor/:instructorId', verifyToken, getLessonsByInstructor);
 router.get('/', verifyToken,requireRole('admin'), getLessons);
 router.get('/:id', verifyToken, getLessonById);
-router.put('/:id', verifyToken, updateLesson);
+router.put('/:id', verifyToken,conflictChecker, updateLesson);
 router.delete('/:id', verifyToken, cancelLesson);
 
 module.exports = router;

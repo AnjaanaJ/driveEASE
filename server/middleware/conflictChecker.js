@@ -2,13 +2,18 @@ const Lesson = require('../models/Lesson');
 const conflictChecker = async (req, res, next) => {
   try {
     const { instructorId, vehicleId, date, startTime, endTime } = req.body;
-    const conflictingLesson = await Lesson.findOne({
+    const query = {
       date: date,
       status: { $ne: 'Cancelled' },
       $or: [{ instructorId: instructorId }, { vehicleId: vehicleId }],
       startTime: { $lt: endTime },
       endTime: { $gt: startTime },
-    });
+    };
+    if (req.params.id) {
+      query._id = { $ne: req.params.id };
+    }
+    const conflictingLesson = await Lesson.findOne(query);
+    
     if (conflictingLesson) {
       return res.status(409).json({
         message: 'Booking conflict: instructor or vehicle is already booked for an overlapping time slot',

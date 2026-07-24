@@ -43,6 +43,20 @@ const vehicleSchema = new mongoose.Schema(
       enum: ["Available", "In Lesson", "Maintenance"],
       default: "Available",
     },
+    maintenanceLog: [
+  {
+    maintenanceDate: {
+      type: Date,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    cost: {
+      type: Number,
+    },
+  },
+],
   },
   {
     timestamps: true,

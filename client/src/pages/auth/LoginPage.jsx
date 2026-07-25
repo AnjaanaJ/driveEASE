@@ -1,13 +1,32 @@
-import {useState} from "react";
+import { useState } from "react";
 
 function LoginPage() {
-   const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "* Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+    if (!password) {
+      newErrors.password = "* Password is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", { email, password });
+    const isValid=validate();
+    if(!isValid) return;
+    
+    console.log("Validated, ready to submit:", { email, password });
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
@@ -28,6 +47,9 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
+          {errors.email && (
+            <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -41,6 +63,9 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
+          {errors.password &&(
+            <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+          )}
         </div>
 
         <button

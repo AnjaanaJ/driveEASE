@@ -72,9 +72,6 @@ function RegisterPage() {
       <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[var(--color-secondary)] opacity-20 blur-3xl pointer-events-none" />
 
       <div className="relative w-full max-w-sm">
-        <h2 className="text-center text-2xl font-bold text-gradient-brand mb-6">
-          driveEASE
-        </h2>
         <form
           onSubmit={handleSubmit}
           className="relative overflow-hidden bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 p-8 rounded-2xl shadow-2xl"

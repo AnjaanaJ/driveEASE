@@ -12,18 +12,21 @@ import NotFoundPage from "../pages/NotFoundPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
+import AuthLayout from "../layouts/AuthLayout";
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public pages*/}
+      
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
+        </Route>
+        <Route element={<AuthLayout/>}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      {/* Logged-in pages */}
+    
       
       <Route element={<DashboardLayout />}>
         <Route path="/admin/dashboard"

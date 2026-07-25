@@ -4,6 +4,10 @@ const Notification = require('../models/Notification');
 const createLesson = async (req, res) => {
   try {
     const { studentId, instructorId, vehicleId, date, startTime, endTime } = req.body;
+
+    if (!studentId || !instructorId || !vehicleId || !date || !startTime || !endTime) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
     const lesson = await Lesson.create({
       studentId,
       instructorId,
@@ -37,6 +41,10 @@ const getLessonById = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
+    const isOwner = req.user.id === lesson.studentId.toString() || req.user.id === lesson.instructorId.toString();
+    if (!isOwner && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     res.status(200).json(lesson);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lesson', error: error.message });
@@ -49,12 +57,28 @@ const updateLesson = async (req, res) => {
       return res.status(404).json({ message: 'Lesson not found' });
     }
     const { date, startTime, endTime, status } = req.body;
+
+    if (status && req.user.role === 'student') {
+      return res.status(403).json({ message: 'Students cannot change lesson status' });
+    }
+    const isReschedule = date || startTime || endTime;
+
     if (date) lesson.date = date;
     if (startTime) lesson.startTime = startTime;
     if (endTime) lesson.endTime = endTime;
     if (status) lesson.status = status;
 
     await lesson.save();
+
+    const message = isReschedule
+      ? `Your lesson has been rescheduled to ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime}.`
+      : `Your lesson status has been updated to "${lesson.status}".`;
+
+    await Notification.create({
+      userId: lesson.studentId,
+      message: message,
+      type: isReschedule ? 'Reminder' : 'StatusUpdate',
+    });
 
     res.status(200).json({ message: 'Lesson updated successfully', lesson });
   } catch (error) {
@@ -67,8 +91,18 @@ const cancelLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
+    if (new Date(lesson.date) < new Date()) {
+      return res.status(400).json({ message: 'Cannot cancel a lesson that has already occurred' });
+    }
     lesson.status = 'Cancelled';
     await lesson.save();
+    await Notification.create({
+      userId: lesson.studentId,
+      message: `Your lesson on ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime} has been cancelled.`,
+      type: 'Cancellation',
+    });
+
+
 
     res.status(200).json({ message: 'Lesson cancelled successfully', lesson });
   } catch (error) {
@@ -96,6 +130,9 @@ const getAvailableSlots = async (req, res) => {
 };
 const getLessonsByStudent = async (req, res) => {
   try {
+    if (req.user.id !== req.params.studentId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     const lessons = await Lesson.find({ studentId: req.params.studentId }).sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
@@ -105,6 +142,9 @@ const getLessonsByStudent = async (req, res) => {
 
 const getLessonsByInstructor = async (req, res) => {
   try {
+    if (req.user.id !== req.params.instructorId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     const lessons = await Lesson.find({ instructorId: req.params.instructorId }).sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {

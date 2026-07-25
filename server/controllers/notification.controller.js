@@ -3,6 +3,9 @@ const Notification = require('../models/Notification');
 const createNotification = async (req, res) => {
   try {
     const { userId, message, type } = req.body;
+    if (!userId || !message) {
+      return res.status(400).json({ message: 'userId and message are required' });
+    }
     const notification = await Notification.create({
       userId,
       message,
@@ -17,6 +20,9 @@ const createNotification = async (req, res) => {
 
 const getNotificationsForUser = async (req, res) => {
   try {
+    if (req.user.id !== req.params.userId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     const notifications = await Notification.find({ userId: req.params.userId }).sort({ createdAt: -1 });
     res.status(200).json(notifications);
   } catch (error) {
@@ -30,6 +36,9 @@ const markAsRead = async (req, res) => {
     if (!notification) {
       return res.status(404).json({ message: 'Notification not found' });
     }
+    if (req.user.id !== notification.userId.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     notification.isRead = true;
     await notification.save();
 
@@ -41,6 +50,9 @@ const markAsRead = async (req, res) => {
 
 const markAllAsRead = async (req, res) => {
   try {
+    if (req.user.id !== req.params.userId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
     await Notification.updateMany(
       { userId: req.params.userId, isRead: false },
       { isRead: true }

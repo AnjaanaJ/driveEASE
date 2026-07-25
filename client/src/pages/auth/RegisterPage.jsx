@@ -1,14 +1,45 @@
-import {useState} from "react";
+import { useState } from "react";
 
 function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = "Password must contain at least 1 uppercase letter";
+    } else if (!/[0-9]/.test(password)) {
+      newErrors.password = "Password must contain at least 1 number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", { name, email, password, role });
+    const isValid = validate();
+    if (!isValid) return;
+
+    console.log("Validated, ready to submit:", { name, email, password, role });
   };
 
   return (
@@ -32,6 +63,9 @@ function RegisterPage() {
             onChange={(e) => setName(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
+          {errors.name &&(
+            <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -45,6 +79,9 @@ function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
+          {errors.email &&(
+            <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -58,6 +95,9 @@ function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
+          {errors.password &&(
+            <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+          )}
         </div>
 
         <div className="mb-6">

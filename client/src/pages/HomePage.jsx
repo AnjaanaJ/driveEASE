@@ -91,8 +91,226 @@ function HomePage() {
         </div>
       </section>
 
+      
+<section className="max-w-[1500px] mx-auto px-6 py-20">
+  <p className="text-accent text-sm font-semibold tracking-wide uppercase mb-3">
+    Platform
+  </p>
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-4 max-w-2xl">
+    Everything a modern driving school needs, in one place
+  </h2>
+  <p className="text-text-secondary text-base md:text-lg mb-12 max-w-2xl">
+    Built for administrators, instructors and students — driveEASE keeps
+    scheduling, payments and progress in sync across every role.
+  </p>
+
+  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {/* Feature 1 */}
+   <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-primary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
+      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <h3 className="font-semibold text-lg mb-2">Online booking & scheduling</h3>
+      <p className="text-sm text-text-secondary">
+        Students pick a slot, instructors confirm, vehicles are auto-assigned. No back-and-forth calls.
+      </p>
+    </div>
+</div>
+    {/* Feature 2 */}
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
+      <div className="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a4 4 0 00-8 0v2M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <h3 className="font-semibold text-lg mb-2">Digital payments & invoices</h3>
+      <p className="text-sm text-text-secondary">
+        Package payments, balances and receipts handled online with full payment history.
+      </p>
+    </div>
+    </div>
+
+    {/* Feature 3 */}
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
+      <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+      <h3 className="font-semibold text-lg mb-2">Real-time analytics & reports</h3>
+      <p className="text-sm text-text-secondary">
+        Admins get live visibility into revenue, fleet usage and instructor performance.
+      </p>
+    </div>
+    </div>
+
+    {/* Feature 4 */}
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40  hover:scale-105 hover:translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
+      <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      </div>
+      <h3 className="font-semibold text-lg mb-2">Automated notifications</h3>
+      <p className="text-sm text-text-secondary">
+        Lesson reminders, payment due alerts and progress updates sent automatically.
+      </p>
+    </div>
+  </div>
+  </div>
+</section>
+
+{/* How It Works Section */}
+<section className="max-w-[1500px] mx-auto px-6 py-8">
+  <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-surface/30 backdrop-blur-xl px-6 md:px-12 py-16">
+    <div className="pointer-events-none absolute -top-32 -right-32 w-96 h-96 rounded-full bg-secondary/10 blur-3xl" />
+
+    <div className="relative">
+      <p className="text-accent text-sm font-semibold tracking-wide uppercase mb-3">
+        How it works
+      </p>
+      <h2 className="text-3xl md:text-4xl font-extrabold mb-4 max-w-2xl">
+        From sign-up to certified driver in three steps
+      </h2>
+      <p className="text-text-secondary text-base md:text-lg mb-14 max-w-2xl">
+        A simple, guided journey designed to keep you moving forward at every stage.
+      </p>
+
+      <div className="grid md:grid-cols-3 gap-10">
+        {/* Step 1 */}
+        <div className="text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg mb-5 shadow-lg shadow-primary/30">
+            1
+          </div>
+          <h3 className="font-semibold text-lg mb-2">Register & choose a package</h3>
+          <p className="text-sm text-text-secondary max-w-xs mx-auto">
+            Sign up, upload your documents and pick Beginner, Refresher or VIP.
+          </p>
+        </div>
+
+        {/* Step 2 */}
+        <div className="text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg mb-5 shadow-lg shadow-primary/30">
+            2
+          </div>
+          <h3 className="font-semibold text-lg mb-2">Book your lessons</h3>
+          <p className="text-sm text-text-secondary max-w-xs mx-auto">
+            Choose available time slots and get matched with a certified instructor.
+          </p>
+        </div>
+
+        {/* Step 3 */}
+        <div className="text-center">
+          <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg mb-5 shadow-lg shadow-primary/30">
+            3
+          </div>
+          <h3 className="font-semibold text-lg mb-2">Track progress & get certified</h3>
+          <p className="text-sm text-text-secondary max-w-xs mx-auto">
+            Follow your progress lesson by lesson and prepare for your license test.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Pricing Section */}
+<section className="max-w-[1500px] mx-auto px-6 py-20">
+  <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+    <div>
+      <p className="text-accent text-sm font-semibold tracking-wide uppercase mb-3">
+        Packages
+      </p>
+      <h2 className="text-3xl md:text-4xl font-extrabold max-w-xl">
+        Choose the plan that fits your pace
+      </h2>
+    </div>
+    <button className="px-5 py-2.5 rounded-lg border border-white/10 bg-surface/40 text-sm font-medium hover:bg-surface/60 transition-colors">
+      Compare all packages
+    </button>
+  </div>
+
+  <div className="grid md:grid-cols-3 gap-6 items-center">
+    {/* Beginner */}
+    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8 hover:scale-105 hover:translate-y-1 transition-all ">
+      <p className="text-accent text-xs font-semibold uppercase tracking-wide mb-2">Beginner</p>
+      <p className="text-3xl font-extrabold mb-1">LKR 32,000</p>
+      <p className="text-xs text-text-secondary mb-6">12 lessons · ideal for first-time drivers</p>
+      <ul className="space-y-3 text-sm text-text-secondary">
+        <li className="flex items-start gap-2">
+          <span className="text-accent mt-0.5">✓</span> 12 one-hour lessons
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-accent mt-0.5">✓</span> Shared instructor scheduling
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-accent mt-0.5">✓</span> Basic manoeuvres & road rules
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-accent mt-0.5">✓</span> Progress tracking
+        </li>
+      </ul>
+    </div>
+
+    {/* VIP - highlighted */}
+    <div className="relative rounded-2xl border border-primary/40 bg-gradient-to-b from-surface/80 to-background p-8 shadow-2xl shadow-primary/20 md:-translate-y-4 hover:scale-105 hover:translate-y-2 transition-all">
+      <span className="absolute -top-3 right-8 px-3 py-1 rounded-full bg-accent text-background text-xs font-bold">
+        Most popular
+      </span>
+      <p className="text-primary text-xs font-semibold uppercase tracking-wide mb-2">VIP</p>
+      <p className="text-3xl font-extrabold mb-1">LKR 65,000</p>
+      <p className="text-xs text-text-secondary mb-6">30 lessons · full license-ready program</p>
+      <ul className="space-y-3 text-sm text-text-secondary">
+        <li className="flex items-start gap-2">
+          <span className="text-primary mt-0.5">✓</span> 30 one-hour lessons
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-primary mt-0.5">✓</span> Dedicated instructor
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-primary mt-0.5">✓</span> Highway driving module
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-primary mt-0.5">✓</span> Mock license test
+        </li>
+      </ul>
+    </div>
+
+    {/* Refresher */}
+    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8 hover:scale-105 hover:translate-y-1 transition-all">
+      <p className="text-secondary text-xs font-semibold uppercase tracking-wide mb-2">Refresher</p>
+      <p className="text-3xl font-extrabold mb-1">LKR 18,000</p>
+      <p className="text-xs text-text-secondary mb-6">8 lessons · for licensed drivers rebuilding confidence</p>
+      <ul className="space-y-3 text-sm text-text-secondary">
+        <li className="flex items-start gap-2">
+          <span className="text-secondary mt-0.5">✓</span> 8 one-hour lessons
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-secondary mt-0.5">✓</span> Flexible scheduling
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-secondary mt-0.5">✓</span> Highway & parking focus
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-secondary mt-0.5">✓</span> Progress tracking
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
       {/* Stats footer */}
-      <section className="max-w-[1500px] mx-auto px-6 pb-24 -mt-18">
+      <section className="max-w-[1500px] mx-auto px-6 pb-24 -mt">
         <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-black/30 px-6 py-14">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
           <div className="pointer-events-none absolute -top-24 -left-24 w-64 h-64 rounded-full bg-primary/20 blur-3xl" />

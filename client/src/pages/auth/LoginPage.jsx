@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+import Footer from "../../components/shared/Footer.jsx";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -52,11 +53,12 @@ function LoginPage() {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
+    <div className="relative flex-1  flex items-center justify-center px-4 overflow-hidden">
       <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[var(--color-primary)] opacity-20 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[var(--color-secondary)] opacity-20 blur-3xl pointer-events-none" />
 
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full max-w-sm animate-slide-in-right">
         <form
           onSubmit={handleSubmit}
           className="relative overflow-hidden bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 p-8 rounded-2xl shadow-2xl"
@@ -129,7 +131,9 @@ function LoginPage() {
             </a>
           </p>
         </form>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

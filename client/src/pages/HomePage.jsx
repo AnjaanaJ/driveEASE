@@ -91,7 +91,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      
 <section className="max-w-[1500px] mx-auto px-6 py-20">
   <p className="text-accent text-sm font-semibold tracking-wide uppercase mb-3">
     Platform
@@ -106,7 +106,9 @@ function HomePage() {
 
   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {/* Feature 1 */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-6 hover:border-primary/40 transition-colors">
+   <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-primary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
       <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -117,9 +119,11 @@ function HomePage() {
         Students pick a slot, instructors confirm, vehicles are auto-assigned. No back-and-forth calls.
       </p>
     </div>
-
+</div>
     {/* Feature 2 */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-6 hover:border-secondary/40 transition-colors">
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
       <div className="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a4 4 0 00-8 0v2M5 9h14l1 12H4L5 9z" />
@@ -130,9 +134,12 @@ function HomePage() {
         Package payments, balances and receipts handled online with full payment history.
       </p>
     </div>
+    </div>
 
     {/* Feature 3 */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-6 hover:border-accent/40 transition-colors">
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40 hover:scale-105 hover:-translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
       <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -143,9 +150,12 @@ function HomePage() {
         Admins get live visibility into revenue, fleet usage and instructor performance.
       </p>
     </div>
+    </div>
 
     {/* Feature 4 */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-6 hover:border-primary/40 transition-colors">
+     <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl p-6 shadow-lg shadow-black/20 hover:border-secondary/40  hover:scale-105 hover:translate-y-1 transition-all">
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+    <div className="relative">
       <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -156,6 +166,7 @@ function HomePage() {
         Lesson reminders, payment due alerts and progress updates sent automatically.
       </p>
     </div>
+  </div>
   </div>
 </section>
 
@@ -231,7 +242,7 @@ function HomePage() {
 
   <div className="grid md:grid-cols-3 gap-6 items-center">
     {/* Beginner */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8">
+    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8 hover:scale-105 hover:translate-y-1 transition-all ">
       <p className="text-accent text-xs font-semibold uppercase tracking-wide mb-2">Beginner</p>
       <p className="text-3xl font-extrabold mb-1">LKR 32,000</p>
       <p className="text-xs text-text-secondary mb-6">12 lessons · ideal for first-time drivers</p>
@@ -252,7 +263,7 @@ function HomePage() {
     </div>
 
     {/* VIP - highlighted */}
-    <div className="relative rounded-2xl border border-primary/40 bg-gradient-to-b from-surface/80 to-background p-8 shadow-2xl shadow-primary/20 md:-translate-y-4">
+    <div className="relative rounded-2xl border border-primary/40 bg-gradient-to-b from-surface/80 to-background p-8 shadow-2xl shadow-primary/20 md:-translate-y-4 hover:scale-105 hover:translate-y-2 transition-all">
       <span className="absolute -top-3 right-8 px-3 py-1 rounded-full bg-accent text-background text-xs font-bold">
         Most popular
       </span>
@@ -276,7 +287,7 @@ function HomePage() {
     </div>
 
     {/* Refresher */}
-    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8">
+    <div className="rounded-2xl border border-white/10 bg-surface/40 backdrop-blur-xl p-8 hover:scale-105 hover:translate-y-1 transition-all">
       <p className="text-secondary text-xs font-semibold uppercase tracking-wide mb-2">Refresher</p>
       <p className="text-3xl font-extrabold mb-1">LKR 18,000</p>
       <p className="text-xs text-text-secondary mb-6">8 lessons · for licensed drivers rebuilding confidence</p>
@@ -299,7 +310,7 @@ function HomePage() {
 </section>
 
       {/* Stats footer */}
-      <section className="max-w-[1500px] mx-auto px-6 pb-24 -mt-18">
+      <section className="max-w-[1500px] mx-auto px-6 pb-24 -mt">
         <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 backdrop-blur-2xl shadow-2xl shadow-black/30 px-6 py-14">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
           <div className="pointer-events-none absolute -top-24 -left-24 w-64 h-64 rounded-full bg-primary/20 blur-3xl" />

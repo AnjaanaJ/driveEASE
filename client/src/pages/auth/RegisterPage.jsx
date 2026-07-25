@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.jsx"
 
 function RegisterPage() {
   const [name, setName] = useState("");
@@ -6,6 +8,11 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [errors, setErrors] = useState({});
+  const [serverError,setServerError]=useState("");
+  const [submitting,setSubmitting]=useState(false);
+
+  const {register}=useAuth();
+  const navigate=useNavigate();
 
   const validate = () => {
     const newErrors = {};
@@ -34,12 +41,26 @@ function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    setServerError("");
+
     const isValid = validate();
     if (!isValid) return;
 
-    console.log("Validated, ready to submit:", { name, email, password, role });
+    setSubmitting(true);
+    try{
+      await register(name,email,password,role);
+      navigate("/login",{
+        state:{message:"Registration successful !! Please wait for the admin approval to loggiin in"},
+      });
+    }catch(err){
+      setServerError(
+        err.response?.data?.message || "Registration failed . Please try again"
+      );
+    }finally{
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -51,6 +72,11 @@ function RegisterPage() {
         <h1 className="text-2xl font-semibold text-white mb-6">
           Create an Account
         </h1>
+        {serverError && (
+          <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded mb-4">
+            {serverError}
+          </p>
+        )}
 
         <div className="mb-4">
           <label className="block text-slate-300 mb-1" htmlFor="name">
@@ -119,6 +145,7 @@ function RegisterPage() {
           type="submit"
           className="w-full py-2 rounded-md bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition"
         >
+          {submitting? "Creating account ...":"Register"}
           Register
         </button>
       </form>

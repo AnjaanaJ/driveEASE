@@ -1,9 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import {useAuth} from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { user, logout } = useAuth();
+const navigate = useNavigate();
+
+const dashboardPath =
+  user?.role === "admin"
+    ? "/admin/dashboard"
+    : user?.role === "instructor"
+    ? "/instructor/dashboard"
+    : "/student/dashboard";
+
+const handleLogout = () => {
+  logout();
+  navigate("/login");
+};
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-surface/40 backdrop-blur-xl shadow-lg shadow-black/20">
@@ -13,11 +30,10 @@ function Navbar() {
           <img
             src={logo}
             alt="driveEASE logo"
-            className="h-40 w-40 object-contain rounded-full ring-2 ring-primary/40"
+            className="h-30 w-30 object-contain rounded-full ring-2 ring-[var(--color-primary)]/40"
           />
-          <span className="text-6xl font-extrabold tracking-tight text-gradient-brand drop-shadow-[0_0_25px_rgba(30,117,254,0.35)]">
-            <span className="text-text-primary">drive</span>
-            <span className="text-gradient-brand">EASE</span>
+          <span className="text-4xl font-extrabold tracking-tight text-gradient-brand">
+           driveEASE
           </span>
         </Link>
 

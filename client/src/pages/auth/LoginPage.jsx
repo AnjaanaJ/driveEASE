@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
@@ -21,12 +28,28 @@ function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid=validate();
-    if(!isValid) return;
-    
-    console.log("Validated, ready to submit:", { email, password });
+    setServerError("");
+
+    const isValid = validate();
+    if (!isValid) return;
+
+    setSubmitting(true);
+    try {
+      const data = await login(email, password);
+      const role = data.role || data.user?.role;
+
+      if (role == "admin") navigate("/admin/dashboard");
+      else if (role == "instructor") navigate("/instructor/dashboard");
+      else navigate("/student/dashboard");
+    } catch (err) {
+      setServerError(
+        err.response?.data?.message || "Invalid email or password",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
@@ -63,16 +86,17 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-slate-800 text-white border border-slate-600 focus:outline-none focus:border-[var(--color-primary)]"
           />
-          {errors.password &&(
+          {errors.password && (
             <p className="text-red-400 text-sm mt-1">{errors.password}</p>
           )}
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 rounded-md bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition"
+          disabled={submitting}
+          className="w-full py-2 rounded-md bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition disabled:opacity-50"
         >
-          Log In
+          {submitting? "Logging in ... ": "Log in"}
         </button>
       </form>
     </div>

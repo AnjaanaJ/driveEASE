@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/auth/LoginPage";
@@ -15,26 +16,43 @@ import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public pages — share MainLayout */}
+      {/* Public pages*/}
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      {/* Logged-in pages — share DashboardLayout */}
-      {/* NOTE: these are NOT protected yet — we'll lock them down with
-          ProtectedRoute once AuthContext exists, in a later step. */}
+      {/* Logged-in pages */}
+      
       <Route element={<DashboardLayout />}>
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/instructor/dashboard" element={<InstructorDashboardPage />} />
-        <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+        <Route path="/admin/dashboard"
+         element={
+          <ProtectedRoute allowRoles={["admin"]}>
+            <AdminDashboardPage/>
+            </ProtectedRoute>
+         } />
+        <Route path="/instructor/dashboard"
+         element={
+          <ProtectedRoute allowedRoles={["instructor"]}>
+            <InstructorDashboardPage/>
+            </ProtectedRoute>}
+             />
+        <Route path="/student/dashboard" 
+        element={
+        <ProtectedRoute allowedRoles={["student"]}>
+          <StudentDashboardPage/>
+          </ProtectedRoute>
+          }
+          />
+           
       </Route>
 
-      {/* Catch-all — must be last */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-  );
+
+
+     );
 }
 
 export default AppRoutes;

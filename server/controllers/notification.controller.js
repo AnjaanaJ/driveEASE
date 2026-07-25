@@ -3,6 +3,9 @@ const Notification = require('../models/Notification');
 const createNotification = async (req, res) => {
   try {
     const { userId, message, type } = req.body;
+    if (!userId || !message) {
+      return res.status(400).json({ message: 'userId and message are required' });
+    }
     const notification = await Notification.create({
       userId,
       message,

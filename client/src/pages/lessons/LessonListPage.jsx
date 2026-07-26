@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getAllLessons } from "../../services/lessonApi";
 import LessonTable from "../../components/lessons/LessonTable";
 
+
 function LessonListPage() {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);

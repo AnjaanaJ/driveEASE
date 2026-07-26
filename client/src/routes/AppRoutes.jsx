@@ -18,6 +18,7 @@ import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
+import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 
 
 function AppRoutes() {
@@ -85,6 +86,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lessons/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <LessonCalendarPage />
             </ProtectedRoute>
           }
         />

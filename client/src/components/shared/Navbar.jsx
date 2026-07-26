@@ -24,7 +24,7 @@ const handleLogout = () => {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-surface/40 backdrop-blur-xl shadow-lg shadow-black/20">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo / Brand */}
         <Link to="/" className="flex items-center gap-2">
           <img
@@ -38,16 +38,16 @@ const handleLogout = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex  items-center gap-16">
           <Link
             to="/"
-            className="text-text-secondary hover:text-text-primary transition-colors"
+            className="text-white font-medium text-xl hover:text-text-primary transition-colors"
           >
             Home
           </Link>
           <Link
             to="/login"
-            className="text-text-secondary hover:text-text-primary transition-colors"
+            className="text-white font-medium text-xl hover:text-text-primary transition-colors"
           >
             Login
           </Link>

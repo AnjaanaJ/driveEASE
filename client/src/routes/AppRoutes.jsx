@@ -14,6 +14,7 @@ import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
+import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
@@ -31,6 +32,7 @@ function AppRoutes() {
       
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/courses" element={<CoursePackagesPage />} />
         </Route>
         <Route element={<AuthLayout/>}>
         <Route path="/login" element={<LoginPage />} />

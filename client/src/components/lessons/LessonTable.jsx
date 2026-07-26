@@ -23,7 +23,6 @@ function LessonTable({ lessons }) {
                   {lesson.date?.split("T")[0]}
                 </Link>
               </td>
-              <td className="p-3">{lesson.date?.split("T")[0]}</td>
               <td className="p-3">{lesson.startTime} - {lesson.endTime}</td>
               <td className="p-3">{lesson.studentId}</td>
               <td className="p-3">{lesson.instructorId}</td>

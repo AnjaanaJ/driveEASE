@@ -22,6 +22,7 @@ import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
+import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 
 import PaymentListPage from "../pages/admin/PaymentListPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
@@ -115,6 +116,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/lessons/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <LessonCalendarPage />
+              </ProtectedRoute>
+          }
+          />
+        <Route   
           path="/admin/payments"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>

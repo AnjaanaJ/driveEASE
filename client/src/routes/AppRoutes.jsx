@@ -13,6 +13,7 @@ import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
+import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
@@ -52,6 +53,13 @@ function AppRoutes() {
         element={
         <ProtectedRoute allowedRoles={["student"]}>
           <StudentDashboardPage/>
+          </ProtectedRoute>
+          }
+          />
+           <Route path="/student/register-profile" 
+        element={
+        <ProtectedRoute allowedRoles={["student"]}>
+          <StudentRegistrationPage/>
           </ProtectedRoute>
           }
           />

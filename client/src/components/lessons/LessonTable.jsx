@@ -1,4 +1,6 @@
 import LessonStatusBadge from "./LessonStatusBadge";
+import { Link } from "react-router-dom";
+
 
 function LessonTable({ lessons }) {
   return (
@@ -15,7 +17,12 @@ function LessonTable({ lessons }) {
         </thead>
         <tbody>
           {lessons.map((lesson) => (
-            <tr key={lesson._id} className="border-t border-white/10">
+            <tr key={lesson._id} className="border-t border-white/10 hover:bg-white/5">
+                <td className="p-3">
+                <Link to={`/lessons/${lesson._id}`} className="text-[var(--color-accent)] hover:underline">
+                  {lesson.date?.split("T")[0]}
+                </Link>
+              </td>
               <td className="p-3">{lesson.date?.split("T")[0]}</td>
               <td className="p-3">{lesson.startTime} - {lesson.endTime}</td>
               <td className="p-3">{lesson.studentId}</td>

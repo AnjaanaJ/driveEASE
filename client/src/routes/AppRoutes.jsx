@@ -13,8 +13,10 @@ import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
+
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
+import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
@@ -25,51 +27,62 @@ import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 import PaymentListPage from "../pages/admin/PaymentListPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 
-
 function AppRoutes() {
   return (
     <Routes>
-      
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursePackagesPage />} />
-        </Route>
-        <Route element={<AuthLayout/>}>
+      </Route>
+      <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-    
-      
       <Route element={<DashboardLayout />}>
-        <Route path="/admin/dashboard"
-         element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminDashboardPage/>
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboardPage />
             </ProtectedRoute>
-         } />
-        <Route path="/instructor/dashboard"
-         element={
-          <ProtectedRoute allowedRoles={["instructor"]}>
-            <InstructorDashboardPage/>
-            </ProtectedRoute>}
-             />
-        <Route path="/student/dashboard" 
-        element={
-        <ProtectedRoute allowedRoles={["student"]}>
-          <StudentDashboardPage/>
-          </ProtectedRoute>
           }
-          />
-           <Route path="/student/register-profile" 
-        element={
-        <ProtectedRoute allowedRoles={["student"]}>
-          <StudentRegistrationPage/>
-          </ProtectedRoute>
+        />
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminCourseManagementPage />
+            </ProtectedRoute>
           }
-          />
-           
-      <Route
+        />
+
+        <Route
+          path="/instructor/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/register-profile"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentRegistrationPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/lessons/book"
           element={
             <ProtectedRoute allowedRoles={["student"]}>
@@ -130,9 +143,7 @@ function AppRoutes() {
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-
-
-     );
+  );
 }
 
 export default AppRoutes;

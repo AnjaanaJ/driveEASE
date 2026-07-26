@@ -20,6 +20,9 @@ import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
 
+import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+
 
 function AppRoutes() {
   return (
@@ -93,6 +96,22 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/payments"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <PaymentHistoryPage />
             </ProtectedRoute>
           }
         />

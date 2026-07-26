@@ -31,7 +31,7 @@ function PaymentForm({ onSuccess }) {
   };
 
   return (
-    <div className="relative max-w-md">
+    <div className="relative max-w-md mx-auto">
       {}
       <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl" />
 

@@ -13,12 +13,16 @@ import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
+
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
+import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
+import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
+import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 
 import PaymentListPage from "../pages/admin/PaymentListPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
@@ -30,6 +34,7 @@ function AppRoutes() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/courses" element={<CoursePackagesPage />} />
       </Route>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
@@ -45,6 +50,15 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminCourseManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/instructor/dashboard"
           element={
@@ -104,6 +118,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/lessons/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <LessonCalendarPage />
+              </ProtectedRoute>
+          }
+          />
+        <Route   
           path="/admin/payments"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>

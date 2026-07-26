@@ -31,7 +31,7 @@ function AppRoutes() {
       <Route element={<DashboardLayout />}>
         <Route path="/admin/dashboard"
          element={
-          <ProtectedRoute allowRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <AdminDashboardPage/>
             </ProtectedRoute>
          } />

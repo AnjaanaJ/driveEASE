@@ -41,13 +41,13 @@ const handleLogout = () => {
         <div className="hidden md:flex  items-center gap-16">
           <Link
             to="/"
-            className="text-white font-medium text-2xl hover:text-text-primary transition-colors"
+            className="text-white font-medium text-xl hover:text-text-primary transition-colors"
           >
             Home
           </Link>
           <Link
             to="/login"
-            className="text-white font-medium text-2xl hover:text-text-primary transition-colors"
+            className="text-white font-medium text-xl hover:text-text-primary transition-colors"
           >
             Login
           </Link>

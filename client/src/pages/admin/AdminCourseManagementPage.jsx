@@ -1,3 +1,5 @@
+import Navbar from "../../components/shared/Navbar";
+import Footer from "../../components/shared/Footer";
 import { useState, useEffect } from "react";
 import {
   getAllCourses,
@@ -81,13 +83,16 @@ function AdminCourseManagementPage() {
     }
   };
 
-  if (loading) return <div className="p-8 text-text-secondary">Loading...</div>;
+  
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-2xl font-semibold text-text-primary mb-6">
-        Manage Course Packages
-      </h1>
+    <>
+      <Navbar />
+
+      <div className="max-w-4xl mx-auto p-8">
+        <h1 className="text-2xl font-semibold text-text-primary mb-6">
+          Manage Course Packages
+        </h1>
 
       {error && (
         <div className="mb-4 p-3 bg-red-900/40 text-red-300 rounded border border-red-700">
@@ -224,6 +229,8 @@ function AdminCourseManagementPage() {
         </table>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 

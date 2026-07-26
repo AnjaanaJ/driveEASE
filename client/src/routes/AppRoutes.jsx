@@ -14,6 +14,8 @@ import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
 
+import LessonBookingPage from "../pages/lessons/LessonBookingPage";
+
 function AppRoutes() {
   return (
     <Routes>
@@ -49,6 +51,14 @@ function AppRoutes() {
           }
           />
            
+      <Route
+          path="/lessons/book"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <LessonBookingPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

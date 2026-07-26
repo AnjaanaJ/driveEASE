@@ -235,10 +235,10 @@ function LoginPage() {
                     </svg>
                     <input
                       id="password"
-                      type="password"
+                      type={showPassword? "text":"password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-9 pr-9 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring[var(--color-primary)] focus:border-transparent transition"
+                      className="w-full pl-9 pr-9 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
                     />
                     <button
                       type="button"

@@ -41,7 +41,7 @@ function BookingForm() {
 
     setSubmitting(true);
     try {
-      await bookLesson({ studentId: user._id, ...formData });
+      await bookLesson({ studentId: user._id || user.id, ...formData });
       setSuccess("Lesson booked successfully!");
       setFormData({ instructorId: "", vehicleId: "", date: "", startTime: "", endTime: "" });
     } catch (err) {

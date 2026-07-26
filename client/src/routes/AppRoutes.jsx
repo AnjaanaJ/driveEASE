@@ -17,6 +17,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
+import NotificationsPage from "../pages/lessons/NotificationsPage";
+
 
 function AppRoutes() {
   return (
@@ -75,6 +77,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <LessonDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <NotificationsPage />
             </ProtectedRoute>
           }
         />

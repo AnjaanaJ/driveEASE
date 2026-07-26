@@ -15,6 +15,12 @@ import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 
+import LessonBookingPage from "../pages/lessons/LessonBookingPage";
+import LessonListPage from "../pages/lessons/LessonListPage";
+import LessonDetailPage from "../pages/lessons/LessonDetailPage";
+import NotificationsPage from "../pages/lessons/NotificationsPage";
+
+
 function AppRoutes() {
   return (
     <Routes>
@@ -57,6 +63,39 @@ function AppRoutes() {
           }
           />
            
+      <Route
+          path="/lessons/book"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <LessonBookingPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <LessonListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lessons/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <LessonDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

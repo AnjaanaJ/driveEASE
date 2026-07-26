@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllUsers,approveUser,rejectUser,deleteUser,changeUserRole } from "../../api/adminApi";
 import ApprovalTable from "../../components/admin/ApprovalTable";
+import Footer from "../../components/shared/Footer";
 
 function AdminUserManagementPage() {
   const [users, setUsers] = useState([]);
@@ -73,7 +74,7 @@ const handleReject = async (id) => {
   }
 
   return (
-    <div className="p-8">
+    <div className="min-h-screen p-8 md:p-12">
       <h1 className="text-2xl font-bold text-white mb-6">User Management</h1>
       <ApprovalTable users={users}
       onApprove={handleApprove}
@@ -82,6 +83,7 @@ const handleReject = async (id) => {
       onChangeRole={handleChangeRole}
       />
     </div>
+    
   );
 }
 

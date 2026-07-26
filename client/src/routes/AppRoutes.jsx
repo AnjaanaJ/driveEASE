@@ -15,6 +15,7 @@ import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
+import LessonListPage from "../pages/lessons/LessonListPage";
 
 function AppRoutes() {
   return (
@@ -56,6 +57,15 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["student"]}>
               <LessonBookingPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <LessonListPage />
             </ProtectedRoute>
           }
         />

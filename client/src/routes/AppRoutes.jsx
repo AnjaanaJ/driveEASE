@@ -13,11 +13,15 @@ import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import AuthLayout from "../layouts/AuthLayout";
+import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
+
+import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 
 
 function AppRoutes() {
@@ -54,6 +58,13 @@ function AppRoutes() {
           </ProtectedRoute>
           }
           />
+           <Route path="/student/register-profile" 
+        element={
+        <ProtectedRoute allowedRoles={["student"]}>
+          <StudentRegistrationPage/>
+          </ProtectedRoute>
+          }
+          />
            
       <Route
           path="/lessons/book"
@@ -85,6 +96,22 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/payments"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <PaymentHistoryPage />
             </ProtectedRoute>
           }
         />

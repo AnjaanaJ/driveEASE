@@ -1,4 +1,5 @@
 const Student = require('../models/Student');
+const Course = require('../models/Course');
 
 // Create a new student profile
 // POST /api/students
@@ -10,14 +11,31 @@ const createStudent = async (req, res) => {
     if (!userId || !nic || !phone) {
       return res.status(400).json({ message: 'Please provide userId, nic and phone' });
     }
+    // 2b. NIC format validation (Sri Lanka format)
+    const nicRegex = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
+    if (!nicRegex.test(nic)) {
+      return res.status(400).json({ message: 'Please provide a valid NIC number' });
+    }
 
-    // 2. NIC already exists ida balanawa
+    // 2. Check NIC already exists 
     const existingStudent = await Student.findOne({ nic });
     if (existingStudent) {
       return res.status(400).json({ message: 'A student with this NIC already exists' });
     }
+    // 2c. Phone number format validation (Sri Lanka format: 07XXXXXXXX)
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: 'Phone number must be a valid 10-digit number starting with 0' });
+    }
+    // 2d. Check the coursePackage is available
+    if (coursePackage) {
+      const courseExists = await Course.findById(coursePackage);
+      if (!courseExists) {
+        return res.status(400).json({ message: 'Invalid course package selected' });
+      }
+    }
 
-    // 3. Student create karanawa
+    // 3. Create a Student 
     const student = await Student.create({
       userId,
       nic,

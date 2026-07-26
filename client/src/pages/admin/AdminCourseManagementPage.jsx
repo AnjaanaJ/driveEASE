@@ -81,44 +81,46 @@ function AdminCourseManagementPage() {
     }
   };
 
-  if (loading) return <div className="p-8">Loading...</div>;
+  if (loading) return <div className="p-8 text-text-secondary">Loading...</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-2xl font-semibold text-slate-800 mb-6">
+      <h1 className="text-2xl font-semibold text-text-primary mb-6">
         Manage Course Packages
       </h1>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
+        <div className="mb-4 p-3 bg-red-900/40 text-red-300 rounded border border-red-700">
+          {error}
+        </div>
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow mb-8 space-y-4">
-        <h2 className="text-lg font-semibold text-slate-700">
+      <form onSubmit={handleSubmit} className="bg-surface p-6 rounded-lg shadow mb-8 space-y-4 border border-slate-700">
+        <h2 className="text-lg font-semibold text-text-primary">
           {editingId ? "Edit Course Package" : "Add New Course Package"}
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-slate-600 mb-1">Name</label>
+            <label className="block text-sm text-text-secondary mb-1">Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full border border-slate-300 rounded px-3 py-2"
+              className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-slate-600 mb-1">Type</label>
+            <label className="block text-sm text-text-secondary mb-1">Type</label>
             <select
               name="type"
               value={formData.type}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded px-3 py-2"
+              className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
             >
               <option value="Beginner">Beginner</option>
               <option value="Refresher">Refresher</option>
@@ -127,7 +129,7 @@ function AdminCourseManagementPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-slate-600 mb-1">Price (Rs.)</label>
+            <label className="block text-sm text-text-secondary mb-1">Price (Rs.)</label>
             <input
               type="number"
               name="price"
@@ -135,12 +137,12 @@ function AdminCourseManagementPage() {
               onChange={handleChange}
               required
               min="0"
-              className="w-full border border-slate-300 rounded px-3 py-2"
+              className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-slate-600 mb-1">Lesson Count</label>
+            <label className="block text-sm text-text-secondary mb-1">Lesson Count</label>
             <input
               type="number"
               name="lessonCount"
@@ -148,18 +150,18 @@ function AdminCourseManagementPage() {
               onChange={handleChange}
               required
               min="1"
-              className="w-full border border-slate-300 rounded px-3 py-2"
+              className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-slate-600 mb-1">Description</label>
+          <label className="block text-sm text-text-secondary mb-1">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full border border-slate-300 rounded px-3 py-2"
+            className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
             rows={2}
           />
         </div>
@@ -167,7 +169,7 @@ function AdminCourseManagementPage() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 transition"
+            className="bg-primary text-white px-4 py-2 rounded hover:opacity-90 transition"
           >
             {editingId ? "Update Course" : "Add Course"}
           </button>
@@ -175,7 +177,7 @@ function AdminCourseManagementPage() {
             <button
               type="button"
               onClick={resetForm}
-              className="bg-slate-200 text-slate-700 px-4 py-2 rounded hover:bg-slate-300 transition"
+              className="bg-slate-700 text-text-primary px-4 py-2 rounded hover:bg-slate-600 transition"
             >
               Cancel
             </button>
@@ -184,9 +186,9 @@ function AdminCourseManagementPage() {
       </form>
 
       {/* Course List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-surface rounded-lg shadow overflow-hidden border border-slate-700">
         <table className="w-full text-left">
-          <thead className="bg-slate-100 text-slate-600 text-sm">
+          <thead className="bg-background text-text-secondary text-sm">
             <tr>
               <th className="p-3">Name</th>
               <th className="p-3">Type</th>
@@ -197,21 +199,21 @@ function AdminCourseManagementPage() {
           </thead>
           <tbody>
             {courses.map((course) => (
-              <tr key={course._id} className="border-t border-slate-100">
-                <td className="p-3">{course.name}</td>
-                <td className="p-3">{course.type}</td>
-                <td className="p-3">Rs. {course.price.toLocaleString()}</td>
-                <td className="p-3">{course.lessonCount}</td>
-                <td className="p-3 space-x-2">
+              <tr key={course._id} className="border-t border-slate-700">
+                <td className="p-3 text-text-primary">{course.name}</td>
+                <td className="p-3 text-text-secondary">{course.type}</td>
+                <td className="p-3 text-text-primary">Rs. {course.price.toLocaleString()}</td>
+                <td className="p-3 text-text-secondary">{course.lessonCount}</td>
+                <td className="p-3 space-x-3">
                   <button
                     onClick={() => handleEdit(course)}
-                    className="text-cyan-600 hover:underline"
+                    className="text-accent hover:underline"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(course._id)}
-                    className="text-red-600 hover:underline"
+                    className="text-red-400 hover:underline"
                   >
                     Delete
                   </button>

@@ -21,6 +21,9 @@ import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
 import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 
+import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+
 
 function AppRoutes() {
   return (
@@ -39,7 +42,7 @@ function AppRoutes() {
       <Route element={<DashboardLayout />}>
         <Route path="/admin/dashboard"
          element={
-          <ProtectedRoute allowRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <AdminDashboardPage/>
             </ProtectedRoute>
          } />
@@ -102,6 +105,22 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <LessonCalendarPage />
+              </ProtectedRoute>
+          }
+          />
+        <Route   
+          path="/admin/payments"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/payments"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <PaymentHistoryPage />
             </ProtectedRoute>
           }
         />

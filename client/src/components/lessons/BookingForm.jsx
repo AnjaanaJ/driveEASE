@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { bookLesson } from "../../services/lessonApi";
+import TimeSlotPicker from "./TimeSlotPicker";
 
 function BookingForm() {
   const { user } = useAuth();
@@ -54,6 +55,11 @@ function BookingForm() {
       setSubmitting(false);
     }
   };
+    const handleSlotSelect = (slot) => {
+      const [hour] = slot.split(":");
+      const endHour = String(Number(hour) + 1).padStart(2, "0");
+        setFormData((prev) => ({ ...prev, startTime: slot, endTime: `${endHour}:00` }));
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-[var(--color-background)] relative overflow-hidden">
@@ -81,8 +87,8 @@ function BookingForm() {
             className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
           >
             <option value="">Select instructor</option>
-            {/* Real options once Member 3's instructor API is ready */}
           </select>
+          
         </div>
 
         <div className="mb-4">
@@ -94,7 +100,6 @@ function BookingForm() {
             className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
           >
             <option value="">Select vehicle</option>
-            {/* Real options once Member 3's vehicle API is ready */}
           </select>
         </div>
 
@@ -109,27 +114,17 @@ function BookingForm() {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-slate-300 mb-1 text-sm">Start Time</label>
-          <input
-            type="time"
-            name="startTime"
-            value={formData.startTime}
-            onChange={handleChange}
-            className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
-          />
-        </div>
-
         <div className="mb-6">
-          <label className="block text-slate-300 mb-1 text-sm">End Time</label>
-          <input
-            type="time"
-            name="endTime"
-            value={formData.endTime}
-            onChange={handleChange}
-            className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
+          <label className="block text-slate-300 mb-1 text-sm">Time Slot</label>
+          <TimeSlotPicker
+            date={formData.date}
+            instructorId={formData.instructorId}
+            vehicleId={formData.vehicleId}
+            selectedSlot={formData.startTime}
+            onSelectSlot={handleSlotSelect}
           />
         </div>
+      
 
         <button
           type="submit"

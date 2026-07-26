@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStudent } from "../../api/studentApi";
+import Navbar from "../../components/shared/Navbar";
+import Footer from "../../components/shared/Footer";
 
 function StudentRegistrationPage() {
   const navigate = useNavigate();
@@ -36,10 +38,13 @@ function StudentRegistrationPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-semibold mb-6 text-slate-800">
-        Student Registration
-      </h1>
+    <>
+      <Navbar />
+
+      <div className="max-w-md mx-auto mt-10 mb-10 p-6 bg-surface border border-slate-700 rounded-lg shadow">
+        <h1 className="text-2xl font-semibold mb-6 text-text-primary">
+          Student Registration
+        </h1>
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -127,6 +132,7 @@ function StudentRegistrationPage() {
         </button>
       </form>
     </div>
+    </>
   );
 }
 

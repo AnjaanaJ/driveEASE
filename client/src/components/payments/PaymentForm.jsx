@@ -31,17 +31,20 @@ function PaymentForm({ onSuccess }) {
   };
 
   return (
-    <div className="relative max-w-md mx-auto">
+    <div className="relative w-full">
       {}
       <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl" />
 
       <form
         onSubmit={handleSubmit}
-        className="relative space-y-4 bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+        className="relative bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
       >
-        <h2 className="text-xl font-bold text-text-primary">Record payment</h2>
+        <h2 className="text-lg font-bold text-text-primary flex items-center gap-2 mb-5">
+          <span className="text-accent">💳</span> Record payment
+        </h2>
         {error && <p className="text-sm text-red-400">{error}</p>}
 
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div>
           <label className="block text-sm text-text-secondary mb-1">Student ID</label>
           <input
@@ -65,8 +68,7 @@ function PaymentForm({ onSuccess }) {
           />
         </div>
 
-        <div className="flex gap-3">
-          <div className="flex-1">
+          <div>
             <label className="block text-sm text-text-secondary mb-1">Method</label>
             <select
               name="method"
@@ -79,8 +81,20 @@ function PaymentForm({ onSuccess }) {
               <option>Bank Transfer</option>
             </select>
           </div>
+        </div>
 
-          <div className="flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="block text-sm text-text-secondary mb-1">Invoice #</label>
+              <input
+                disabled
+                value="Auto-generated"
+                className="w-full bg-background/50 border border-white/5 rounded-lg px-3 py-2 text-text-secondary/60 cursor-not-allowed"
+                />
+            </div>
+          
+
+          <div>
             <label className="block text-sm text-text-secondary mb-1">Status</label>
             <select
               name="status"
@@ -101,6 +115,7 @@ function PaymentForm({ onSuccess }) {
         >
           Save payment
         </button>
+        
       </form>
     </div>
   );

@@ -121,6 +121,23 @@ const updateUserRole = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+//get system settings
+//   GET /api/admin/settings
+const getSettings = async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+
+    // If no settings document exists yet, create one with defaults
+    if (!settings) {
+      settings = await Settings.create({});
+    }
+
+    res.status(200).json(settings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 
 //update system settings
 const updateSettings = async (req, res) => {
@@ -139,4 +156,4 @@ const updateSettings = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings,updateUserRole };
+module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings,updateUserRole ,getSettings};

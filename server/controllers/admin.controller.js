@@ -2,6 +2,7 @@ const User = require('../models/User');
 const ActivityLog = require('../models/ActivityLog');
 const Settings=require('../models/Settings');
 
+
 //    Get all users (admin only)
 //   GET /api/admin/users
 const getAllUsers = async (req, res) => {
@@ -84,6 +85,60 @@ const getActivityLogs = async (req, res) => {
   }
 };
 
+//    Update a user's role
+//   PUT /api/admin/users/:id/role
+const updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+
+    // 1. Validate the role is one of the allowed values
+    const validRoles = ['admin', 'instructor', 'student'];
+    if (!role || !validRoles.includes(role)) {
+      return res.status(400).json({ message: 'Please provide a valid role (admin, instructor, or student)' });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // 2. Prevent an admin from changing their own role (avoids accidental self-lockout)
+    if (user._id.toString() === req.user.id) {
+      return res.status(400).json({ message: 'You cannot change your own role' });
+    }
+
+    const oldRole = user.role;
+    user.role = role;
+    await user.save();
+
+    await ActivityLog.create({
+      userId: req.user.id,
+      action: `Changed role for ${user.email} from ${oldRole} to ${role}`,
+    });
+
+    res.status(200).json({ message: 'User role updated successfully', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+//get system settings
+//   GET /api/admin/settings
+const getSettings = async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+
+    // If no settings document exists yet, create one with defaults
+    if (!settings) {
+      settings = await Settings.create({});
+    }
+
+    res.status(200).json(settings);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
 //update system settings
 const updateSettings = async (req, res) => {
   try {
@@ -101,4 +156,4 @@ const updateSettings = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings };
+module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings,updateUserRole ,getSettings};

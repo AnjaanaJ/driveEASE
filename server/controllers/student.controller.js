@@ -1,4 +1,5 @@
 const Student = require('../models/Student');
+const Course = require('../models/Course');
 
 // Create a new student profile
 // POST /api/students
@@ -10,14 +11,31 @@ const createStudent = async (req, res) => {
     if (!userId || !nic || !phone) {
       return res.status(400).json({ message: 'Please provide userId, nic and phone' });
     }
+    // 2b. NIC format validation (Sri Lanka format)
+    const nicRegex = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
+    if (!nicRegex.test(nic)) {
+      return res.status(400).json({ message: 'Please provide a valid NIC number' });
+    }
 
-    // 2. NIC already exists ida balanawa
+    // 2. Check NIC already exists 
     const existingStudent = await Student.findOne({ nic });
     if (existingStudent) {
       return res.status(400).json({ message: 'A student with this NIC already exists' });
     }
+    // 2c. Phone number format validation (Sri Lanka format: 07XXXXXXXX)
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: 'Phone number must be a valid 10-digit number starting with 0' });
+    }
+    // 2d. Check the coursePackage is available
+    if (coursePackage) {
+      const courseExists = await Course.findById(coursePackage);
+      if (!courseExists) {
+        return res.status(400).json({ message: 'Invalid course package selected' });
+      }
+    }
 
-    // 3. Student create karanawa
+    // 3. Create a Student 
     const student = await Student.create({
       userId,
       nic,
@@ -116,6 +134,52 @@ const deleteStudent = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+// Get attendance records for a student
+// GET /api/students/:id/attendance
+const getAttendance = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json(student.attendance);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Log/update attendance for a student
+// PUT /api/students/:id/attendance
+const updateAttendance = async (req, res) => {
+  try {
+    const { date, present } = req.body;
+
+    if (!date) {
+      return res.status(400).json({ message: 'Please provide a date' });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    student.attendance.push({
+      date,
+      present: present !== undefined ? present : true,
+    });
+
+    await student.save();
+
+    res.status(200).json({
+      message: 'Attendance logged successfully',
+      attendance: student.attendance,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 
 module.exports = {
   createStudent,
@@ -123,4 +187,6 @@ module.exports = {
   getStudentById,
   updateStudent,
   deleteStudent,
+  getAttendance,
+  updateAttendance,
 };

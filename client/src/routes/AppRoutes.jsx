@@ -23,6 +23,21 @@ import VehicleDetailPage from "../pages/admin/VehicleDetailPage";
 import InstructorPerformancePage from "../pages/admin/InstructorPerformancePage";
 import VehicleMaintenancePage from "../pages/admin/VehicleMaintenancePage";
 
+import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
+import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
+import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
+
+import LessonBookingPage from "../pages/lessons/LessonBookingPage";
+import LessonListPage from "../pages/lessons/LessonListPage";
+import LessonDetailPage from "../pages/lessons/LessonDetailPage";
+import NotificationsPage from "../pages/lessons/NotificationsPage";
+import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
+
+import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+
+import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
+
 
 function AppRoutes() {
 
@@ -31,12 +46,8 @@ function AppRoutes() {
 
       {/* Public Website */}
       <Route element={<MainLayout />}>
-
-        <Route 
-          path="/" 
-          element={<HomePage />} 
-        />
-
+        <Route path="/" element={<HomePage />} />
+        <Route path="/courses" element={<CoursePackagesPage />} />
       </Route>
 
 
@@ -44,24 +55,22 @@ function AppRoutes() {
       <Route element={<AuthLayout />}>
 
         <Route 
-          path="/login" 
-          element={<LoginPage />} 
+          path="/login"
+          element={<LoginPage />}
         />
 
-        <Route 
-          path="/register" 
-          element={<RegisterPage />} 
+        <Route
+          path="/register"
+          element={<RegisterPage />}
         />
 
       </Route>
 
 
-
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
 
-
-        {/* Admin */}
+        {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
           element={
@@ -72,6 +81,7 @@ function AppRoutes() {
         />
 
 
+        {/* Vehicle Management */}
         <Route
           path="/admin/vehicles"
           element={
@@ -80,7 +90,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         <Route
           path="/admin/vehicles/:id"
@@ -95,12 +104,13 @@ function AppRoutes() {
           path="/admin/vehicles/:id/maintenance"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-            <VehicleMaintenancePage />
+              <VehicleMaintenancePage />
             </ProtectedRoute>
           }
         />
 
 
+        {/* Instructor Management */}
         <Route
           path="/admin/instructors"
           element={
@@ -109,7 +119,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         <Route
           path="/admin/instructors/:id"
@@ -124,11 +133,21 @@ function AppRoutes() {
           path="/admin/instructors/:id/performance"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-            <InstructorPerformancePage />
+              <InstructorPerformancePage />
             </ProtectedRoute>
           }
         />
 
+
+        {/* Course Management */}
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminCourseManagementPage />
+            </ProtectedRoute>
+          }
+        />
 
 
         {/* Instructor */}
@@ -142,7 +161,6 @@ function AppRoutes() {
         />
 
 
-
         {/* Student */}
         <Route
           path="/student/dashboard"
@@ -153,14 +171,104 @@ function AppRoutes() {
           }
         />
 
+        <Route
+          path="/student/register-profile"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentRegistrationPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Lessons */}
+        <Route
+          path="/lessons/book"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <LessonBookingPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <LessonListPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/lessons/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
+              <LessonDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Notifications */}
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/lessons/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
+              <LessonCalendarPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Payments */}
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentListPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/student/payments"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <PaymentHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Users */}
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminUserManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
       </Route>
 
 
-
       {/* 404 */}
-      <Route 
-        path="*" 
-        element={<NotFoundPage />} 
+      <Route
+        path="*"
+        element={<NotFoundPage />}
       />
 
     </Routes>

@@ -134,6 +134,52 @@ const deleteStudent = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+// Get attendance records for a student
+// GET /api/students/:id/attendance
+const getAttendance = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json(student.attendance);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Log/update attendance for a student
+// PUT /api/students/:id/attendance
+const updateAttendance = async (req, res) => {
+  try {
+    const { date, present } = req.body;
+
+    if (!date) {
+      return res.status(400).json({ message: 'Please provide a date' });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    student.attendance.push({
+      date,
+      present: present !== undefined ? present : true,
+    });
+
+    await student.save();
+
+    res.status(200).json({
+      message: 'Attendance logged successfully',
+      attendance: student.attendance,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 
 module.exports = {
   createStudent,
@@ -141,4 +187,6 @@ module.exports = {
   getStudentById,
   updateStudent,
   deleteStudent,
+  getAttendance,
+  updateAttendance,
 };

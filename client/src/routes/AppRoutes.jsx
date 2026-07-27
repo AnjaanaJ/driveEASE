@@ -1,46 +1,59 @@
 import { Routes, Route } from "react-router-dom";
 
+// Layouts
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthLayout from "../layouts/AuthLayout";
 
+// Auth
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
+// Public Pages
 import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/auth/LoginPage";
-import RegisterPage from "../pages/auth/RegisterPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
+// Auth Pages
+import LoginPage from "../pages/auth/LoginPage";
+import RegisterPage from "../pages/auth/RegisterPage";
+
+// Dashboard Pages
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 
+// Instructor Management
 import InstructorListPage from "../pages/admin/InstructorListPage";
-import VehicleListPage from "../pages/admin/VehicleListPage";
 import InstructorDetailPage from "../pages/admin/InstructorDetailPage";
-import VehicleDetailPage from "../pages/admin/VehicleDetailPage";
-
 import InstructorPerformancePage from "../pages/admin/InstructorPerformancePage";
+
+// Vehicle Management
+import VehicleListPage from "../pages/admin/VehicleListPage";
+import VehicleDetailPage from "../pages/admin/VehicleDetailPage";
 import VehicleMaintenancePage from "../pages/admin/VehicleMaintenancePage";
 
+// Student
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+
+// Courses
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
 import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
 
+// Lessons
 import LessonBookingPage from "../pages/lessons/LessonBookingPage";
 import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
-import NotificationsPage from "../pages/lessons/NotificationsPage";
 import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
+import NotificationsPage from "../pages/lessons/NotificationsPage";
 
+// Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
-import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 
+// Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 
 
 function AppRoutes() {
-
   return (
     <Routes>
 
@@ -53,22 +66,14 @@ function AppRoutes() {
 
       {/* Authentication */}
       <Route element={<AuthLayout />}>
-
-        <Route 
-          path="/login"
-          element={<LoginPage />}
-        />
-
-        <Route
-          path="/register"
-          element={<RegisterPage />}
-        />
-
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Route>
 
 
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
+
 
         {/* Admin Dashboard */}
         <Route
@@ -81,7 +86,8 @@ function AppRoutes() {
         />
 
 
-        {/* Vehicle Management */}
+        {/* ================= VEHICLE MANAGEMENT ================= */}
+
         <Route
           path="/admin/vehicles"
           element={
@@ -110,7 +116,8 @@ function AppRoutes() {
         />
 
 
-        {/* Instructor Management */}
+        {/* ================= INSTRUCTOR MANAGEMENT ================= */}
+
         <Route
           path="/admin/instructors"
           element={
@@ -139,7 +146,8 @@ function AppRoutes() {
         />
 
 
-        {/* Course Management */}
+        {/* ================= COURSE MANAGEMENT ================= */}
+
         <Route
           path="/admin/courses"
           element={
@@ -150,7 +158,8 @@ function AppRoutes() {
         />
 
 
-        {/* Instructor */}
+        {/* ================= INSTRUCTOR ================= */}
+
         <Route
           path="/instructor/dashboard"
           element={
@@ -161,7 +170,8 @@ function AppRoutes() {
         />
 
 
-        {/* Student */}
+        {/* ================= STUDENT ================= */}
+
         <Route
           path="/student/dashboard"
           element={
@@ -181,7 +191,8 @@ function AppRoutes() {
         />
 
 
-        {/* Lessons */}
+        {/* ================= LESSONS ================= */}
+
         <Route
           path="/lessons/book"
           element={
@@ -203,35 +214,36 @@ function AppRoutes() {
         <Route
           path="/lessons/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <LessonDetailPage />
             </ProtectedRoute>
           }
         />
 
-
-        {/* Notifications */}
-        <Route
-          path="/notifications"
-          element={
-            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
-              <NotificationsPage />
-            </ProtectedRoute>
-          }
-        />
-
-
         <Route
           path="/lessons/calendar"
           element={
-            <ProtectedRoute allowedRoles={["admin","student","instructor"]}>
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
               <LessonCalendarPage />
             </ProtectedRoute>
           }
         />
 
 
-        {/* Payments */}
+        {/* ================= NOTIFICATIONS ================= */}
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* ================= PAYMENTS ================= */}
+
         <Route
           path="/admin/payments"
           element={
@@ -240,7 +252,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         <Route
           path="/student/payments"
@@ -252,7 +263,8 @@ function AppRoutes() {
         />
 
 
-        {/* Users */}
+        {/* ================= USERS ================= */}
+
         <Route
           path="/admin/users"
           element={
@@ -262,14 +274,13 @@ function AppRoutes() {
           }
         />
 
+
       </Route>
 
 
       {/* 404 */}
-      <Route
-        path="*"
-        element={<NotFoundPage />}
-      />
+      <Route path="*" element={<NotFoundPage />} />
+
 
     </Routes>
   );

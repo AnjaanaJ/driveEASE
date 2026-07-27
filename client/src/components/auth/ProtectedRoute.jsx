@@ -4,6 +4,9 @@ import { useAuth } from "../../context/AuthContext.jsx";
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading } = useAuth();
 
+  console.log("AUTH USER:", user);
+  console.log("ROLE:", user?.role);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] text-white">

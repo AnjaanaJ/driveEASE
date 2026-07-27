@@ -46,6 +46,20 @@ const instructorSchema = new mongoose.Schema({
     },
   },
 ],
+documents: [
+  {
+    fileName: {
+      type: String,
+    },
+    filePath: {
+      type: String,
+    },
+    uploadedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+],
     status: {
       type: String,
       enum: ["Active", "Inactive"],

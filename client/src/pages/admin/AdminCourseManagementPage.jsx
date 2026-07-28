@@ -1,4 +1,3 @@
-import Navbar from "../../components/shared/Navbar";
 import { useState, useEffect } from "react";
 import {
   getAllCourses,
@@ -85,8 +84,6 @@ function AdminCourseManagementPage() {
   
 
   return (
-    <>
-      <Navbar />
 
       <div className="max-w-4xl mx-auto p-8">
         <h1 className="text-2xl font-semibold text-text-primary mb-6">
@@ -228,7 +225,6 @@ function AdminCourseManagementPage() {
         </table>
       </div>
     </div>
-    </>
   );
 }
 

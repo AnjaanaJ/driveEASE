@@ -7,7 +7,7 @@ const MONTH_NAMES = [
 ];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function CalendarView({ lessons }) {
+function CalendarView({ lessons,onSelectDate, selectedDate,onSelectLesson }) {
     const today = new Date();
     const [viewYear, setViewYear] = useState(today.getFullYear());
     const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -63,7 +63,7 @@ function CalendarView({ lessons }) {
     };
 
   return (
-    <div className="bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+    <div className="bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-[0_0_30px_-5px_var(--color-accent)]">
         <div className="flex items-center justify-between mb-4">
             <button onClick={goToPreviousMonth} className="px-3 py-1 rounded-md bg-slate-800 text-white hover:bg-slate-700 transition">
                 &larr;
@@ -98,7 +98,10 @@ function CalendarView({ lessons }) {
             return (
                 <div
                     key={dateKey}
-                    className={`aspect-square rounded-md p-1 border text-xs flex flex-col ${
+                    onClick={() => onSelectDate && onSelectDate(dateKey)}
+                    className={`aspect-square rounded-md p-1 border text-xs flex flex-col cursor-pointer transition ${
+                        selectedDate === dateKey ? "border-2 border-white" : ""
+                    } ${
                         hasActiveLessons
                         ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10"
                         : "border-white/5 bg-slate-900/30"
@@ -108,14 +111,17 @@ function CalendarView({ lessons }) {
                 {dayLessons.length > 0 && (
                     <div className="mt-auto space-y-0.5 overflow-hidden">
                         {dayLessons.slice(0, 2).map((lesson) => (
-                            <Link
+                            <button
                                 key={lesson._id}
-                                to={`/lessons/${lesson._id}`}
-                                className={`block truncate text-[10px] text-white rounded px-1 ${slotColorClass(lesson.status)}`}
+                                onClick={(e) => {
+                                    e.stopPropagation(); // don't also trigger the day cell's own onClick
+                                    onSelectLesson ? onSelectLesson(lesson._id) : onSelectDate && onSelectDate(dateKey);
+                                }}
+                                className={`block w-full truncate text-[10px] text-white rounded px-1 text-left ${slotColorClass(lesson.status)}`}
                                 title={`${lesson.startTime} - ${lesson.status}`}
-                            >
-                            {lesson.startTime}
-                            </Link>
+                        >
+                                {lesson.startTime}
+                            </button>
                         ))}
                         {dayLessons.length > 2 && (
                             <span className="text-[10px] text-slate-400">+{dayLessons.length - 2} more</span>

@@ -31,7 +31,7 @@ function StudentDashboardPage() {
         </h1>
         <p className="text-text-secondary mb-8">Your lessons and payment overview.</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
           <StatCard label="Total lessons" value={data?.totalLessons ?? 0} />
           <StatCard label="Completed lessons" value={data?.completedLessons ?? 0} />
           <StatCard
@@ -41,7 +41,9 @@ function StudentDashboardPage() {
           />
         </div>
 
-        <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+        <div className="relative">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl blur-lg"/>
+        <div className="relative bg-surface/70 backdrop-blur-x1 border border-white/10 rounded-2xl p-8">
           <h2 className="text-lg font-bold text-text-primary mb-4">Recent payments</h2>
           {data?.recentPayments?.length === 0 ? (
             <p className="text-text-secondary text-sm">No payments found.</p>
@@ -55,6 +57,7 @@ function StudentDashboardPage() {
               ))}
             </ul>
           )}
+        </div>
         </div>
       </div>
     </div>

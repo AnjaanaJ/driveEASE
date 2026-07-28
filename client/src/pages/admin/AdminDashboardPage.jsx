@@ -45,7 +45,7 @@ function AdminDashboardPage() {
         </h1>
         <p className="text-text-secondary mb-8">Overview of students, instructors, bookings, and revenue.</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard label="Total students" value={stats.totalStudents} />
           <StatCard label="Total instructors" value={stats.totalInstructors} />
           <StatCard label="Total bookings" value={stats.totalBookings} />

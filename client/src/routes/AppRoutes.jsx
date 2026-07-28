@@ -18,11 +18,9 @@ import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
 import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
 
-import LessonBookingPage from "../pages/lessons/LessonBookingPage";
-import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
-import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
+import LessonManagementPage from "../pages/lessons/LessonManagementPage";
 
 import PaymentListPage from "../pages/admin/PaymentListPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
@@ -85,23 +83,6 @@ function AppRoutes() {
         />
 
         <Route
-          path="/lessons/book"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <LessonBookingPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/lessons"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <LessonListPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/lessons/:id"
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
@@ -109,6 +90,34 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        
+        <Route
+          path="/admin/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <LessonManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <LessonManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/instructor/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <LessonManagementPage />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/notifications"
           element={
@@ -117,14 +126,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/lessons/calendar"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
-              <LessonCalendarPage />
-              </ProtectedRoute>
-          }
-          />
         <Route   
           path="/admin/payments"
           element={

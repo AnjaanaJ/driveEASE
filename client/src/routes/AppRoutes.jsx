@@ -53,6 +53,8 @@ import PaymentListPage from "../pages/admin/PaymentListPage";
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
 
+import PendingApprovalPage from "../pages/PendingApprovalPage";
+
 
 function AppRoutes() {
   return (
@@ -291,6 +293,7 @@ function AppRoutes() {
           }
         />
       </Route>
+      <Route path="/pending-approval" element={<PendingApprovalPage />} />
 
 
       {/* 404 */}

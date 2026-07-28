@@ -41,11 +41,14 @@ function LoginPage() {
 
     setSubmitting(true);
     try {
-      console.log("Calling login function...");
+      
       const data = await login(email, password);
       const role = data.role || data.user?.role;
+      const isApproved = data.isApproved ?? data.user?.isApproved;
 
-      if (role == "admin") navigate("/admin/dashboard");
+      if (role == "admin" && !isApproved) {
+        navigate("/pending-approval");
+      } else if (role == "admin") navigate("/admin/dashboard");
       else if (role == "instructor") navigate("/instructor/dashboard");
       else navigate("/student/dashboard");
     } catch (err) {
@@ -237,7 +240,7 @@ function LoginPage() {
                     </svg>
                     <input
                       id="password"
-                      type={showPassword? "text":"password"}
+                      type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full pl-9 pr-9 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"

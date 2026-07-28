@@ -70,15 +70,23 @@ function AdminSystemSettingsPage() {
 
   return (
     <div className="min-h-screen p-8 md:p-12">
-      <h1 className="text-3xl font-bold text-white mb-6 text-gradient-brand">
-        System Settings
+      <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium text-sky-300 bg-sky-500/10 border border-sky-500/30 mb-4">
+        Admin panel
+      </span>
+      <h1 className="text-4xl font-bold text-white mb-2">
+        System <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">
+          Settings
+        </span>
+        
       </h1>
-
+      <p className="text-slate-400 mb-8">
+        Configure platform-wide options and review recent admin activity.
+      </p>
       <div className="grid md:grid-cols-2 gap-8 items-start">
         {/* Settings card */}
         <div className="relative rounded-3xl border border-white/25 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 md:p-8 overflow-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-white/40 via-transparent to-transparent"/>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-white/40 via-transparent to-transparent" />
           <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02]" />
           <div className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[var(--color-primary)]/30 blur-3xl" />
 
@@ -156,7 +164,7 @@ function AdminSystemSettingsPage() {
         {/* Activity log card */}
         <div className="relative rounded-3xl border border-white/25 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 md:p-8 overflow-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-white/40 via-transparent to-transparent"/>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-white/40 via-transparent to-transparent" />
           <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02]" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[var(--color-secondary)]/30 blur-3xl" />
 

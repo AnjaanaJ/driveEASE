@@ -4,8 +4,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading } = useAuth();
 
-  console.log("AUTH USER:", user);
-  console.log("ROLE:", user?.role);
+
 
   if (loading) {
     return (
@@ -16,9 +15,11 @@ function ProtectedRoute({ children, allowedRoles }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace/>;
   }
-
+if (user.role == "admin"  && !user.isApproved){
+  return <Navigate to ="/pending-approval" replace/>
+}
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }

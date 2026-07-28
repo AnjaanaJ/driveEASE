@@ -35,6 +35,7 @@ import VehicleMaintenancePage from "../pages/admin/VehicleMaintenancePage";
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 import StudentListPage from "../pages/student/StudentListPage";
+import StudentProfilePage from "../pages/student/StudentProfilePage";
 
 // Courses
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
@@ -181,6 +182,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route
           path="/admin/students"
           element={

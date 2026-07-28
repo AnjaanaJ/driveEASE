@@ -18,6 +18,12 @@ export const getStudentById = async (id) => {
   return res.data;
 };
 
+// Get student profile by userId (own profile view)
+export const getStudentByUserId = async (userId) => {
+  const res = await axiosInstance.get(`/students/me/${userId}`);
+  return res.data;
+};
+
 // Update student profile
 export const updateStudent = async (id, updatedData) => {
   const res = await axiosInstance.put(`/students/${id}`, updatedData);

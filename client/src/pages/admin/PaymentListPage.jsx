@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllPayments, downloadInvoice } from '../../api/paymentApi';
 import PaymentForm from '../../components/payments/PaymentForm';
 import PaymentStatusBadge from '../../components/payments/PaymentStatusBadge';
 
 function PaymentListPage() {
+
+  const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,7 +90,10 @@ function PaymentListPage() {
                 )}
                 {!loading &&
                   payments.map((p) => (
-                    <tr key={p._id} className="border-b border-white/5 last:border-0">
+                    <tr 
+                        key={p._id} 
+                        onClick={() => navigate(`/admin/payments/${p._id}`)}
+                        className="norder-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 transition-colors">
                       <td className="py-3 px-3 text-text-primary font-medium">
                         {p.studentId?.name || p.studentId?._id || (typeof p.studentId === 'string' ? p.studentId : 'Unknown')}
                       </td>
@@ -102,7 +108,10 @@ function PaymentListPage() {
                       </td>
                       <td className="py-3 px-3">
                         <button
-                          onClick={() => handleDownload(p._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(p._id);
+                          }}
                           className="text-accent hover:opacity-80 text-sm underline underline-offset-2"
                         >
                           Download

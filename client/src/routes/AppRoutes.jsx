@@ -49,6 +49,8 @@ import NotificationsPage from "../pages/lessons/NotificationsPage";
 
 // Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
@@ -268,6 +270,14 @@ function AppRoutes() {
 
         {/* ================= USERS ================= */}
 
+        <Route
+          path="/admin/payments/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentDetailPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route
           path="/admin/users"
           element={

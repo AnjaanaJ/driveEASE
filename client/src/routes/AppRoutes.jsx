@@ -51,6 +51,7 @@ import PaymentListPage from "../pages/admin/PaymentListPage";
 
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
+import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
 
 
 function AppRoutes() {
@@ -245,6 +246,14 @@ function AppRoutes() {
         {/* ================= PAYMENTS ================= */}
 
         <Route
+          path="/lessons/calendar"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
+              <LessonCalendarPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin/payments"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
@@ -273,8 +282,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
-
+        <Route
+          path="/admin/settings"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminSystemSettingsPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
 

@@ -53,9 +53,9 @@ import PaymentListPage from "../pages/admin/PaymentListPage";
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
+import ChangePasswordPage from "../pages/auth/ChangePasswordPage";
 
 import PendingApprovalPage from "../pages/PendingApprovalPage";
-
 
 function AppRoutes() {
   return (
@@ -284,6 +284,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminSystemSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />

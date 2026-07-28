@@ -1,104 +1,176 @@
 import RoleBadge from "../auth/RoleBadge";
 
+function UserRow({ u, onApprove, onReject, onDelete, onChangeRole }) {
+  return (
+    <tr className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors">
+      <td className="px-6 py-5 rounded-l-2xl align-middle font-medium">
+        {u.name}
+      </td>
+      <td className="px-6 py-5 align-middle text-gray-300">{u.email}</td>
+      <td className="px-6 py-5 align-middle text-center">
+        <RoleBadge role={u.role} />
+      </td>
+      <td className="px-6 py-5 align-middle text-center">
+        {u.isApproved ? (
+          <span className="text-emerald-400 font-medium">Approved</span>
+        ) : (
+          <span className="text-amber-400 font-medium">Pending</span>
+        )}
+      </td>
+      <td className="px-6 py-5 rounded-r-2xl align-middle">
+        <div className="flex flex-wrap justify-center items-center gap-2">
+          {!u.isApproved && (
+            <button
+              onClick={() => onApprove(u._id)}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
+            >
+              Approve
+            </button>
+          )}
+          {u.isApproved && (
+            <button
+              onClick={() => onReject(u._id)}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
+            >
+              Reject
+            </button>
+          )}
+          <select
+            defaultValue=""
+            onChange={(e) => {
+              if (e.target.value) {
+                onChangeRole(u._id, e.target.value);
+                e.target.value = "";
+              }
+            }}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-primary)]/15 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/25 cursor-pointer transition-colors"
+          >
+            <option
+              value=""
+              disabled
+              className="bg-[var(--color-surface)] text-white"
+            >
+              Change role
+            </option>
+            <option
+              value="admin"
+              className="bg-[var(--color-surface)] text-white"
+            >
+              Admin
+            </option>
+            <option
+              value="instructor"
+              className="bg-[var(--color-surface)] text-white"
+            >
+              Instructor
+            </option>
+            <option
+              value="student"
+              className="bg-[var(--color-surface)] text-white"
+            >
+              Student
+            </option>
+          </select>
+          <button
+            onClick={() => onDelete(u._id)}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+}
+function RoleTable({
+  title,
+  users,
+  onApprove,
+  onReject,
+  onDelete,
+  onChangeRole,
+}) {
+  if (users.length === 0) return null;
+
+  return (
+    <div className="relative rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 mb-8 last:mb-0 overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+      <div className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/20 blur-3xl" />
+      <div className="relative">
+        <h3 className="text-lg font-semibold text-white mb-4">
+          {title}{" "}
+          <span className="text-slate-400 font-normal text-sm">
+            ({users.length})
+          </span>
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-white border-separate border-spacing-y-3">
+            <thead>
+              <tr className="text-gray-400 uppercase text-xs tracking-wider">
+                <th className="px-6 py-3 text-left">Name</th>
+                <th className="px-6 py-3 text-left">Email</th>
+                <th className="px-6 py-3 text-center">Role</th>
+                <th className="px-6 py-3 text-center">Status</th>
+                <th className="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <UserRow
+                  key={u._id}
+                  u={u}
+                  onApprove={onApprove}
+                  onReject={onReject}
+                  onDelete={onDelete}
+                  onChangeRole={onChangeRole}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
 function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole }) {
   if (!users || users.length === 0) {
     return (
-      <div className="rounded-3xl border border-white/10 bg-[var(--color-surface)]/60 backdrop-blur-xl p-12 text-center text-grey-400 shadow-2xl">
+      <div className="rounded-3xl border border-white/10 bg-[var(--color-surface)]/60 backdrop-blur-xl p-12 text-center text-gray-400 shadow-2xl">
         No users found.
       </div>
     );
   }
 
+  const admins = users.filter((u) => u.role === "admin");
+  const instructors = users.filter((u) => u.role === "instructor");
+  const students = users.filter((u) => u.role === "student");
+
   return (
-    <div className="relative rounded-3xl border border-white/10 bg-[var(--color-surface)]/60 backdrop-blur-xl shadow-2xl p-6 md:p-10 overflow-hidden">
-      <div className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[var(--color-primary)]/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[var(--color-secondary)]/20 blur-3xl" />
-
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-white border-separate border-spacing-y-3">
-          <thead>
-            <tr className="text-grey=400 uppercase text-xs tracking-wider">
-              <th className="px-6 py-3 text-lg text-left">Name</th>
-              <th className="px-6 py-3 text-lg text-left">Email</th>
-              <th className="px-6 py-3 text-lg text-center">Role</th>
-              <th className="px-6 py-3 text-lg text-center">Status</th>
-              <th className="px-6 py-3 text-lg text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u) => (
-              <tr
-                key={u._id}
-                className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors"
-              >
-                <td className="px-6 py-5 rounded-1-2xl align-middle font-medium">
-                  {u.name}
-                </td>
-                <td className="px-6 py-5 align-middle text-grey-300">
-                  {u.email}
-                </td>
-                <td className="px-6 py-5 align-middle text-center">
-                  <RoleBadge role={u.role} />
-                </td>
-                <td className="px-6 py-5 align=middle text-center">
-                  {u.isApproved ? (
-                    <span className="text-emerald-400 font-medium">
-                      Approved
-                    </span>
-                  ) : (
-                    <span className="text-amber-400 font-medium">Pending</span>
-                  )}
-                </td>
-                <td className="px-6 py-5 rounded-r-2xl align-middle">
-                  <div className="flex flex-wrap justify-center items-center gap-2">
-                    {!u.isApproved && (
-                      <button
-                        onClick={() => onApprove(u._id)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/90 hover:bg-emerald-400 text-white transition-colors"
-                      >
-                        Approve
-                      </button>
-                    )}
-                    {u.isApproved && (
-                      <button
-                        onClick={() => onReject(u._id)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber=500/90 hover:bg-amber-400 text-white transition-colors"
-                      >
-                        Reject
-                      </button>
-                    )}
-
-                    <select
-                      defaultValue=""
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          onChangeRole(u._id, e.target.value);
-                          e.target.value = "";
-                        }
-                      }}
-                      className="px-3 py-1.5 rounded=lg text-xs font-medium bg-[var(--color-primary)]/90 hover:bg-[var(--color-primary)] text-white cursor-pointer transition-colors"
-                    >
-                      <option value="" disabled>
-                        Change role
-                      </option>
-                      <option value="admin">Admin</option>
-                      <option value="instructor">Instructor</option>
-                      <option value="student">Student</option>
-                    </select>
-
-                    <button
-                      onClick={() => onDelete(u._id)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium  bg-rose-600/90 hover:bg-rose-500 text-white transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="relative ">
+      <RoleTable
+        title="Admins"
+        users={admins}
+        onApprove={onApprove}
+        onReject={onReject}
+        onDelete={onDelete}
+        onChangeRole={onChangeRole}
+      />
+      <RoleTable
+        title="Instructors"
+        users={instructors}
+        onApprove={onApprove}
+        onReject={onReject}
+        onDelete={onDelete}
+        onChangeRole={onChangeRole}
+      />
+      <RoleTable
+        title="Students"
+        users={students}
+        onApprove={onApprove}
+        onReject={onReject}
+        onDelete={onDelete}
+        onChangeRole={onChangeRole}
+      />
     </div>
   );
 }

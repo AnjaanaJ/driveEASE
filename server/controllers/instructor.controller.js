@@ -1,4 +1,5 @@
 const Instructor = require("../models/Instructor");
+const Student = require("../models/Student");
 
 // Create Instructor
 const createInstructor = async (req, res) => {
@@ -166,6 +167,100 @@ const updateInstructorAvailability = async (req, res) => {
     });
   }
 };
+// Get Students Assigned to an Instructor
+const getInstructorStudents = async (req, res) => {
+  try {
+    const students = await Student.find({
+      assignedInstructor: req.params.id,
+    }).populate("userId", "name email");
+
+    res.status(200).json({
+      success: true,
+      count: students.length,
+      data: students,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// Get Instructor Performance
+const getInstructorPerformance = async (req, res) => {
+  try {
+    const instructor = await Instructor.findById(req.params.id);
+
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        message: "Instructor not found",
+      });
+    }
+
+    const students = await Student.find({
+      assignedInstructor: req.params.id,
+    });
+
+    const performance = {
+      instructorId: instructor._id,
+      totalStudents: students.length,
+      totalAttendanceRecords: students.reduce(
+        (total, student) => total + student.attendance.length,
+        0
+      ),
+    };
+
+    res.status(200).json({
+      success: true,
+      data: performance,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// Upload Instructor Document
+const uploadInstructorDocument = async (req, res) => {
+  try {
+    const instructor = await Instructor.findById(req.params.id);
+
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        message: "Instructor not found",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    instructor.documents.push({
+      fileName: req.file.originalname,
+      filePath: req.file.path,
+    });
+
+    await instructor.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Document uploaded successfully",
+      data: instructor.documents,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createInstructor,
@@ -175,4 +270,7 @@ module.exports = {
   deleteInstructor,
   getInstructorAvailability,
   updateInstructorAvailability,
+  getInstructorStudents,
+  getInstructorPerformance,
+  uploadInstructorDocument,
 };

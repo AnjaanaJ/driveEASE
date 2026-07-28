@@ -180,6 +180,35 @@ const updateAttendance = async (req, res) => {
   }
 };
 
+// Upload a document for a student
+// POST /api/students/:id/documents
+const uploadDocument = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Please upload a file' });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    student.documents.push({
+      fileName: req.file.originalname,
+      fileUrl: `/uploads/${req.file.filename}`,
+    });
+
+    await student.save();
+
+    res.status(201).json({
+      message: 'Document uploaded successfully',
+      documents: student.documents,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 
 module.exports = {
   createStudent,
@@ -189,4 +218,5 @@ module.exports = {
   deleteStudent,
   getAttendance,
   updateAttendance,
+  uploadDocument,
 };

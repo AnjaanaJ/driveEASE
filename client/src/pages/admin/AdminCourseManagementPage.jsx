@@ -1,5 +1,4 @@
 import Navbar from "../../components/shared/Navbar";
-import Footer from "../../components/shared/Footer";
 import { useState, useEffect } from "react";
 import {
   getAllCourses,
@@ -229,7 +228,6 @@ function AdminCourseManagementPage() {
         </table>
       </div>
     </div>
-    <Footer/>
     </>
   );
 }

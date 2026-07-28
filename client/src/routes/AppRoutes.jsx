@@ -34,6 +34,7 @@ import VehicleMaintenancePage from "../pages/admin/VehicleMaintenancePage";
 // Student
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
+import StudentListPage from "../pages/student/StudentListPage";
 
 // Courses
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
@@ -53,17 +54,14 @@ import PaymentListPage from "../pages/admin/PaymentListPage";
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
 
-
 function AppRoutes() {
   return (
     <Routes>
-
       {/* Public Website */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursePackagesPage />} />
       </Route>
-
 
       {/* Authentication */}
       <Route element={<AuthLayout />}>
@@ -71,11 +69,8 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
-
-
         {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
@@ -85,7 +80,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         {/* ================= VEHICLE MANAGEMENT ================= */}
 
@@ -116,7 +110,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ================= INSTRUCTOR MANAGEMENT ================= */}
 
         <Route
@@ -146,7 +139,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ================= COURSE MANAGEMENT ================= */}
 
         <Route
@@ -158,7 +150,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ================= INSTRUCTOR ================= */}
 
         <Route
@@ -169,7 +160,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         {/* ================= STUDENT ================= */}
 
@@ -190,7 +180,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/admin/students"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <StudentListPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= LESSONS ================= */}
 
@@ -230,7 +227,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ================= NOTIFICATIONS ================= */}
 
         <Route
@@ -241,7 +237,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
 
         {/* ================= PAYMENTS ================= */}
 
@@ -271,7 +266,6 @@ function AppRoutes() {
           }
         />
 
-
         {/* ================= USERS ================= */}
 
         <Route
@@ -292,14 +286,10 @@ function AppRoutes() {
         />
       </Route>
 
-
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
-
-
     </Routes>
   );
 }
-
 
 export default AppRoutes;

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStudent } from "../../api/studentApi";
 import Navbar from "../../components/shared/Navbar";
-import Footer from "../../components/shared/Footer";
 
 function StudentRegistrationPage() {
   const navigate = useNavigate();
@@ -46,92 +45,92 @@ function StudentRegistrationPage() {
           Student Registration
         </h1>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            User ID
-          </label>
-          <input
-            type="text"
-            name="userId"
-            value={formData.userId}
-            onChange={handleChange}
-            required
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">
+              User ID
+            </label>
+            <input
+              type="text"
+              name="userId"
+              value={formData.userId}
+              onChange={handleChange}
+              required
+              className="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            NIC
-          </label>
-          <input
-            type="text"
-            name="nic"
-            value={formData.nic}
-            onChange={handleChange}
-            required
-            placeholder="200012345678"
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">
+              NIC
+            </label>
+            <input
+              type="text"
+              name="nic"
+              value={formData.nic}
+              onChange={handleChange}
+              required
+              placeholder="200012345678"
+              className="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Phone Number
-          </label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            placeholder="0771234567"
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              placeholder="0771234567"
+              className="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Address
-          </label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Course Package ID
-          </label>
-          <input
-            type="text"
-            name="coursePackage"
-            value={formData.coursePackage}
-            onChange={handleChange}
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1">
+              Course Package ID
+            </label>
+            <input
+              type="text"
+              name="coursePackage"
+              value={formData.coursePackage}
+              onChange={handleChange}
+              className="w-full border border-slate-300 rounded px-3 py-2"
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-cyan-600 text-white py-2 rounded hover:bg-cyan-700 transition disabled:opacity-50"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-    </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-cyan-600 text-white py-2 rounded hover:bg-cyan-700 transition disabled:opacity-50"
+          >
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </form>
+      </div>
     </>
   );
 }

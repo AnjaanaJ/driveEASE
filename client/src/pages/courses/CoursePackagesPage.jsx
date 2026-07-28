@@ -77,7 +77,6 @@ function CoursePackagesPage() {
           )}
         </div>
       )}
-
       <Footer />
     </>
   );

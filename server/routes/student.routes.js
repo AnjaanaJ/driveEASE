@@ -8,9 +8,11 @@ const {
   deleteStudent,
   getAttendance,
   updateAttendance,
+  uploadDocument,
 } = require('../controllers/student.controller');
 const verifyToken = require('../middleware/verifyToken');
 const requireRole = require('../middleware/requireRole');
+const upload = require('../middleware/upload.middleware');
 
 // Need to find the logged-in user(student,admin) 
 router.post('/', verifyToken, createStudent);
@@ -21,5 +23,6 @@ router.delete('/:id', verifyToken, requireRole('admin'), deleteStudent);
 
 router.get('/:id/attendance', verifyToken, getAttendance);
 router.put('/:id/attendance', verifyToken, updateAttendance);
+router.post('/:id/documents', verifyToken, upload.single('document'), uploadDocument);
 
 module.exports = router;

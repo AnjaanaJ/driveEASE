@@ -28,16 +28,20 @@ export function AuthProvider({ children }) {
   }, []);
 
    const login = async (email, password) => {
-    const res = await axiosInstance.post("/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data);
-    return res.data;
-  };
+  const res = await axiosInstance.post("/auth/login", { email, password });
+
+  console.log("LOGIN RESPONSE:", res.data);
+
+  localStorage.setItem("token", res.data.token);
+  setUser(res.data);
+
+  return res.data;
+};
 
   const register = async (name, email, password, role) => {
     const res = await axiosInstance.post("/auth/register", { name, email, password, role });
     localStorage.setItem("token", res.data.token);
-    setUser(res.data);
+    setUser(res.data.user);
     return res.data;
   };
 

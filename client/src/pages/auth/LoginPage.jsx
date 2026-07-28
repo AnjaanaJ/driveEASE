@@ -33,6 +33,7 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Login button clicked");
     setServerError("");
 
     const isValid = validate();
@@ -40,6 +41,7 @@ function LoginPage() {
 
     setSubmitting(true);
     try {
+      console.log("Calling login function...");
       const data = await login(email, password);
       const role = data.role || data.user?.role;
 

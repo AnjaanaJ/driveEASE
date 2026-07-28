@@ -17,9 +17,10 @@ function StudentProfilePage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
+         
       try {
         // Find the own record feom the student list (by matching the userID)
-        const data = await getStudentByUserId(user._id);
+        const data = await getStudentByUserId(user.id);
         setStudent(data);
         setFormData({ phone: data.phone, address: data.address || "" });
       } catch (err) {

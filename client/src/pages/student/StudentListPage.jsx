@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAllStudents } from "../../api/studentApi";
-import Navbar from "../../components/shared/Navbar";
+
 
 
 function StudentListPage() {
@@ -31,8 +31,6 @@ function StudentListPage() {
   };
 
   return (
-    <>
-      <Navbar />
 
       <div className="max-w-5xl mx-auto p-8">
         <h1 className="text-2xl font-semibold text-text-primary mb-6">
@@ -94,7 +92,6 @@ function StudentListPage() {
           </div>
         )}
       </div>
-    </>
   );
 }
 

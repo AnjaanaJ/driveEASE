@@ -5,7 +5,7 @@ import { getLessonById, updateLesson, cancelLesson } from "../../services/lesson
 import LessonStatusBadge from "../../components/lessons/LessonStatusBadge";
 
 function LessonDetailPage() {
-  const { id } = useParams();// reads the :id part from the URL
+  const { id } = useParams();//reads the :id part from the URL
   const { user } = useAuth(); 
 
   const [lesson, setLesson] = useState(null);
@@ -32,7 +32,7 @@ function LessonDetailPage() {
 
   useEffect(() => {
     fetchLesson();
-  }, [id]);// re-run if the id in the URL ever changes
+  }, [id]);//re-run if the id in the URL ever changes
   
   const currentUserId = user?._id || user?.id;
   const isOwner = lesson && currentUserId === lesson.studentId;
@@ -47,7 +47,7 @@ function LessonDetailPage() {
     try {
       await cancelLesson(id);
       setActionMessage("Lesson cancelled successfully.");
-      await fetchLesson(); // re-fetch to show the updated status
+      await fetchLesson(); //re-fetch to show the updated status
     } catch (err) {
       setError(err.response?.data?.message || "Failed to cancel lesson.");
     } finally {
@@ -98,18 +98,28 @@ function LessonDetailPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] p-8">
-      <Link to="/lessons" className="text-[var(--color-accent)] text-sm hover:underline">
-        &larr; Back to all lessons
-      </Link>
 
-      <h1 className="text-2xl font-semibold text-white mt-4 mb-6">Lesson Detail</h1>
+  <Link
+    to={
+      user?.role === "admin"
+        ? "/admin/lessons"
+        : user?.role === "instructor"
+        ? "/instructor/lessons"
+        : "/student/lessons"
+    }
+    className="text-[var(--color-accent)] text-sm hover:underline"
+  >
+    &larr; Back to all lessons
+  </Link>
+  
+      <h1 className="text-2xl font-semibold text-white mt-4 mb-6">Lesson Details</h1>
 
       {loading && <p className="text-slate-400">Loading lesson...</p>}
       {error && <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded">{error}</p>}
       {actionMessage && <p className="bg-green-500/10 text-green-400 text-sm p-2 rounded mb-4">{actionMessage}</p>}
 
       {!loading && lesson && (
-        <div className="max-w-md bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-2xl space-y-3">
+        <div className="max-w-md bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 p-6 rounded-2xl space-y-3 shadow-[0_0_30px_-5px_var(--color-accent)]">
           <div className="flex justify-between items-center">
             <span className="text-slate-400 text-sm">Status</span>
             <LessonStatusBadge status={lesson.status} />
@@ -207,5 +217,4 @@ function LessonDetailPage() {
       
   );
 }
-
 export default LessonDetailPage;

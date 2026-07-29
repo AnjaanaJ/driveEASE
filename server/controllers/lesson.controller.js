@@ -29,7 +29,18 @@ const createLesson = async (req, res) => {
 };
 const getLessons = async (req, res) => {
   try {
-    const lessons = await Lesson.find();
+    const lessons = await Lesson.find()
+      .populate({
+        path: 'studentId',
+        select: 'nic phone userId',
+        populate: { path: 'userId', select: 'name email' },
+      })
+      .populate({
+        path: 'instructorId',
+        select: 'licenseNumber phone user',
+        populate: { path: 'user', select: 'name email' },
+      })
+      .populate('vehicleId', 'registrationNumber brand model');
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
@@ -37,11 +48,25 @@ const getLessons = async (req, res) => {
 };
 const getLessonById = async (req, res) => {
   try {
-    const lesson = await Lesson.findById(req.params.id);
+    const lesson = await Lesson.findById(req.params.id)
+      .populate({
+        path: 'studentId',
+        select: 'nic phone userId',
+        populate: { path: 'userId', select: 'name email' },
+      })
+      .populate({
+        path: 'instructorId',
+        select: 'licenseNumber phone user',
+        populate: { path: 'user', select: 'name email' },
+      })
+      .populate('vehicleId', 'registrationNumber brand model');
+
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
-    const isOwner = req.user.id === lesson.studentId.toString() || req.user.id === lesson.instructorId.toString();
+    const isOwner =
+      (lesson.studentId && req.user.id === lesson.studentId._id.toString()) ||
+      (lesson.instructorId && req.user.id === lesson.instructorId._id.toString());
     if (!isOwner && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied' });
     }

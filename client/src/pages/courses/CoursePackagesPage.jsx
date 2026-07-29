@@ -1,4 +1,3 @@
-import Navbar from "../../components/shared/Navbar";
 import Footer from "../../components/shared/Footer";
 import { useState, useEffect } from "react";
 import { getAllCourses } from "../../api/courseApi";
@@ -26,7 +25,6 @@ function CoursePackagesPage() {
 
   return (
     <>
-      <Navbar />
 
       {loading ? (
         <div className="p-8 text-center text-text-secondary">Loading course packages...</div>
@@ -77,7 +75,6 @@ function CoursePackagesPage() {
           )}
         </div>
       )}
-      <Footer />
     </>
   );
 }

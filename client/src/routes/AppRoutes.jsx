@@ -62,7 +62,6 @@ function AppRoutes() {
       {/* Public Website */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/courses" element={<CoursePackagesPage />} />
       </Route>
 
       {/* Authentication */}
@@ -73,6 +72,9 @@ function AppRoutes() {
 
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
+        {/* ================= COURSES (public, no role check) ================= */}
+        <Route path="/courses" element={<CoursePackagesPage />} />
+
         {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
@@ -191,7 +193,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/admin/students"
           element={
@@ -211,14 +213,13 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/admin/lessons"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <LessonManagementPage />
-            </ProtectedRoute>  
-
+            </ProtectedRoute>
           }
         />
 
@@ -239,7 +240,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        
+
         {/* ================= NOTIFICATIONS ================= */}
 
         <Route
@@ -250,7 +251,6 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-         
 
         {/* ================= PAYMENTS ================= */}
 

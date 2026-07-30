@@ -22,3 +22,8 @@ export const resetPassword = async (token, newPassword) => {
   });
   return res.data;
 };
+// Update logged-in user's own profile (name, email)
+export const updateProfile = async (updates) => {
+  const res = await axiosInstance.put("/auth/update-profile", updates);
+  return res.data;
+};

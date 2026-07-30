@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
    useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,9 +30,6 @@ export function AuthProvider({ children }) {
 
    const login = async (email, password) => {
   const res = await axiosInstance.post("/auth/login", { email, password });
-
-  console.log("LOGIN RESPONSE:", res.data);
-
   localStorage.setItem("token", res.data.token);
   setUser(res.data);
 
@@ -41,7 +39,7 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password, role) => {
     const res = await axiosInstance.post("/auth/register", { name, email, password, role });
     localStorage.setItem("token", res.data.token);
-    setUser(res.data.user);
+    setUser(res.data);
     return res.data;
   };
 
@@ -50,7 +48,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

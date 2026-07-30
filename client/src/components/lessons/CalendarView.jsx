@@ -23,8 +23,10 @@ function CalendarView({ lessons,onSelectDate, selectedDate,onSelectLesson }) {
     const firstDayOfMonth = new Date(viewYear, viewMonth, 1);
     const startWeekday = firstDayOfMonth.getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const isAtCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth()
 
     const goToPreviousMonth = () => {
+        if (isAtCurrentMonth) return;
         if (viewMonth === 0) {
             setViewMonth(11);
             setViewYear(viewYear - 1);
@@ -65,7 +67,14 @@ function CalendarView({ lessons,onSelectDate, selectedDate,onSelectLesson }) {
   return (
     <div className="bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-[0_0_30px_-5px_var(--color-accent)]">
         <div className="flex items-center justify-between mb-4">
-            <button onClick={goToPreviousMonth} className="px-3 py-1 rounded-md bg-slate-800 text-white hover:bg-slate-700 transition">
+            <button onClick={goToPreviousMonth} 
+            disabled={isAtCurrentMonth} 
+            className={`px-3 py-1 rounded-md transition ${
+                isAtCurrentMonth
+                ? "bg-slate-900 text-slate-600 cursor-not-allowed"
+                : "bg-slate-800 text-white hover:bg-slate-700"
+            }`}
+            >
                 &larr;
             </button>
             <h2 className="text-lg font-semibold text-white">
@@ -94,13 +103,16 @@ function CalendarView({ lessons,onSelectDate, selectedDate,onSelectLesson }) {
             const dayLessons = lessonsByDate[dateKey] || [];
             const activeLessons = dayLessons.filter((l) => l.status !== "Cancelled");
             const hasActiveLessons = activeLessons.length > 0;
+            const isPastDate = new Date(dateKey) < new Date(new Date().toDateString());
 
             return (
                 <div
                     key={dateKey}
-                    onClick={() => onSelectDate && onSelectDate(dateKey)}
-                    className={`aspect-square rounded-md p-1 border text-xs flex flex-col cursor-pointer transition ${
-                        selectedDate === dateKey ? "border-2 border-white" : ""
+                    onClick={() => !isPastDate && onSelectDate && onSelectDate(dateKey)}
+                    className={`aspect-square rounded-md p-1 border text-xs flex flex-col transition ${
+                        isPastDate ? "cursor-not-allowed opacity-40" : "cursor-pointer"
+                    } ${
+                    selectedDate === dateKey ? "border-2 border-white" : ""
                     } ${
                         hasActiveLessons
                         ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10"

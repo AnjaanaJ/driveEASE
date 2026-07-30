@@ -8,7 +8,7 @@ const adminLinks = [
   { to: "/admin/users", label: "Users" },
   { to: "/admin/courses", label: "Courses" },
   { to: "/admin/payments", label: "Payments" },
-  { to: "/lessons", label: "Lessons" },
+  { to: "/admin/lessons", label: "Lessons" },
 
   { to: "/notifications", label: "Notifications" },
 ];
@@ -16,7 +16,7 @@ const adminLinks = [
 const instructorLinks = [
   { to: "/", label: "Home" },
   { to: "/instructor/dashboard", label: "Dashboard" },
-  { to: "/lessons/calendar", label: "My Schedule" },
+  { to: "/instructor/lessons", label: "My Schedule" },
   { to: "/notifications", label: "Notifications" },
 ];
 
@@ -25,7 +25,7 @@ const studentLinks = [
   { to: "/student/dashboard", label: "Dashboard" },
   { to: "/student/register-profile", label: "My Profile" },
   { to: "/courses", label: "Courses" },
-  { to: "/lessons/book", label: "Book a Lesson" },
+  { to: "/student/lessons", label: "Book a Lesson" },
   { to: "/student/payments", label: "Payments" },
   { to: "/notifications", label: "Notifications" },
 ];

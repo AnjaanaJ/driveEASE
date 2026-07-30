@@ -3,6 +3,7 @@ import { getAdminDashboard } from '../../api/dashboardApi';
 import StatCard from '../../components/dashboard/StatCard';
 import RevenueChart from '../../components/dashboard/RevenueChart';
 import VehicleUsageChart from '../../components/dashboard/VehicleUsageChart';
+import QuickAccessShortcuts from '../../components/dashboard/QuickAccessShortcuts';
 
 function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
@@ -42,6 +43,8 @@ function AdminDashboardPage() {
           Admin <span className="text-gradient-brand">dashboard</span>
         </h1>
         <p className="text-text-secondary mb-8">Overview of students, instructors, bookings, and revenue.</p>
+
+        <QuickAccessShortcuts/>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard label="Total students" value={stats.totalStudents} />

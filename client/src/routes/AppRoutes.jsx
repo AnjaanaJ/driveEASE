@@ -36,17 +36,16 @@ import VehicleMaintenancePage from "../pages/admin/VehicleMaintenancePage";
 import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 import StudentListPage from "../pages/student/StudentListPage";
+import StudentProfilePage from "../pages/student/StudentProfilePage";
 
 // Courses
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
 import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
 
 // Lessons
-import LessonBookingPage from "../pages/lessons/LessonBookingPage";
-import LessonListPage from "../pages/lessons/LessonListPage";
 import LessonDetailPage from "../pages/lessons/LessonDetailPage";
-import LessonCalendarPage from "../pages/lessons/LessonCalendarPage";
 import NotificationsPage from "../pages/lessons/NotificationsPage";
+import LessonManagementPage from "../pages/lessons/LessonManagementPage";
 
 // Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
@@ -55,6 +54,9 @@ import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
+import ChangePasswordPage from "../pages/auth/ChangePasswordPage";
+
+import PendingApprovalPage from "../pages/PendingApprovalPage";
 
 function AppRoutes() {
   return (
@@ -62,7 +64,6 @@ function AppRoutes() {
       {/* Public Website */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/courses" element={<CoursePackagesPage />} />
       </Route>
 
       {/* Authentication */}
@@ -73,6 +74,9 @@ function AppRoutes() {
 
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
+        {/* ================= COURSES (public, no role check) ================= */}
+        <Route path="/courses" element={<CoursePackagesPage />} />
+
         {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
@@ -191,6 +195,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <StudentProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admin/students"
           element={
@@ -203,24 +217,6 @@ function AppRoutes() {
         {/* ================= LESSONS ================= */}
 
         <Route
-          path="/lessons/book"
-          element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <LessonBookingPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/lessons"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <LessonListPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
           path="/lessons/:id"
           element={
             <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
@@ -230,10 +226,28 @@ function AppRoutes() {
         />
 
         <Route
-          path="/lessons/calendar"
+          path="/admin/lessons"
           element={
-            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
-              <LessonCalendarPage />
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <LessonManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              <LessonManagementPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/instructor/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <LessonManagementPage />
             </ProtectedRoute>
           }
         />
@@ -251,14 +265,6 @@ function AppRoutes() {
 
         {/* ================= PAYMENTS ================= */}
 
-        <Route
-          path="/lessons/calendar"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "student", "instructor"]}>
-              <LessonCalendarPage />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/admin/payments"
           element={
@@ -303,7 +309,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
+      <Route path="/pending-approval" element={<PendingApprovalPage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />

@@ -69,7 +69,7 @@ function NotificationsPage() {
         {notifications.map((n) => (
           <li
             key={n._id}
-            className={`p-4 rounded-lg border border-white/10 flex justify-between items-center ${
+            className={`p-4 rounded-lg border border-white/10 flex justify-between items-center shadow-[0_0_30px_-5px_var(--color-accent)] ${
               n.isRead ? "bg-[var(--color-surface)]/40 text-slate-400" : "bg-[var(--color-surface)]/80 text-white"
             }`}
           >

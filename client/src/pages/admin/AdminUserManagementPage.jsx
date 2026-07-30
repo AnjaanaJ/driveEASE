@@ -75,7 +75,15 @@ const handleReject = async (id) => {
 
   return (
     <div className="min-h-screen p-8 md:p-12">
-      <h1 className="text-2xl font-bold text-white mb-6">User Management</h1>
+      <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 mb-4">
+      Admin panel
+      </span>
+       <h1 className="text-4xl font-bold text-white mb-2">
+        User <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">management</span>
+      </h1>
+      <p className="text-slate-400 mb-8">
+        Review, approve, and manage student, instructor, and admin accounts.
+      </p>
       <ApprovalTable users={users}
       onApprove={handleApprove}
       onReject={handleReject}

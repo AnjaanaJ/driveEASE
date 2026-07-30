@@ -1,8 +1,8 @@
 import LessonStatusBadge from "./LessonStatusBadge";
-import { Link } from "react-router-dom";
 
 
-function LessonTable({ lessons }) {
+
+function LessonTable({ lessons,onSelectLesson }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-white/10">
       <table className="w-full text-left text-sm text-slate-300">
@@ -19,9 +19,12 @@ function LessonTable({ lessons }) {
           {lessons.map((lesson) => (
             <tr key={lesson._id} className="border-t border-white/10 hover:bg-white/5">
                 <td className="p-3">
-                <Link to={`/lessons/${lesson._id}`} className="text-[var(--color-accent)] hover:underline">
+                <button
+                  onClick={() => onSelectLesson(lesson._id)}
+                  className="text-[var(--color-accent)] hover:underline"
+                >
                   {lesson.date?.split("T")[0]}
-                </Link>
+                </button>
               </td>
               <td className="p-3">{lesson.startTime} - {lesson.endTime}</td>
               <td className="p-3">{lesson.studentId}</td>

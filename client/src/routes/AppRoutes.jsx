@@ -49,7 +49,6 @@ import NotificationsPage from "../pages/lessons/NotificationsPage";
 
 // Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
-import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 
 // Users

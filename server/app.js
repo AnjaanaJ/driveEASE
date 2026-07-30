@@ -10,6 +10,7 @@ const notificationRoutes = require("./routes/notification.routes");
 const studentRoutes = require("./routes/student.routes");
 const courseRoutes = require("./routes/course.routes");
 const dashboardRoutes = require("./routes/dashboard.routes");
+const reportRoutes = require("./routes/report.routes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/reports", reportRoutes);
 
 app.get("/", (req, res) => {
   res.send("driveEASE API is running...");

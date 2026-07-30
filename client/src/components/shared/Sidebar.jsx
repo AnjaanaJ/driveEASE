@@ -8,7 +8,7 @@ const adminLinks = [
   { to: "/admin/users", label: "Users" },
   { to: "/admin/courses", label: "Courses" },
   { to: "/admin/payments", label: "Payments" },
-  { to: "/lessons", label: "Lessons" },
+  { to: "/admin/lessons", label: "Lessons" },
 
   { to: "/notifications", label: "Notifications" },
 ];
@@ -16,7 +16,7 @@ const adminLinks = [
 const instructorLinks = [
   { to: "/", label: "Home" },
   { to: "/instructor/dashboard", label: "Dashboard" },
-  { to: "/lessons/calendar", label: "My Schedule" },
+  { to: "/instructor/lessons", label: "My Schedule" },
   { to: "/notifications", label: "Notifications" },
 ];
 
@@ -25,7 +25,7 @@ const studentLinks = [
   { to: "/student/dashboard", label: "Dashboard" },
   { to: "/student/register-profile", label: "My Profile" },
   { to: "/courses", label: "Courses" },
-  { to: "/lessons/book", label: "Book a Lesson" },
+  { to: "/student/lessons", label: "Book a Lesson" },
   { to: "/student/payments", label: "Payments" },
   { to: "/notifications", label: "Notifications" },
 ];
@@ -99,9 +99,14 @@ function Sidebar() {
       )}
 
       <div className="relative px-6 py-4 border-t border-white/10 ">
-      <p className="text-lg  text-white font-extrabold text-slate-500 mb-3">
-        Logged in as :{user.name}
+      <p className="text-lg text-slate-400 mb-3">
+        Logged in as :<span className="text-white font-semibold">{user.name}</span>
         </p>
+        <NavLink 
+        to ="/my-settings"
+        className="block w-full mb-2 px-3 py-3 rounded-lg text-sm font-medium text-center text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+        My Settings
+        </NavLink>
         <button onClick={handleLogout}
         className="w-full px-3 py-2 rounded-lg text-sm font-medium text-rose-300 bg-rose-500/10 hover:bg-red-500/20 transition-colors">
             Log Out

@@ -267,8 +267,12 @@ function LessonManagementPage() {
                     >
                         {l.startTime} - {l.endTime}
                     </button>
-                    <span className="text-slate-400">Student: {l.studentId}</span>
-                    <span className="text-slate-400">Instructor: {l.instructorId}</span>
+                    <span className="text-slate-400">
+                      Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.userId?.name || l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
+                    </span>
+                    <span className="text-slate-400">
+                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
+                      </span>
                     <LessonStatusBadge status={l.status} />
                   </li>
                 ))}
@@ -300,13 +304,23 @@ function LessonManagementPage() {
             <span className="text-slate-400 text-sm">Time</span>
             <span className="text-white">{expandedLesson.startTime} - {expandedLesson.endTime}</span>
         </div>
+
+
         <div className="flex justify-between">
-            <span className="text-slate-400 text-sm">Student ID</span>
-            <span className="text-white text-sm">{expandedLesson.studentId}</span>
+          <span className="text-slate-400 text-sm">Student ID</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.studentId === "object" && expandedLesson.studentId !== null
+            ? expandedLesson.studentId?.userId?.name || expandedLesson.studentId?.nic || expandedLesson.studentId?._id
+            : expandedLesson.studentId || "—"}
+          </span>
         </div>
         <div className="flex justify-between">
-            <span className="text-slate-400 text-sm">Instructor ID</span>
-            <span className="text-white text-sm">{expandedLesson.instructorId}</span>
+          <span className="text-slate-400 text-sm">Instructor ID</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.instructorId === "object" && expandedLesson.instructorId !== null
+            ? expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
+            : expandedLesson.instructorId || "—"}
+          </span>
         </div>
 
         <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">

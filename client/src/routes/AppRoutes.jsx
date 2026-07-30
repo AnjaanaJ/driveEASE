@@ -54,7 +54,7 @@ import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
-import ChangePasswordPage from "../pages/auth/ChangePasswordPage";
+import MySettingsPage from "../pages/MySettingsPage";
 
 import PendingApprovalPage from "../pages/PendingApprovalPage";
 
@@ -309,14 +309,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/change-password"
-          element={
-            <ProtectedRoute>
-              <ChangePasswordPage />
-            </ProtectedRoute>
-          }
-        />
+       
+      
+      <Route
+        path="/my-settings"
+        element={
+          <ProtectedRoute>
+            <MySettingsPage />
+          </ProtectedRoute>
+        }
+      />
       </Route>
       <Route path="/pending-approval" element={<PendingApprovalPage />} />
 

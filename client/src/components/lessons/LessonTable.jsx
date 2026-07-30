@@ -27,8 +27,16 @@ function LessonTable({ lessons,onSelectLesson }) {
                 </button>
               </td>
               <td className="p-3">{lesson.startTime} - {lesson.endTime}</td>
-              <td className="p-3">{lesson.studentId}</td>
-              <td className="p-3">{lesson.instructorId}</td>
+              <td className="p-3">
+                {typeof lesson.studentId === "object" && lesson.studentId !== null
+                ? lesson.studentId?.userId?.name ||lesson.studentId?.nic || lesson.studentId?._id || "—"
+                : lesson.studentId || "—"}
+              </td>
+              <td className="p-3">
+                {typeof lesson.instructorId === "object" && lesson.instructorId !== null
+                ? lesson.instructorId?.user?.name ||lesson.instructorId?.licenseNumber ||lesson.instructorId?._id || "—"
+                : lesson.instructorId || "—"}
+              </td>
               <td className="p-3"><LessonStatusBadge status={lesson.status} /></td>
             </tr>
           ))}

@@ -268,10 +268,10 @@ function LessonManagementPage() {
                         {l.startTime} - {l.endTime}
                     </button>
                     <span className="text-slate-400">
-                      Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
+                      Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.userId?.name || l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
                     </span>
                     <span className="text-slate-400">
-                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?._id : l.instructorId || "—"}
+                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
                       </span>
                     <LessonStatusBadge status={l.status} />
                   </li>
@@ -310,7 +310,7 @@ function LessonManagementPage() {
           <span className="text-slate-400 text-sm">Student ID</span>
           <span className="text-white text-sm">
             {typeof expandedLesson.studentId === "object" && expandedLesson.studentId !== null
-            ? expandedLesson.studentId?.nic || expandedLesson.studentId?._id
+            ? expandedLesson.studentId?.userId?.name || expandedLesson.studentId?.nic || expandedLesson.studentId?._id
             : expandedLesson.studentId || "—"}
           </span>
         </div>
@@ -318,7 +318,7 @@ function LessonManagementPage() {
           <span className="text-slate-400 text-sm">Instructor ID</span>
           <span className="text-white text-sm">
             {typeof expandedLesson.instructorId === "object" && expandedLesson.instructorId !== null
-            ? expandedLesson.instructorId?._id
+            ? expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
             : expandedLesson.instructorId || "—"}
           </span>
         </div>

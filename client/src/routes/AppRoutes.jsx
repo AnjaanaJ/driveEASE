@@ -20,6 +20,7 @@ import RegisterPage from "../pages/auth/RegisterPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
+import InstructorAnalyticsPage from "../pages/instructor/InstructorAnalyticsPage";
 
 // Instructor Management
 import InstructorListPage from "../pages/admin/InstructorListPage";
@@ -169,6 +170,15 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/instructor/analytics"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorAnalyticsPage/>
             </ProtectedRoute>
           }
         />

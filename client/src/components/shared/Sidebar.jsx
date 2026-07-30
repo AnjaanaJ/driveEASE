@@ -99,9 +99,14 @@ function Sidebar() {
       )}
 
       <div className="relative px-6 py-4 border-t border-white/10 ">
-      <p className="text-lg  text-white font-extrabold text-slate-500 mb-3">
-        Logged in as :{user.name}
+      <p className="text-lg text-slate-400 mb-3">
+        Logged in as :<span className="text-white font-semibold">{user.name}</span>
         </p>
+        <NavLink 
+        to ="/my-settings"
+        className="block w-full mb-2 px-3 py-3 rounded-lg text-sm font-medium text-center text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+        My Settings
+        </NavLink>
         <button onClick={handleLogout}
         className="w-full px-3 py-2 rounded-lg text-sm font-medium text-rose-300 bg-rose-500/10 hover:bg-red-500/20 transition-colors">
             Log Out

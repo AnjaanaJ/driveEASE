@@ -2,7 +2,9 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 
 function RevenueChart({ data }) {
   return (
-    <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+    <div className="relative">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl blur-lg" />
+      <div className="relative bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
       <h2 className="text-lg font-bold text-text-primary mb-4">Revenue overview</h2>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={data}>
@@ -16,6 +18,7 @@ function RevenueChart({ data }) {
           <Bar dataKey="revenue" fill="#1E75FE" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }

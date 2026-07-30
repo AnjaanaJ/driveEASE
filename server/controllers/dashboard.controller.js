@@ -10,11 +10,24 @@ const getAdminDashboard = async (req, res) => {
     const totalInstructors = await Instructor.countDocuments();
     const totalBookings = await Lesson.countDocuments();
 
-    const revenueResult = await Payment.aggregate([
+    const monthlyRevenue = await Payment.aggregate([
       { $match: { status: 'Paid' } },
-      { $group: { _id: null, total: { $sum: '$amount' } } },
+      {
+        $group: {
+          _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
+          revenue: { $sum: '$amount' },
+        },
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } },
     ]);
-    const totalRevenue = revenueResult[0]?.total || 0;
+
+    const totalRevenue = monthlyRevenue.reduce((sum, m) => sum + m.revenue, 0);
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const revenueChartData = monthlyRevenue.map((m) => ({
+      label: `${monthNames[m._id.month - 1]} ${m._id.year}`,
+      revenue: m.revenue,
+    }));
 
     const vehicleStatusBreakdown = await Vehicle.aggregate([
       { $group: { _id: '$status', count: { $sum: 1 } } },
@@ -26,6 +39,7 @@ const getAdminDashboard = async (req, res) => {
       totalBookings,
       totalRevenue,
       vehicleStatusBreakdown,
+      revenueChartData,
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

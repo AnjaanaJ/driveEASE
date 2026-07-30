@@ -20,6 +20,7 @@ import RegisterPage from "../pages/auth/RegisterPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
+import InstructorAnalyticsPage from "../pages/instructor/InstructorAnalyticsPage";
 
 // Instructor Management
 import InstructorListPage from "../pages/admin/InstructorListPage";
@@ -48,6 +49,7 @@ import LessonManagementPage from "../pages/lessons/LessonManagementPage";
 
 // Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
@@ -177,6 +179,15 @@ function AppRoutes() {
         />
 
         <Route
+          path="/instructor/analytics"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorAnalyticsPage/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/student/register-profile"
           element={
             <ProtectedRoute allowedRoles={["student"]}>
@@ -274,6 +285,14 @@ function AppRoutes() {
 
         {/* ================= USERS ================= */}
 
+        <Route
+          path="/admin/payments/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentDetailPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route
           path="/admin/users"
           element={

@@ -11,6 +11,7 @@ function TimeSlotPicker({ date, instructorId, vehicleId, selectedSlot, onSelectS
   const [bookedSlots, setBookedSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const isToday = date === new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     //Only fetch once all three are actually chosen,no point checking otherwise
@@ -39,7 +40,12 @@ function TimeSlotPicker({ date, instructorId, vehicleId, selectedSlot, onSelectS
   const isSlotBooked = (slotStart) => {
     return bookedSlots.some((b) => slotStart >= b.startTime && slotStart < b.endTime);
   };
-
+  const isSlotInPast = (slotStart) => {
+  if (!isToday) return false; // only relevant if booking for today
+  const now = new Date();
+  const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  return slotStart <= currentTime;
+  };
   if (!date || !instructorId || !vehicleId) {
     return <p className="text-slate-500 text-sm">Select an instructor, vehicle, and date to see available times.</p>;
   }
@@ -52,18 +58,20 @@ function TimeSlotPicker({ date, instructorId, vehicleId, selectedSlot, onSelectS
       <div className="grid grid-cols-5 gap-2">
         {ALL_SLOTS.map((slot) => {
           const booked = isSlotBooked(slot);
+          const pastTime = isSlotInPast(slot);
+          const disabled = booked || pastTime;
           const isSelected = selectedSlot === slot;
 
           return (
             <button
               key={slot}
               type="button"
-              disabled={booked}
+              disabled={disabled}
               onClick={() => onSelectSlot(slot)}
               className={`py-2 rounded-md text-sm font-medium transition
-                ${booked ? "bg-slate-800 text-slate-600 cursor-not-allowed" : ""}
-                ${!booked && isSelected ? "bg-[var(--color-accent)] text-white" : ""}
-                ${!booked && !isSelected ? "bg-slate-900/60 text-white border border-slate-700 hover:border-[var(--color-accent)]" : ""}
+                ${disabled ? "bg-slate-800 text-slate-600 cursor-not-allowed" : ""}
+                ${!disabled && isSelected ? "bg-[var(--color-accent)] text-white" : ""}
+                ${!disabled && !isSelected ? "bg-slate-900/60 text-white border border-slate-700 hover:border-[var(--color-accent)]" : ""}
               `}
             >
               {slot}

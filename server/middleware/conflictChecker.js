@@ -1,16 +1,16 @@
 const Lesson = require('../models/Lesson');
 const conflictChecker = async (req, res, next) => {
   try {
-    let { studentId,instructorId, vehicleId, date, startTime, endTime } = req.body;
+    let { instructorId, vehicleId, studentId, date, startTime, endTime } = req.body;
 
     if (req.params.id) {
       const existingLesson = await Lesson.findById(req.params.id);
       if (!existingLesson) {
         return res.status(404).json({ message: 'Lesson not found' });
       }
-      studentId = studentId || existingLesson.studentId;
       instructorId = instructorId || existingLesson.instructorId;
       vehicleId = vehicleId || existingLesson.vehicleId;
+      studentId = studentId || existingLesson.studentId;
       date = date || existingLesson.date;
       startTime = startTime || existingLesson.startTime;
       endTime = endTime || existingLesson.endTime;
@@ -18,7 +18,7 @@ const conflictChecker = async (req, res, next) => {
     const query = {
       date: date,
       status: { $ne: 'Cancelled' },
-      $or: [{ instructorId: instructorId }, { vehicleId: vehicleId },{ studentId: studentId }],
+      $or: [{ instructorId }, { vehicleId },{ studentId }],
       startTime: { $lt: endTime },
       endTime: { $gt: startTime },
     };

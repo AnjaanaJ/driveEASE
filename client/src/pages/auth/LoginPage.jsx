@@ -46,10 +46,10 @@ function LoginPage() {
       const role = data.role || data.user?.role;
       const isApproved = data.isApproved ?? data.user?.isApproved;
 
-      if (role == "admin" && !isApproved) {
+      if (isApproved === false) {
         navigate("/pending-approval");
-      } else if (role == "admin") navigate("/admin/dashboard");
-      else if (role == "instructor") navigate("/instructor/dashboard");
+      } else if (role === "admin") navigate("/admin/dashboard");
+      else if (role === "instructor") navigate("/instructor/dashboard");
       else navigate("/student/dashboard");
     } catch (err) {
       setServerError(

@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { createStudent } from "../../api/studentApi";
 import StudentForm from "../../components/students/StudentForm";
+import { useAuth } from "../../context/AuthContext";
 
 function StudentRegistrationPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleRegister = async (formData) => {
-    await createStudent(formData);
-    navigate("/student/dashboard");
+    const payload = {
+      ...formData,
+      userId: formData.userId || user?._id || user?.id,
+    };
+
+    await createStudent(payload);
+    navigate("/pending-approval");
   };
 
   return (
@@ -16,7 +23,12 @@ function StudentRegistrationPage() {
         Student Registration
       </h1>
 
-      <StudentForm onSubmit={handleRegister} submitLabel="Register" />
+      <StudentForm
+        initialData={{ userId: user?._id || user?.id || "" }}
+        onSubmit={handleRegister}
+        submitLabel="Register"
+        showUserId={false}
+      />
     </div>
   );
 }

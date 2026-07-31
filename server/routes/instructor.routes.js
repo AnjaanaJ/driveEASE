@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/upload");
+const verifyToken = require("../middleware/verifyToken");
+const requireRole = require("../middleware/requireRole");
 
 
 const {
   createInstructor,
   getInstructors,
   getInstructorById,
+  getMyInstructorProfile,
   updateInstructor,
   deleteInstructor,
   getInstructorAvailability,
@@ -18,6 +21,12 @@ const {
 
 router.post("/", createInstructor);
 router.get("/", getInstructors);
+router.get(
+  "/me",
+  verifyToken,
+  requireRole("instructor"),
+  getMyInstructorProfile
+);
 router.get("/:id/performance", getInstructorPerformance);
 router.get("/:id", getInstructorById);
 router.put("/:id", updateInstructor);

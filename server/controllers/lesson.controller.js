@@ -158,7 +158,19 @@ const getLessonsByStudent = async (req, res) => {
     if (req.user.id !== req.params.studentId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const lessons = await Lesson.find({ studentId: req.params.studentId }).sort({ date: -1 });
+    const lessons = await Lesson.find({ studentId: req.params.studentId })
+    .populate({
+        path: 'studentId',
+        select: 'nic phone userId',
+        populate: { path: 'userId', select: 'name email' },
+      })
+      .populate({
+        path: 'instructorId',
+        select: 'licenseNumber phone user',
+        populate: { path: 'user', select: 'name email' },
+      })
+      .populate('vehicleId', 'registrationNumber brand model')
+      .sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
@@ -170,7 +182,19 @@ const getLessonsByInstructor = async (req, res) => {
     if (req.user.id !== req.params.instructorId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const lessons = await Lesson.find({ instructorId: req.params.instructorId }).sort({ date: -1 });
+    const lessons = await Lesson.find({ instructorId: req.params.instructorId })
+    .populate({
+        path: 'studentId',
+        select: 'nic phone userId',
+        populate: { path: 'userId', select: 'name email' },
+      })
+      .populate({
+        path: 'instructorId',
+        select: 'licenseNumber phone user',
+        populate: { path: 'user', select: 'name email' },
+      })
+      .populate('vehicleId', 'registrationNumber brand model')
+      .sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });

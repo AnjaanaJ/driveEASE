@@ -347,15 +347,21 @@ function LessonManagementPage() {
                     <label className="block text-slate-300 mb-1 text-xs">New Date</label>
                     <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
                 </div>
-                <div className="flex gap-2">
-                    <div className="flex-1">
-                        <label className="block text-slate-300 mb-1 text-xs">Start Time</label>
-                        <input type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
-                    </div>
-                    <div className="flex-1">
-                        <label className="block text-slate-300 mb-1 text-xs">End Time</label>
-                        <input type="time" value={newEndTime} onChange={(e) => setNewEndTime(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
-                    </div>
+                <div>
+                  <label className="block text-slate-300 mb-1 text-xs">New Time Slot</label>
+                  <TimeSlotPicker
+                    date={newDate}
+                    instructorId={expandedLesson?.instructorId?._id || expandedLesson?.instructorId}
+                    vehicleId={expandedLesson?.vehicleId?._id || expandedLesson?.vehicleId}
+                    selectedSlot={newStartTime}
+                    onSelectSlot={(slot) => {
+                      const [h, m] = slot.split(":").map(Number);
+                      let endH = h, endM = m + 30;
+                      if (endM >= 60) { endM = 0; endH += 1; }
+                        setNewStartTime(slot);
+                        setNewEndTime(`${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`);
+                      }}
+                  />
                 </div>
                 <button type="submit" disabled={actionLoading} className="w-full py-1.5 rounded-md text-sm text-white bg-[var(--color-accent)] hover:opacity-90 disabled:opacity-50">
                     {actionLoading ? "Saving..." : "Confirm Reschedule"}

@@ -1,6 +1,6 @@
 import RoleBadge from "../auth/RoleBadge";
 
-function UserRow({ u, onApprove, onReject, onDelete, onChangeRole }) {
+function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails }) {
   return (
     <tr className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors">
       <td className="px-6 py-5 rounded-l-2xl align-middle font-medium">
@@ -71,6 +71,14 @@ function UserRow({ u, onApprove, onReject, onDelete, onChangeRole }) {
               Student
             </option>
           </select>
+          {u.role === "student" && (
+            <button
+              onClick={() => onViewDetails(u)}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 transition-colors"
+            >
+              View details
+            </button>
+          )}
           <button
             onClick={() => onDelete(u._id)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition-colors"
@@ -89,6 +97,7 @@ function RoleTable({
   onReject,
   onDelete,
   onChangeRole,
+  onViewDetails,
 }) {
   if (users.length === 0) return null;
 
@@ -123,6 +132,7 @@ function RoleTable({
                   onReject={onReject}
                   onDelete={onDelete}
                   onChangeRole={onChangeRole}
+                  onViewDetails={onViewDetails}
                 />
               ))}
             </tbody>
@@ -132,7 +142,7 @@ function RoleTable({
     </div>
   );
 }
-function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole }) {
+function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole, onViewDetails }) {
   if (!users || users.length === 0) {
     return (
       <div className="rounded-3xl border border-white/10 bg-[var(--color-surface)]/60 backdrop-blur-xl p-12 text-center text-gray-400 shadow-2xl">
@@ -154,6 +164,7 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole }) {
         onReject={onReject}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
+        onViewDetails={onViewDetails}
       />
       <RoleTable
         title="Instructors"
@@ -162,6 +173,7 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole }) {
         onReject={onReject}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
+        onViewDetails={onViewDetails}
       />
       <RoleTable
         title="Students"
@@ -170,6 +182,7 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole }) {
         onReject={onReject}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
+        onViewDetails={onViewDetails}
       />
     </div>
   );

@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
 import { getAllUsers,approveUser,rejectUser,deleteUser,changeUserRole } from "../../api/adminApi";
+import { getAllStudents } from "../../api/studentApi";
 import ApprovalTable from "../../components/admin/ApprovalTable";
-import Footer from "../../components/shared/Footer";
 
 function AdminUserManagementPage() {
   const [users, setUsers] = useState([]);
+  const [studentProfiles, setStudentProfiles] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getAllUsers();
-        setUsers(data);
+        const [usersData, studentsData] = await Promise.all([
+          getAllUsers(),
+          getAllStudents(),
+        ]);
+        setUsers(usersData);
+        setStudentProfiles(studentsData);
       } catch (err) {
         setError("Failed to load users. Please try again.");
       } finally {
@@ -20,7 +26,7 @@ function AdminUserManagementPage() {
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, []);
 const updateUserInList = (id, updatedFields) => {
     setUsers((prevUsers) =>
@@ -35,6 +41,16 @@ const updateUserInList = (id, updatedFields) => {
     } catch (err) {
       alert("Failed to approve user. Please try again.");
     }
+  };
+
+  const handleViewDetails = (user) => {
+    if (user.role !== "student") {
+      setSelectedStudent(null);
+      return;
+    }
+
+    const profile = studentProfiles.find((student) => student.userId?._id === user._id);
+    setSelectedStudent(profile || null);
   };
 const handleReject = async (id) => {
     try {
@@ -89,7 +105,40 @@ const handleReject = async (id) => {
       onReject={handleReject}
       onDelete={handleDelete}
       onChangeRole={handleChangeRole}
+      onViewDetails={handleViewDetails}
       />
+
+      {selectedStudent && (
+        <div className="mt-8 rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
+          <h2 className="text-lg font-semibold mb-4">Student request review</h2>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
+            <div>
+              <p className="text-slate-400 mb-1">Applicant</p>
+              <p className="font-medium text-white">{selectedStudent.userId?.name || "Unknown"}</p>
+            </div>
+            <div>
+              <p className="text-slate-400 mb-1">Email</p>
+              <p className="font-medium text-white">{selectedStudent.userId?.email || "Unknown"}</p>
+            </div>
+            <div>
+              <p className="text-slate-400 mb-1">NIC</p>
+              <p className="font-medium text-white">{selectedStudent.nic}</p>
+            </div>
+            <div>
+              <p className="text-slate-400 mb-1">Phone</p>
+              <p className="font-medium text-white">{selectedStudent.phone}</p>
+            </div>
+            <div>
+              <p className="text-slate-400 mb-1">Address</p>
+              <p className="font-medium text-white">{selectedStudent.address || "Not provided"}</p>
+            </div>
+            <div>
+              <p className="text-slate-400 mb-1">Course package</p>
+              <p className="font-medium text-white">{selectedStudent.coursePackage?.name || "Not selected"}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     
   );

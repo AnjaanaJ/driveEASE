@@ -1,5 +1,5 @@
-const Student = require('../models/Student');
-const Course = require('../models/Course');
+const Student = require("../models/Student");
+const Course = require("../models/Course");
 
 // Create a new student profile
 // POST /api/students
@@ -9,33 +9,46 @@ const createStudent = async (req, res) => {
 
     // 1. Required fields check
     if (!userId || !nic || !phone) {
-      return res.status(400).json({ message: 'Please provide userId, nic and phone' });
+      return res
+        .status(400)
+        .json({ message: "Please provide userId, nic and phone" });
     }
     // 2b. NIC format validation (Sri Lanka format)
     const nicRegex = /^([0-9]{9}[vVxX]|[0-9]{12})$/;
     if (!nicRegex.test(nic)) {
-      return res.status(400).json({ message: 'Please provide a valid NIC number' });
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid NIC number" });
     }
 
-    // 2. Check NIC already exists 
+    // 2. Check NIC already exists
     const existingStudent = await Student.findOne({ nic });
     if (existingStudent) {
-      return res.status(400).json({ message: 'A student with this NIC already exists' });
+      return res
+        .status(400)
+        .json({ message: "A student with this NIC already exists" });
     }
     // 2c. Phone number format validation (Sri Lanka format: 07XXXXXXXX)
     const phoneRegex = /^0[0-9]{9}$/;
     if (!phoneRegex.test(phone)) {
-      return res.status(400).json({ message: 'Phone number must be a valid 10-digit number starting with 0' });
+      return res
+        .status(400)
+        .json({
+          message:
+            "Phone number must be a valid 10-digit number starting with 0",
+        });
     }
     // 2d. Check the coursePackage is available
     if (coursePackage) {
       const courseExists = await Course.findById(coursePackage);
       if (!courseExists) {
-        return res.status(400).json({ message: 'Invalid course package selected' });
+        return res
+          .status(400)
+          .json({ message: "Invalid course package selected" });
       }
     }
 
-    // 3. Create a Student 
+    // 3. Create a Student
     const student = await Student.create({
       userId,
       nic,
@@ -44,9 +57,11 @@ const createStudent = async (req, res) => {
       coursePackage,
     });
 
-    res.status(201).json({ message: 'Student profile created successfully', student });
+    res
+      .status(201)
+      .json({ message: "Student profile created successfully", student });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -60,19 +75,19 @@ const getAllStudents = async (req, res) => {
     if (search) {
       query = {
         $or: [
-          { nic: { $regex: search, $options: 'i' } },
-          { phone: { $regex: search, $options: 'i' } },
+          { nic: { $regex: search, $options: "i" } },
+          { phone: { $regex: search, $options: "i" } },
         ],
       };
     }
 
     const students = await Student.find(query)
-      .populate('userId', 'name email')
-      .populate('coursePackage', 'name type price');
+      .populate("userId", "name email")
+      .populate("coursePackage", "name type price");
 
     res.status(200).json(students);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -81,17 +96,17 @@ const getAllStudents = async (req, res) => {
 const getStudentById = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id)
-      .populate('userId', 'name email')
-      .populate('coursePackage', 'name type price')
-      .populate('assignedInstructor', 'name');
+      .populate("userId", "name email")
+      .populate("coursePackage", "name type price")
+      .populate("assignedInstructor", "name");
 
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     res.status(200).json(student);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -101,7 +116,7 @@ const updateStudent = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     const { phone, address, coursePackage } = req.body;
@@ -112,9 +127,9 @@ const updateStudent = async (req, res) => {
 
     await student.save();
 
-    res.status(200).json({ message: 'Student updated successfully', student });
+    res.status(200).json({ message: "Student updated successfully", student });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -124,14 +139,14 @@ const deleteStudent = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     await student.deleteOne();
 
-    res.status(200).json({ message: 'Student deleted successfully' });
+    res.status(200).json({ message: "Student deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 // Get attendance records for a student
@@ -140,12 +155,12 @@ const getAttendance = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     res.status(200).json(student.attendance);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -156,12 +171,12 @@ const updateAttendance = async (req, res) => {
     const { date, present } = req.body;
 
     if (!date) {
-      return res.status(400).json({ message: 'Please provide a date' });
+      return res.status(400).json({ message: "Please provide a date" });
     }
 
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     student.attendance.push({
@@ -172,11 +187,11 @@ const updateAttendance = async (req, res) => {
     await student.save();
 
     res.status(200).json({
-      message: 'Attendance logged successfully',
+      message: "Attendance logged successfully",
       attendance: student.attendance,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -185,12 +200,12 @@ const updateAttendance = async (req, res) => {
 const uploadDocument = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'Please upload a file' });
+      return res.status(400).json({ message: "Please upload a file" });
     }
 
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
     student.documents.push({
@@ -201,11 +216,11 @@ const uploadDocument = async (req, res) => {
     await student.save();
 
     res.status(201).json({
-      message: 'Document uploaded successfully',
+      message: "Document uploaded successfully",
       documents: student.documents,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 // Get student profile by userId (for logged-in student to see their own profile)
@@ -213,16 +228,16 @@ const uploadDocument = async (req, res) => {
 const getStudentByUserId = async (req, res) => {
   try {
     const student = await Student.findOne({ userId: req.params.userId })
-      .populate('userId', 'name email')
-      .populate('coursePackage', 'name type price');
+      .populate("userId", "name email")
+      .populate("coursePackage", "name type price");
 
     if (!student) {
-      return res.status(404).json({ message: 'Student profile not found' });
+      return res.status(404).json({ message: "Student profile not found" });
     }
 
     res.status(200).json(student);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

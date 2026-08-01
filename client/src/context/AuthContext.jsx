@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     axiosInstance
       .get("/auth/me")
       .then((res) => {
-        setUser(res.data.user);
+        setUser(res.data.user || res.data);
       })
       .catch(() => {
         localStorage.removeItem("token");

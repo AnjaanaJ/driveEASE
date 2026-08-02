@@ -1,6 +1,23 @@
 import RoleBadge from "../auth/RoleBadge";
 
-function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails }) {
+function UserRow({
+  u,
+  studentProfiles,
+  onApprove,
+  onReject,
+  onApproveStudentProfile,
+  onRejectStudentProfile,
+  onDelete,
+  onChangeRole,
+  onViewDetails,
+}) {
+  const studentProfile =
+    u.role === "student"
+      ? studentProfiles.find((student) => student.userId?._id === u._id)
+      : null;
+  const approvalStatus = studentProfile?.status;
+  const isStudentProfile = Boolean(studentProfile);
+
   return (
     <tr className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors">
       <td className="px-6 py-5 rounded-l-2xl align-middle font-medium">
@@ -11,7 +28,19 @@ function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails
         <RoleBadge role={u.role} />
       </td>
       <td className="px-6 py-5 align-middle text-center">
-        {u.isApproved ? (
+        {isStudentProfile ? (
+          <span
+            className={`font-medium ${
+              approvalStatus === "Approved"
+                ? "text-emerald-400"
+                : approvalStatus === "Rejected"
+                  ? "text-rose-400"
+                  : "text-amber-400"
+            }`}
+          >
+            {approvalStatus}
+          </span>
+        ) : u.isApproved ? (
           <span className="text-emerald-400 font-medium">Approved</span>
         ) : (
           <span className="text-amber-400 font-medium">Pending</span>
@@ -19,7 +48,26 @@ function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails
       </td>
       <td className="px-6 py-5 rounded-r-2xl align-middle">
         <div className="flex flex-wrap justify-center items-center gap-2">
-          {!u.isApproved && (
+          {isStudentProfile ? (
+            <>
+              {approvalStatus !== "Approved" && (
+                <button
+                  onClick={() => onApproveStudentProfile(studentProfile._id)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
+                >
+                  Approve
+                </button>
+              )}
+              {approvalStatus !== "Rejected" && (
+                <button
+                  onClick={() => onRejectStudentProfile(studentProfile._id)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
+                >
+                  Reject
+                </button>
+              )}
+            </>
+          ) : !u.isApproved && (
             <button
               onClick={() => onApprove(u._id)}
               className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
@@ -27,7 +75,7 @@ function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails
               Approve
             </button>
           )}
-          {u.isApproved && (
+          {!isStudentProfile && u.isApproved && (
             <button
               onClick={() => onReject(u._id)}
               className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
@@ -93,8 +141,11 @@ function UserRow({ u, onApprove, onReject, onDelete, onChangeRole, onViewDetails
 function RoleTable({
   title,
   users,
+  studentProfiles,
   onApprove,
   onReject,
+  onApproveStudentProfile,
+  onRejectStudentProfile,
   onDelete,
   onChangeRole,
   onViewDetails,
@@ -128,8 +179,11 @@ function RoleTable({
                 <UserRow
                   key={u._id}
                   u={u}
+                  studentProfiles={studentProfiles}
                   onApprove={onApprove}
                   onReject={onReject}
+                  onApproveStudentProfile={onApproveStudentProfile}
+                  onRejectStudentProfile={onRejectStudentProfile}
                   onDelete={onDelete}
                   onChangeRole={onChangeRole}
                   onViewDetails={onViewDetails}
@@ -142,7 +196,17 @@ function RoleTable({
     </div>
   );
 }
-function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole, onViewDetails }) {
+function ApprovalTable({
+  users,
+  studentProfiles = [],
+  onApprove,
+  onReject,
+  onApproveStudentProfile,
+  onRejectStudentProfile,
+  onDelete,
+  onChangeRole,
+  onViewDetails,
+}) {
   if (!users || users.length === 0) {
     return (
       <div className="rounded-3xl border border-white/10 bg-[var(--color-surface)]/60 backdrop-blur-xl p-12 text-center text-gray-400 shadow-2xl">
@@ -160,8 +224,11 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole, onV
       <RoleTable
         title="Admins"
         users={admins}
+        studentProfiles={studentProfiles}
         onApprove={onApprove}
         onReject={onReject}
+        onApproveStudentProfile={onApproveStudentProfile}
+        onRejectStudentProfile={onRejectStudentProfile}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
         onViewDetails={onViewDetails}
@@ -169,8 +236,11 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole, onV
       <RoleTable
         title="Instructors"
         users={instructors}
+        studentProfiles={studentProfiles}
         onApprove={onApprove}
         onReject={onReject}
+        onApproveStudentProfile={onApproveStudentProfile}
+        onRejectStudentProfile={onRejectStudentProfile}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
         onViewDetails={onViewDetails}
@@ -178,8 +248,11 @@ function ApprovalTable({ users, onApprove, onReject, onDelete, onChangeRole, onV
       <RoleTable
         title="Students"
         users={students}
+        studentProfiles={studentProfiles}
         onApprove={onApprove}
         onReject={onReject}
+        onApproveStudentProfile={onApproveStudentProfile}
+        onRejectStudentProfile={onRejectStudentProfile}
         onDelete={onDelete}
         onChangeRole={onChangeRole}
         onViewDetails={onViewDetails}

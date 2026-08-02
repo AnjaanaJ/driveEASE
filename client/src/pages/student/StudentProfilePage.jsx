@@ -24,7 +24,7 @@ function StudentProfilePage() {
         setStudent(data);
         setFormData({ phone: data.phone, address: data.address || "" });
 
-        if (data?._id) {
+        if (data?.status === "Approved" && data?._id) {
           const attendanceData = await getStudentAttendance(data._id);
           setAttendance(Array.isArray(attendanceData) ? attendanceData : []);
         }
@@ -74,6 +74,9 @@ function StudentProfilePage() {
     );
   }
 
+  const isApproved = student.status === "Approved";
+  const isRejected = student.status === "Rejected";
+
   return (
     <div className="max-w-md mx-auto mt-10 mb-10 p-6 bg-surface border border-slate-700 rounded-lg shadow">
       <h1 className="text-2xl font-semibold mb-6 text-text-primary">
@@ -88,6 +91,29 @@ function StudentProfilePage() {
       {error && (
         <div className="mb-4 p-3 bg-red-900/40 text-red-300 rounded border border-red-700">
           {error}
+        </div>
+      )}
+
+      {isApproved ? (
+        <div className="mb-6 p-4 bg-green-900/40 text-green-200 rounded border border-green-700">
+          <p className="font-semibold">Your registration has been approved.</p>
+          <p className="mt-1 text-sm text-green-300">
+            You can now view your attendance history below.
+          </p>
+        </div>
+      ) : isRejected ? (
+        <div className="mb-6 p-4 bg-red-900/40 text-red-200 rounded border border-red-700">
+          <p className="font-semibold">Your registration was not approved.</p>
+          <p className="mt-1 text-sm text-red-300">
+            Please contact the driving school for more information.
+          </p>
+        </div>
+      ) : (
+        <div className="mb-6 p-4 bg-amber-900/40 text-amber-200 rounded border border-amber-700">
+          <p className="font-semibold">Your registration is awaiting admin approval.</p>
+          <p className="mt-1 text-sm text-amber-300">
+            Your attendance history will be available once your registration is approved.
+          </p>
         </div>
       )}
 
@@ -118,9 +144,11 @@ function StudentProfilePage() {
           >
             Edit Profile
           </button>
-          <div className="mt-6">
-            <AttendanceTable attendance={attendance} editable={false} />
-          </div>
+          {isApproved && (
+            <div className="mt-6">
+              <AttendanceTable attendance={attendance} editable={false} />
+            </div>
+          )}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">

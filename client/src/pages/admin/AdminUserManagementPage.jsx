@@ -167,8 +167,11 @@ function AdminUserManagementPage() {
       </p>
       <ApprovalTable
         users={users}
+        studentProfiles={studentProfiles}
         onApprove={handleApprove}
         onReject={handleReject}
+        onApproveStudentProfile={handleApproveStudentProfile}
+        onRejectStudentProfile={handleRejectStudentProfile}
         onDelete={handleDelete}
         onChangeRole={handleChangeRole}
         onViewDetails={handleViewDetails}
@@ -226,22 +229,6 @@ function AdminUserManagementPage() {
               {selectedStudent.status || "Pending"}
             </span>
 
-            {selectedStudent.status !== "Approved" && (
-              <button
-                onClick={() => handleApproveStudentProfile(selectedStudent._id)}
-                className="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:opacity-90 transition"
-              >
-                Approve
-              </button>
-            )}
-            {selectedStudent.status !== "Rejected" && (
-              <button
-                onClick={() => handleRejectStudentProfile(selectedStudent._id)}
-                className="bg-red-600 text-white px-3 py-1.5 rounded text-sm hover:opacity-90 transition"
-              >
-                Reject
-              </button>
-            )}
           </div>
 
           <div className="mt-6">

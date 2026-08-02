@@ -9,6 +9,8 @@ const {
   getAttendance,
   updateAttendance,
   uploadDocument,
+  approveStudent,
+  rejectStudent,
   getStudentByUserId,
 } = require('../controllers/student.controller');
 const verifyToken = require('../middleware/verifyToken');
@@ -27,5 +29,8 @@ router.delete('/:id', verifyToken, requireRole('admin'), deleteStudent);
 router.get('/:id/attendance', verifyToken, getAttendance);
 router.put('/:id/attendance', verifyToken, updateAttendance);
 router.post('/:id/documents', verifyToken, upload.single('document'), uploadDocument);
+
+router.put('/:id/approve', verifyToken, requireRole('admin'), approveStudent);
+router.put('/:id/reject', verifyToken, requireRole('admin'), rejectStudent);
 
 module.exports = router;

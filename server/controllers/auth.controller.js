@@ -30,6 +30,7 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      isApproved: role === "student" ? true : false,
     });
 
     // 5. Generate token and respond

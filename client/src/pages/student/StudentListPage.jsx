@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { getAllStudents } from "../../api/studentApi";
+import {
+  getAllStudents,
+  approveStudent,
+  rejectStudent,
+} from "../../api/studentApi";
 import StudentTable from "../../components/students/StudentTable";
 
 function StudentListPage() {
@@ -27,6 +31,23 @@ function StudentListPage() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetchStudents(search);
+  };
+  const handleApprove = async (id) => {
+    try {
+      await approveStudent(id);
+      fetchStudents(search);
+    } catch (err) {
+      setError("Failed to approve student");
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      await rejectStudent(id);
+      fetchStudents(search);
+    } catch (err) {
+      setError("Failed to reject student");
+    }
   };
 
   return (
@@ -59,12 +80,13 @@ function StudentListPage() {
 
       {loading ? (
         <div className="text-text-secondary">Loading...</div>
-      ) : students.length === 0 ? (
-        <p className="text-text-secondary">No students found.</p>
       ) : (
-        <div className="bg-surface rounded-lg shadow overflow-hidden border border-slate-700">
-          <table className="w-full text-left">... (table code eka)</table>
-        </div>
+        <StudentTable
+          students={students}
+          showActions={true}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
       )}
     </div>
   );

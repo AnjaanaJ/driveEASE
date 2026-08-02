@@ -35,3 +35,26 @@ export const deleteStudent = async (id) => {
   const res = await axiosInstance.delete(`/students/${id}`);
   return res.data;
 };
+
+// Get attendance history for a student
+export const getStudentAttendance = async (id) => {
+  const res = await axiosInstance.get(`/students/${id}/attendance`);
+  return res.data;
+};
+
+// Log attendance for a student
+export const updateStudentAttendance = async (id, attendanceData) => {
+  const res = await axiosInstance.put(`/students/${id}/attendance`, attendanceData);
+  return res.data;
+};
+// Approve a student profile (admin only)
+export const approveStudent = async (id) => {
+  const res = await axiosInstance.put(`/students/${id}/approve`);
+  return res.data;
+};
+
+// Reject a student profile (admin only)
+export const rejectStudent = async (id) => {
+  const res = await axiosInstance.put(`/students/${id}/reject`);
+  return res.data;
+};

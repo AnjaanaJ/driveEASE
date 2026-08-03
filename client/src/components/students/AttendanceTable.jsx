@@ -13,8 +13,8 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
   };
 
   return (
-    <div className="bg-surface border border-slate-700 rounded-lg p-4">
-      <h2 className="text-lg font-semibold text-text-primary mb-3">Attendance History</h2>
+    <div className="rounded-2xl border border-slate-700 bg-surface p-5 transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface/95 hover:shadow-2xl hover:shadow-primary/15">
+      <h2 className="mb-4 text-lg font-extrabold text-white">Attendance History</h2>
 
       {editable && (
         <form onSubmit={handleSubmit} className="flex gap-3 items-end mb-4">
@@ -53,14 +53,14 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
       ) : (
         <table className="w-full text-left">
           <thead>
-            <tr className="text-text-secondary text-sm border-b border-slate-700">
+            <tr className="border-b border-slate-700 text-sm font-semibold text-white">
               <th className="py-2">Date</th>
               <th className="py-2">Status</th>
             </tr>
           </thead>
           <tbody>
             {attendance.map((record, index) => (
-              <tr key={index} className="border-b border-slate-800">
+              <tr key={index} className="border-b border-slate-800 transition-colors hover:bg-white/5">
                 <td className="py-2 text-text-primary">
                   {new Date(record.date).toLocaleDateString()}
                 </td>

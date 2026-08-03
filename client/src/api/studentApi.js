@@ -35,6 +35,18 @@ export const deleteStudent = async (id) => {
   const res = await axiosInstance.delete(`/students/${id}`);
   return res.data;
 };
+// Upload a document for a student
+export const uploadStudentDocument = async (id, file) => {
+  const formData = new FormData();
+  formData.append("document", file);
+
+  const res = await axiosInstance.post(`/students/${id}/documents`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
 
 // Get attendance history for a student
 export const getStudentAttendance = async (id) => {
@@ -44,7 +56,10 @@ export const getStudentAttendance = async (id) => {
 
 // Log attendance for a student
 export const updateStudentAttendance = async (id, attendanceData) => {
-  const res = await axiosInstance.put(`/students/${id}/attendance`, attendanceData);
+  const res = await axiosInstance.put(
+    `/students/${id}/attendance`,
+    attendanceData,
+  );
   return res.data;
 };
 // Approve a student profile (admin only)

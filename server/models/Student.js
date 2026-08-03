@@ -1,21 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'Linked user account is required'],
+      ref: "User",
+      required: [true, "Linked user account is required"],
     },
     nic: {
       type: String,
-      required: [true, 'NIC is required'],
+      required: [true, "NIC is required"],
       unique: true,
       trim: true,
     },
     phone: {
       type: String,
-      required: [true, 'Phone number is required'],
+      required: [true, "Phone number is required"],
       trim: true,
     },
     address: {
@@ -24,11 +24,11 @@ const studentSchema = new mongoose.Schema(
     },
     coursePackage: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Course',
+      ref: "Course",
     },
     assignedInstructor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Instructor',
+      ref: "Instructor",
     },
     attendance: [
       {
@@ -43,8 +43,13 @@ const studentSchema = new mongoose.Schema(
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
+    status: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Pending",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-module.exports = mongoose.model('Student', studentSchema);
+module.exports = mongoose.model("Student", studentSchema);

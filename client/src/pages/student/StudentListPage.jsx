@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { getAllStudents } from "../../api/studentApi";
+import {
+  getAllStudents,
+  approveStudent,
+  rejectStudent,
+  deleteStudent,
+} from "../../api/studentApi";
 import StudentTable from "../../components/students/StudentTable";
 
 function StudentListPage() {
@@ -28,12 +33,44 @@ function StudentListPage() {
     e.preventDefault();
     fetchStudents(search);
   };
+  const handleApprove = async (id) => {
+    try {
+      await approveStudent(id);
+      fetchStudents(search);
+    } catch (err) {
+      setError("Failed to approve student");
+    }
+  };
 
-  return (
+  const handleReject = async (id) => {
+    try {
+      await rejectStudent(id);
+      fetchStudents(search);
+    } catch (err) {
+      setError("Failed to reject student");
+    }
+  };
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this student record? This cannot be undone.")) return;
+    try {
+      await deleteStudent(id);
+      fetchStudents(search);
+    } catch (err) {
+      setError("Failed to delete student");
+    }
+  };
+
+   return (
     <div className="max-w-5xl mx-auto p-8">
-      <h1 className="text-2xl font-semibold text-text-primary mb-6">
-        All Students
+      <span className="inline-block bg-surface border border-slate-700 text-accent text-xs px-3 py-1 rounded-full mb-4">
+        Admin panel
+      </span>
+      <h1 className="text-3xl font-bold text-text-primary mb-1">
+        Student <span className="text-gradient-brand">management</span>
       </h1>
+      <p className="text-text-secondary mb-8">
+        View, search, and manage student profile approvals.
+      </p>
 
       <form onSubmit={handleSearchSubmit} className="mb-6 flex gap-3">
         <input
@@ -59,11 +96,15 @@ function StudentListPage() {
 
       {loading ? (
         <div className="text-text-secondary">Loading...</div>
-      ) : students.length === 0 ? (
-        <p className="text-text-secondary">No students found.</p>
       ) : (
-        <div className="bg-surface rounded-lg shadow overflow-hidden border border-slate-700">
-          <table className="w-full text-left">... (table code eka)</table>
+        <div className="rounded-xl overflow-hidden shadow-[0_0_25px_-5px_var(--color-primary)]">
+          <StudentTable
+            students={students}
+            showActions={true}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onDelete={handleDelete}
+          />
         </div>
       )}
     </div>

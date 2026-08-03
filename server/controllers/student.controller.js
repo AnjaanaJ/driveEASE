@@ -31,12 +31,9 @@ const createStudent = async (req, res) => {
     // 2c. Phone number format validation (Sri Lanka format: 07XXXXXXXX)
     const phoneRegex = /^0[0-9]{9}$/;
     if (!phoneRegex.test(phone)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Phone number must be a valid 10-digit number starting with 0",
-        });
+      return res.status(400).json({
+        message: "Phone number must be a valid 10-digit number starting with 0",
+      });
     }
     // 2d. Check the coursePackage is available
     if (coursePackage) {
@@ -223,6 +220,41 @@ const uploadDocument = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+// Approve a student profile (admin only)
+// PUT /api/students/:id/approve
+const approveStudent = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    student.status = "Approved";
+    await student.save();
+
+    res.status(200).json({ message: "Student approved successfully", student });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Reject a student profile (admin only)
+// PUT /api/students/:id/reject
+const rejectStudent = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    student.status = "Rejected";
+    await student.save();
+
+    res.status(200).json({ message: "Student rejected successfully", student });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 // Get student profile by userId (for logged-in student to see their own profile)
 // GET /api/students/me/:userId
 const getStudentByUserId = async (req, res) => {
@@ -250,5 +282,7 @@ module.exports = {
   getAttendance,
   updateAttendance,
   uploadDocument,
+  approveStudent,
+  rejectStudent,
   getStudentByUserId,
 };

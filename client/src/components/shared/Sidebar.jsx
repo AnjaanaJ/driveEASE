@@ -23,7 +23,7 @@ const instructorLinks = [
 const studentLinks = [
   { to: "/", label: "Home" },
   { to: "/student/dashboard", label: "Dashboard" },
-  { to: "/student/register-profile", label: "My Profile" },
+  { to: "/student/profile", label: "My Profile" },
   { to: "/courses", label: "Courses" },
   { to: "/student/lessons", label: "Book a Lesson" },
   { to: "/student/payments", label: "Payments" },

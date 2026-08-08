@@ -5,9 +5,21 @@ const Course = require("../models/Course");
 // POST /api/students
 const createStudent = async (req, res) => {
   try {
-    const { userId, nic, phone, address, coursePackage } = req.body;
+    const { nic, phone, address, coursePackage } = req.body;
 
-    // 1. Required fields check
+    // 1. Decide which userId this student profile belongs to.
+    //    - Normal users (students) can ONLY create a profile for themselves.
+    //      We ignore anything they send in req.body.userId and use their
+    //      own token id instead — this stops someone from creating a
+    //      profile under someone else's account.
+    //    - Admins are allowed to create a profile on behalf of another
+    //      user by passing userId in the body.
+    let userId = req.user.id;
+    if (req.user.role === "admin" && req.body.userId) {
+      userId = req.body.userId;
+    }
+
+    // 1a. Required fields check
     if (!userId || !nic || !phone) {
       return res
         .status(400)
@@ -92,14 +104,11 @@ const getAllStudents = async (req, res) => {
 // GET /api/students/:id
 const getStudentById = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id)
-      .populate("userId", "name email")
-      .populate("coursePackage", "name type price")
-      .populate("assignedInstructor", "name");
-
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+    const student = await req.student.populate([
+      { path: "userId", select: "name email" },
+      { path: "coursePackage", select: "name type price" },
+      { path: "assignedInstructor", select: "name" },
+    ]);
 
     res.status(200).json(student);
   } catch (error) {
@@ -111,16 +120,34 @@ const getStudentById = async (req, res) => {
 // PUT /api/students/:id
 const updateStudent = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+    const student = req.student;
 
     const { phone, address, coursePackage } = req.body;
 
-    if (phone) student.phone = phone;
+    // Phone format validation (only if they're actually changing it)
+    if (phone) {
+      const phoneRegex = /^0[0-9]{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({
+          message:
+            "Phone number must be a valid 10-digit number starting with 0",
+        });
+      }
+      student.phone = phone;
+    }
+
     if (address) student.address = address;
-    if (coursePackage) student.coursePackage = coursePackage;
+
+    // Course exists validation (only if they're actually changing it)
+    if (coursePackage) {
+      const courseExists = await Course.findById(coursePackage);
+      if (!courseExists) {
+        return res
+          .status(400)
+          .json({ message: "Invalid course package selected" });
+      }
+      student.coursePackage = coursePackage;
+    }
 
     await student.save();
 
@@ -150,12 +177,7 @@ const deleteStudent = async (req, res) => {
 // GET /api/students/:id/attendance
 const getAttendance = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
-
-    res.status(200).json(student.attendance);
+    res.status(200).json(req.student.attendance);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -171,10 +193,7 @@ const updateAttendance = async (req, res) => {
       return res.status(400).json({ message: "Please provide a date" });
     }
 
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+    const student = req.student;
 
     student.attendance.push({
       date,
@@ -200,16 +219,12 @@ const uploadDocument = async (req, res) => {
       return res.status(400).json({ message: "Please upload a file" });
     }
 
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
+    const student = req.student;
 
     student.documents.push({
       fileName: req.file.originalname,
       fileUrl: `/uploads/${req.file.filename}`,
     });
-
     await student.save();
 
     res.status(201).json({
@@ -220,6 +235,7 @@ const uploadDocument = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 // Approve a student profile (admin only)
 // PUT /api/students/:id/approve
 const approveStudent = async (req, res) => {
@@ -255,13 +271,24 @@ const rejectStudent = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 // Get student profile by userId (for logged-in student to see their own profile)
 // GET /api/students/me/:userId
 const getStudentByUserId = async (req, res) => {
   try {
+    const isAdmin = req.user.role === "admin";
+    const isOwner = req.params.userId === req.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: this is not your profile" });
+    }
+
     const student = await Student.findOne({ userId: req.params.userId })
       .populate("userId", "name email")
-      .populate("coursePackage", "name type price");
+      .populate("coursePackage", "name type price")
+      .populate("assignedInstructor", "name");
 
     if (!student) {
       return res.status(404).json({ message: "Student profile not found" });

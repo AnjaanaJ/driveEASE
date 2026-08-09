@@ -179,6 +179,7 @@ function StudentProfilePage() {
                 <DetailItem label="Phone" value={student.phone} />
                 <DetailItem label="Address" value={student.address || "Not added yet"} />
                 <DetailItem label="Course package" value={student.coursePackage?.name || "Not assigned yet"} accent={Boolean(student.coursePackage?.name)} />
+                <DetailItem label="Assigned instructor" value={student.assignedInstructor?.name || "Not yet assigned"} accent={Boolean(student.assignedInstructor?.name)} />
               </dl>
             )}
           </section>

@@ -1,4 +1,4 @@
-const Course = require('../models/Course');
+const Course = require("../models/Course");
 
 // Get all course packages
 // GET /api/courses
@@ -7,7 +7,7 @@ const getAllCourses = async (req, res) => {
     const courses = await Course.find();
     res.status(200).json(courses);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -17,11 +17,11 @@ const getCourseById = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
     res.status(200).json(course);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -32,14 +32,37 @@ const createCourse = async (req, res) => {
     const { name, type, description, price, lessonCount } = req.body;
 
     if (!name || !type || price === undefined || !lessonCount) {
-      return res.status(400).json({ message: 'Please provide name, type, price and lessonCount' });
+      return res
+        .status(400)
+        .json({ message: "Please provide name, type, price and lessonCount" });
     }
 
-    const course = await Course.create({ name, type, description, price, lessonCount });
+    // Extra controller-level check for clear, user-friendly messages
+    if (price <= 0) {
+      return res.status(400).json({ message: "Price must be greater than 0" });
+    }
 
-    res.status(201).json({ message: 'Course package created successfully', course });
+    if (!Number.isInteger(lessonCount) || lessonCount <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Lesson count must be a positive whole number" });
+    }
+
+    const course = await Course.create({
+      name,
+      type,
+      description,
+      price,
+      lessonCount,
+    });
+
+    res
+      .status(201)
+      .json({ message: "Course package created successfully", course });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res
+      .status(400)
+      .json({ message: "Failed to create course", error: error.message });
   }
 };
 
@@ -49,15 +72,33 @@ const updateCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
-    Object.assign(course, req.body); // body eke ena fields tika update karanawa
+    const { price, lessonCount } = req.body;
+
+    // Extra controller-level check if these fields are being updated
+    if (price !== undefined && price <= 0) {
+      return res.status(400).json({ message: "Price must be greater than 0" });
+    }
+
+    if (
+      lessonCount !== undefined &&
+      (!Number.isInteger(lessonCount) || lessonCount <= 0)
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Lesson count must be a positive whole number" });
+    }
+
+    Object.assign(course, req.body); // Update the fields in the body
     await course.save();
 
-    res.status(200).json({ message: 'Course updated successfully', course });
+    res.status(200).json({ message: "Course updated successfully", course });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res
+      .status(400)
+      .json({ message: "Failed to update course", error: error.message });
   }
 };
 
@@ -67,13 +108,13 @@ const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     await course.deleteOne();
-    res.status(200).json({ message: 'Course deleted successfully' });
+    res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

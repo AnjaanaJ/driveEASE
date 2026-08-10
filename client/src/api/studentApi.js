@@ -6,9 +6,15 @@ export const createStudent = async (studentData) => {
   return res.data;
 };
 
-// Get all students (admin only)
-export const getAllStudents = async (search = "") => {
-  const res = await axiosInstance.get(`/students?search=${search}`);
+// Get all students (admin only) - supports search, status, and course filters
+export const getAllStudents = async (filters = {}) => {
+  const { search = "", status = "", course = "" } = filters;
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (status) params.append("status", status);
+  if (course) params.append("course", course);
+
+  const res = await axiosInstance.get(`/students?${params.toString()}`);
   return res.data;
 };
 

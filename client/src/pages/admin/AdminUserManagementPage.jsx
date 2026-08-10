@@ -12,12 +12,14 @@ import {
   approveStudent,
   rejectStudent,
 } from "../../api/studentApi";
+import { getAllCourses } from "../../api/courseApi";
 import ApprovalTable from "../../components/admin/ApprovalTable";
 import AttendanceTable from "../../components/students/AttendanceTable";
 
 function AdminUserManagementPage() {
   const [users, setUsers] = useState([]);
   const [studentProfiles, setStudentProfiles] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedStudentAttendance, setSelectedStudentAttendance] = useState(
     [],
@@ -25,15 +27,32 @@ function AdminUserManagementPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Student filter state (only affects the Students section below)
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [course, setCourse] = useState("");
+
+  const fetchStudents = async (filters = {}) => {
+    try {
+      const data = await getAllStudents(filters);
+      setStudentProfiles(data);
+    } catch (err) {
+      // Not critical enough to block the whole page - just log it
+      console.error("Failed to load student profiles");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [usersData, studentsData] = await Promise.all([
+        const [usersData, studentsData, coursesData] = await Promise.all([
           getAllUsers(),
           getAllStudents(),
+          getAllCourses(),
         ]);
         setUsers(usersData);
         setStudentProfiles(studentsData);
+        setCourses(coursesData);
       } catch (err) {
         setError("Failed to load users. Please try again.");
       } finally {
@@ -47,6 +66,23 @@ function AdminUserManagementPage() {
     setUsers((prevUsers) =>
       prevUsers.map((u) => (u._id === id ? { ...u, ...updatedFields } : u)),
     );
+  };
+  // --- Student filter handlers ---
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    fetchStudents({ search, status, course });
+  };
+
+  const handleStatusChange = (e) => {
+    const value = e.target.value;
+    setStatus(value);
+    fetchStudents({ search, status: value, course });
+  };
+
+  const handleCourseChange = (e) => {
+    const value = e.target.value;
+    setCourse(value);
+    fetchStudents({ search, status, course: value });
   };
 
   const handleApprove = async (id) => {
@@ -150,6 +186,16 @@ function AdminUserManagementPage() {
   if (error) {
     return <div className="p-8 text-red-400">{error}</div>;
   }
+  // Only students whose profile matches the current filter should show up
+  // in the "Students" section of ApprovalTable. Admins/Instructors are
+  // untouched.
+  const studentUserIds = new Set(
+    studentProfiles.map((s) => s.userId?._id).filter(Boolean),
+  );
+  const nonStudentUsers = users.filter((u) => u.role !== "student");
+  const filteredStudentUsers = users.filter(
+    (u) => u.role === "student" && studentUserIds.has(u._id),
+  );
 
   return (
     <div className="min-h-screen p-8 md:p-12">
@@ -165,8 +211,10 @@ function AdminUserManagementPage() {
       <p className="text-slate-400 mb-8">
         Review, approve, and manage student, instructor, and admin accounts.
       </p>
+
+      
       <ApprovalTable
-        users={users}
+        users={[...nonStudentUsers, ...filteredStudentUsers]}
         studentProfiles={studentProfiles}
         onApprove={handleApprove}
         onReject={handleReject}
@@ -175,6 +223,48 @@ function AdminUserManagementPage() {
         onDelete={handleDelete}
         onChangeRole={handleChangeRole}
         onViewDetails={handleViewDetails}
+      studentFilterBar={
+      <form
+        onSubmit={handleSearchSubmit}
+        className="mb-6 flex flex-wrap gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+      >
+        <input
+          type="text"
+          placeholder="Search students by NIC or phone..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 min-w-[200px] bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+        />
+        <select
+          value={status}
+          onChange={handleStatusChange}
+          className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+        >
+          <option value="">All statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <select
+          value={course}
+          onChange={handleCourseChange}
+          className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+        >
+          <option value="">All courses</option>
+          {courses.map((c) => (
+            <option key={c._id} value={c._id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
+        >
+          Search
+        </button>
+      </form>
+      }
       />
 
       {selectedStudent && (
@@ -222,17 +312,19 @@ function AdminUserManagementPage() {
                 selectedStudent.status === "Approved"
                   ? "text-green-400 font-medium"
                   : selectedStudent.status === "Rejected"
-                  ? "text-red-400 font-medium"
-                  : "text-yellow-400 font-medium"
+                    ? "text-red-400 font-medium"
+                    : "text-yellow-400 font-medium"
               }
             >
               {selectedStudent.status || "Pending"}
             </span>
-
           </div>
 
           <div className="mt-6">
-            <AttendanceTable attendance={selectedStudentAttendance} editable={false} />
+            <AttendanceTable
+              attendance={selectedStudentAttendance}
+              editable={false}
+            />
           </div>
         </div>
       )}

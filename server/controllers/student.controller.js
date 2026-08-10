@@ -74,25 +74,36 @@ const createStudent = async (req, res) => {
   }
 };
 
-// Get all students (admin only) - searchable
+// Get all students (admin only) - searchable and filterable
 // GET /api/students
 const getAllStudents = async (req, res) => {
   try {
-    const { search } = req.query; // e.g. /api/students?search=silva
+    const { search, status, course } = req.query;
 
+    // Build the base query using fields that live directly on the
+    // Student document (status, coursePackage). These can be filtered
+    // efficiently at the database level.
     let query = {};
-    if (search) {
-      query = {
-        $or: [
-          { nic: { $regex: search, $options: "i" } },
-          { phone: { $regex: search, $options: "i" } },
-        ],
-      };
-    }
+    if (status) query.status = status;
+    if (course) query.coursePackage = course;
 
-    const students = await Student.find(query)
+    let students = await Student.find(query)
       .populate("userId", "name email")
       .populate("coursePackage", "name type price");
+
+    // "search" can match nic, phone (on Student) OR name, email
+    // (on the populated User). Since name/email only exist after
+    // populate, we filter in JavaScript after fetching.
+    if (search) {
+      const term = search.toLowerCase();
+      students = students.filter((student) => {
+        const nicMatch = student.nic?.toLowerCase().includes(term);
+        const phoneMatch = student.phone?.toLowerCase().includes(term);
+        const nameMatch = student.userId?.name?.toLowerCase().includes(term);
+        const emailMatch = student.userId?.email?.toLowerCase().includes(term);
+        return nicMatch || phoneMatch || nameMatch || emailMatch;
+      });
+    }
 
     res.status(200).json(students);
   } catch (error) {

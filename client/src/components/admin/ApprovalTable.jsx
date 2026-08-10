@@ -149,8 +149,9 @@ function RoleTable({
   onDelete,
   onChangeRole,
   onViewDetails,
+  filterBar,
 }) {
-  if (users.length === 0) return null;
+  if (users.length === 0 && !filterBar) return null;
 
   return (
     <div className="relative rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 mb-8 last:mb-0 overflow-hidden">
@@ -163,6 +164,14 @@ function RoleTable({
             ({users.length})
           </span>
         </h3>
+
+        {filterBar && <div className="mb-5">{filterBar}</div>}
+
+        {users.length === 0 ? (
+          <p className="text-slate-400 text-sm py-4">
+            No students match this filter.
+          </p>
+        ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-white border-separate border-spacing-y-3">
             <thead>
@@ -192,6 +201,7 @@ function RoleTable({
             </tbody>
           </table>
         </div>
+        )}
       </div>
     </div>
   );
@@ -206,6 +216,7 @@ function ApprovalTable({
   onDelete,
   onChangeRole,
   onViewDetails,
+  studentFilterBar,
 }) {
   if (!users || users.length === 0) {
     return (
@@ -256,6 +267,7 @@ function ApprovalTable({
         onDelete={onDelete}
         onChangeRole={onChangeRole}
         onViewDetails={onViewDetails}
+        filterBar={studentFilterBar}
       />
     </div>
   );

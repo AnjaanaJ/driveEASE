@@ -44,7 +44,7 @@ function StudentTable({
               <td className={`p-3 ${statusColor(student.status)}`}>
                 {student.status || "Pending"}
               </td>
-              {showActions && (
+                            {showActions && (
                 <td className="p-3">
                   <div className="flex items-center gap-3">
                     {student.status !== "Approved" && (

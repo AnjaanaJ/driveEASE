@@ -9,6 +9,7 @@ import {
 import {
   getAllStudents,
   getStudentAttendance,
+  updateStudentAttendance,
   approveStudent,
   rejectStudent,
 } from "../../api/studentApi";
@@ -145,6 +146,23 @@ function AdminUserManagementPage() {
       alert("Failed to reject student profile. Please try again.");
     }
   };
+
+  const handleAddAttendance = async (attendanceEntry) => {
+    if (!selectedStudent?._id) return;
+
+    try {
+      const result = await updateStudentAttendance(
+        selectedStudent._id,
+        attendanceEntry,
+      );
+      setSelectedStudentAttendance(
+        Array.isArray(result.attendance) ? result.attendance : [],
+      );
+    } catch (err) {
+      alert("Failed to log attendance. Please try again.");
+    }
+  };
+
   const handleReject = async (id) => {
     try {
       await rejectUser(id);
@@ -212,7 +230,6 @@ function AdminUserManagementPage() {
         Review, approve, and manage student, instructor, and admin accounts.
       </p>
 
-      
       <ApprovalTable
         users={[...nonStudentUsers, ...filteredStudentUsers]}
         studentProfiles={studentProfiles}
@@ -223,53 +240,65 @@ function AdminUserManagementPage() {
         onDelete={handleDelete}
         onChangeRole={handleChangeRole}
         onViewDetails={handleViewDetails}
-      studentFilterBar={
-      <form
-        onSubmit={handleSearchSubmit}
-        className="mb-6 flex flex-wrap gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4"
-      >
-        <input
-          type="text"
-          placeholder="Search students by NIC or phone..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 min-w-[200px] bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
-        />
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
-        >
-          <option value="">All statuses</option>
-          <option value="Pending">Pending</option>
-          <option value="Approved">Approved</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-        <select
-          value={course}
-          onChange={handleCourseChange}
-          className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
-        >
-          <option value="">All courses</option>
-          {courses.map((c) => (
-            <option key={c._id} value={c._id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <button
-          type="submit"
-          className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
-        >
-          Search
-        </button>
-      </form>
-      }
+        studentFilterBar={
+          <form
+            onSubmit={handleSearchSubmit}
+            className="mb-6 flex flex-wrap gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+          >
+            <input
+              type="text"
+              placeholder="Search students by NIC or phone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1 min-w-[200px] bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            />
+            <select
+              value={status}
+              onChange={handleStatusChange}
+              className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            >
+              <option value="">All statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+            <select
+              value={course}
+              onChange={handleCourseChange}
+              className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            >
+              <option value="">All courses</option>
+              {courses.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
+            >
+              Search
+            </button>
+          </form>
+        }
       />
 
-      {selectedStudent && (
+            {selectedStudent && (
         <div className="mt-8 rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
-          <h2 className="text-lg font-semibold mb-4">Student request review</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">Student request review</h2>
+            <button
+              onClick={() => {
+                setSelectedStudent(null);
+                setSelectedStudentAttendance([]);
+              }}
+              className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-white/20 text-slate-300 hover:bg-white/10 hover:text-white transition"
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
           <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
             <div>
               <p className="text-slate-400 mb-1">Applicant</p>
@@ -323,7 +352,8 @@ function AdminUserManagementPage() {
           <div className="mt-6">
             <AttendanceTable
               attendance={selectedStudentAttendance}
-              editable={false}
+              editable={true}
+              onAddAttendance={handleAddAttendance}
             />
           </div>
         </div>

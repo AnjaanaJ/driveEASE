@@ -33,6 +33,9 @@ function AdminUserManagementPage() {
   const [status, setStatus] = useState("");
   const [course, setCourse] = useState("");
 
+  // Student sort state (only affects the Students section below)
+  const [sortKey, setSortKey] = useState("");
+
   const fetchStudents = async (filters = {}) => {
     try {
       const data = await getAllStudents(filters);
@@ -86,6 +89,33 @@ function AdminUserManagementPage() {
     fetchStudents({ search, status, course: value });
   };
 
+  const handleSortChange = (e) => {
+    setSortKey(e.target.value);
+  };
+
+  // Returns a NEW sorted array for the given sort key — never mutates the
+  // original studentProfiles state.
+  const getSortedStudentUsers = (studentUsers, key) => {
+    if (!key) return studentUsers;
+
+    const getValue = (user) => {
+      if (key === "name") return user.name || "";
+      if (key === "email") return user.email || "";
+      if (key === "status") {
+        const profile = studentProfiles.find((s) => s.userId?._id === user._id);
+        return profile?.status || "Pending";
+      }
+      return "";
+    };
+
+    return [...studentUsers].sort((a, b) => {
+      const aValue = getValue(a).toString().toLowerCase();
+      const bValue = getValue(b).toString().toLowerCase();
+      if (aValue < bValue) return -1;
+      if (aValue > bValue) return 1;
+      return 0;
+    });
+  };
   const handleApprove = async (id) => {
     try {
       await approveUser(id);
@@ -211,8 +241,9 @@ function AdminUserManagementPage() {
     studentProfiles.map((s) => s.userId?._id).filter(Boolean),
   );
   const nonStudentUsers = users.filter((u) => u.role !== "student");
-  const filteredStudentUsers = users.filter(
-    (u) => u.role === "student" && studentUserIds.has(u._id),
+    const filteredStudentUsers = getSortedStudentUsers(
+    users.filter((u) => u.role === "student" && studentUserIds.has(u._id)),
+    sortKey,
   );
 
   return (
@@ -274,6 +305,16 @@ function AdminUserManagementPage() {
                 </option>
               ))}
             </select>
+            <select
+              value={sortKey}
+              onChange={handleSortChange}
+              className="bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            >
+              <option value="">Sort by...</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="email">Email (A-Z)</option>
+              <option value="status">Status (A-Z)</option>
+            </select>
             <button
               type="submit"
               className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
@@ -284,7 +325,7 @@ function AdminUserManagementPage() {
         }
       />
 
-            {selectedStudent && (
+      {selectedStudent && (
         <div className="mt-8 rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Student request review</h2>

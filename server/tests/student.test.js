@@ -43,3 +43,60 @@ describe('GET /api/students', () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 });
+
+describe('POST /api/students', () => {
+  let adminToken;
+  let createdStudentId;
+
+  beforeAll(async () => {
+    const adminUser = await User.create({
+      name: 'Test Admin 2',
+      email: 'testadmin2@example.com',
+      password: 'hashedpassword123',
+      role: 'admin',
+      isApproved: true,
+    });
+    adminToken = generateToken(adminUser._id, adminUser.role);
+  });
+
+  afterAll(async () => {
+    await User.deleteMany({ email: 'testadmin2@example.com' });
+  });
+
+  afterEach(async () => {
+    if (createdStudentId) {
+      const Student = require('../models/Student');
+      await Student.findByIdAndDelete(createdStudentId);
+      createdStudentId = null;
+    }
+  });
+
+  it('should create a new student when valid data is sent', async () => {
+    const res = await request(app)
+      .post('/api/students')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        nic: '200012345678',
+        phone: '0771234567',
+        address: '123 Main Street, Colombo',
+      });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('student');
+    expect(res.body.student).toHaveProperty('_id');
+
+    createdStudentId = res.body.student._id;
+  });
+
+  it('should return 400 if NIC is invalid', async () => {
+    const res = await request(app)
+      .post('/api/students')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        nic: '123', // invalid format
+        phone: '0771234567',
+      });
+
+    expect(res.statusCode).toBe(400);
+  });
+});

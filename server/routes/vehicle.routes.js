@@ -1,5 +1,9 @@
 const express = require("express");
+
 const router = express.Router();
+
+const verifyToken = require("../middleware/verifyToken");
+const requireRole = require("../middleware/requireRole");
 
 const {
   createVehicle,
@@ -11,13 +15,29 @@ const {
   getVehicleHistory,
 } = require("../controllers/vehicle.controller");
 
-router.post("/", createVehicle);
-router.get("/", getVehicles);
-router.get("/:id", getVehicleById);
-router.get("/:id/history", getVehicleHistory);
-router.put("/:id", updateVehicle);
-router.delete("/:id", deleteVehicle);
-router.put("/:id/maintenance", updateVehicleMaintenance);
+// Vehicle Management - Admin only
+router.post("/", verifyToken, requireRole("admin"), createVehicle);
 
+router.get("/", verifyToken, requireRole("admin"), getVehicles);
+
+router.get("/:id", verifyToken, requireRole("admin"), getVehicleById);
+
+router.get(
+  "/:id/history",
+  verifyToken,
+  requireRole("admin"),
+  getVehicleHistory
+);
+
+router.put("/:id", verifyToken, requireRole("admin"), updateVehicle);
+
+router.delete("/:id", verifyToken, requireRole("admin"), deleteVehicle);
+
+router.put(
+  "/:id/maintenance",
+  verifyToken,
+  requireRole("admin"),
+  updateVehicleMaintenance
+);
 
 module.exports = router;

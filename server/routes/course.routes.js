@@ -14,7 +14,7 @@ const requireRole = require('../middleware/requireRole');
 router.get('/', getAllCourses);
 router.get('/:id', getCourseById);
 
-// only admin can create/update/delete karanna puluwan
+// only admin can create/update/delete 
 router.post('/', verifyToken, requireRole('admin'), createCourse);
 router.put('/:id', verifyToken, requireRole('admin'), updateCourse);
 router.delete('/:id', verifyToken, requireRole('admin'), deleteCourse);

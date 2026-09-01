@@ -51,6 +51,9 @@ import LessonManagementPage from "../pages/lessons/LessonManagementPage";
 import PaymentListPage from "../pages/admin/PaymentListPage";
 import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
 
+//Reports
+import ReportsDashboardPage from "../pages/admin/ReportsDashboardPage";
+
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
@@ -83,6 +86,17 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= REPORTS ================= */}
+
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <ReportsDashboardPage />
             </ProtectedRoute>
           }
         />

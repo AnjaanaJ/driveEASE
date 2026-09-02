@@ -1,12 +1,43 @@
 const Lesson = require('../models/Lesson');
 const Notification = require('../models/Notification');
+const User = require('../models/User');
+const Student = require('../models/Student');
+
+const MAX_DURATION_MINUTES = 60;
+
+const getDurationMinutes = (startTime, endTime) => {
+  const [startH, startM] = startTime.split(':').map(Number);
+  const [endH, endM] = endTime.split(':').map(Number);
+  return (endH * 60 + endM) - (startH * 60 + startM);
+};
 
 const createLesson = async (req, res) => {
   try {
-    const { studentId, instructorId, vehicleId, date, startTime, endTime } = req.body;
+    const {instructorId, vehicleId, date, startTime, endTime } = req.body;
 
-    if (!studentId || !instructorId || !vehicleId || !date || !startTime || !endTime) {
+    if ( !instructorId || !vehicleId || !date || !startTime || !endTime) {
       return res.status(400).json({ message: 'All fields are required' });
+    }
+    const student = await Student.findOne({ userId: req.user.id });
+    if (!student) {
+      return res.status(400).json({ message: 'No student profile found for this account. Please complete your student registration first.' });
+    }
+    const studentId = student._id;
+
+    const chosenDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (chosenDate < today) {
+      return res.status(400).json({ message: 'Booking date cannot be in the past' });
+    }
+
+    if (endTime <= startTime) {
+      return res.status(400).json({ message: 'End time must be after start time' });
+    }
+
+    const durationMinutes = getDurationMinutes(startTime, endTime);
+    if (durationMinutes > MAX_DURATION_MINUTES) {
+      return res.status(400).json({ message: `Lesson duration cannot exceed ${MAX_DURATION_MINUTES} minutes` });
     }
     const lesson = await Lesson.create({
       studentId,
@@ -17,7 +48,7 @@ const createLesson = async (req, res) => {
       endTime,
     });
     await Notification.create({
-      userId: studentId,
+      userId: req.user.id,
       message: `Your lesson on ${date} at ${startTime} has been booked and confirmed.`,
       type: 'Booking',
     });
@@ -116,19 +147,37 @@ const cancelLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
+    if (lesson.status !== 'Scheduled') {
+      return res.status(400).json({ message: `Cannot cancel a lesson that is already ${lesson.status}` });
+    }
     if (new Date(lesson.date) < new Date()) {
       return res.status(400).json({ message: 'Cannot cancel a lesson that has already occurred' });
     }
     lesson.status = 'Cancelled';
     await lesson.save();
+    const dateStr = lesson.date.toISOString().split('T')[0];
+
     await Notification.create({
       userId: lesson.studentId,
-      message: `Your lesson on ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime} has been cancelled.`,
+      message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
       type: 'Cancellation',
     });
 
+    await Notification.create({
+      userId: lesson.instructorId,
+      message: `The lesson on ${dateStr} at ${lesson.startTime} has been cancelled by the student.`,
+      type: 'Cancellation',
+    });
 
-
+    const admin = await User.findOne({ role: 'admin' });
+    if (admin) {
+      await Notification.create({
+        userId: admin._id,
+        message: `A lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
+        type: 'Cancellation',
+      });
+    }
+    
     res.status(200).json({ message: 'Lesson cancelled successfully', lesson });
   } catch (error) {
     res.status(500).json({ message: 'Failed to cancel lesson', error: error.message });
@@ -155,10 +204,14 @@ const getAvailableSlots = async (req, res) => {
 };
 const getLessonsByStudent = async (req, res) => {
   try {
+    const student = await Student.findOne({ userId: req.params.studentId });
     if (req.user.id !== req.params.studentId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const lessons = await Lesson.find({ studentId: req.params.studentId })
+    if (!student) {
+      return res.status(200).json([]);
+    }
+    const lessons = await Lesson.find({ studentId: student._id })
     .populate({
         path: 'studentId',
         select: 'nic phone userId',

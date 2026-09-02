@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { uploadStudentDocument } from "../../api/studentApi";
 
 function DocumentUploader({ studentId, onUploadSuccess }) {
@@ -6,11 +6,18 @@ function DocumentUploader({ studentId, onUploadSuccess }) {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
     setMessage("");
   };
+
+
+  const handleChooseFileClick = () => {
+    fileInputRef.current.click();
+  };
+
 
   const handleUpload = async () => {
     if (!selectedFile) {
@@ -27,6 +34,9 @@ function DocumentUploader({ studentId, onUploadSuccess }) {
       setMessage("Document uploaded successfully!");
       setIsError(false);
       setSelectedFile(null);
+       if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
 
       if (onUploadSuccess) {
         onUploadSuccess();
@@ -45,11 +55,24 @@ function DocumentUploader({ studentId, onUploadSuccess }) {
     <div className="rounded-2xl border border-slate-700 bg-surface p-5 transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface/95 hover:shadow-2xl hover:shadow-primary/15">
       <h2 className="mb-3 text-lg font-extrabold text-white">Upload document</h2>
       <input
+       ref={fileInputRef}
         type="file"
         accept=".pdf,.jpg,.jpeg,.png"
         onChange={handleFileChange}
-        className="text-sm text-text-secondary mb-3 block"
+        className="hidden"
       />
+      <div className="mb-3 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleChooseFileClick}
+          className="rounded-lg border border-white/10 bg-background/70 px-4 py-2 text-sm font-medium text-text-primary transition hover:border-accent/40 hover:bg-white/5"
+        >
+          Choose file
+        </button>
+        <span className="truncate text-sm text-text-secondary">
+          {selectedFile ? selectedFile.name : "No file chosen"}
+        </span>
+      </div>
 
       <button
         onClick={handleUpload}

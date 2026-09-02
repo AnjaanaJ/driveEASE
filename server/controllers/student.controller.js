@@ -18,6 +18,13 @@ const createStudent = async (req, res) => {
     if (req.user.role === "admin" && req.body.userId) {
       userId = req.body.userId;
     }
+    // If no course package was selected, the dropdown sends an empty
+    // string "" instead of leaving it out. Convert that to undefined
+    // so Mongoose just skips the field instead of trying to cast ""
+    // to an ObjectId (which throws a CastError).
+    const cleanCoursePackage = coursePackage && coursePackage.trim() !== ""
+      ? coursePackage
+      : undefined;
 
     // 1a. Required fields check
     if (!userId || !nic || !phone) {
@@ -48,8 +55,8 @@ const createStudent = async (req, res) => {
       });
     }
     // 2d. Check the coursePackage is available
-    if (coursePackage) {
-      const courseExists = await Course.findById(coursePackage);
+    if (cleanCoursePackage) {
+      const courseExists = await Course.findById(cleanCoursePackage);
       if (!courseExists) {
         return res
           .status(400)
@@ -63,7 +70,7 @@ const createStudent = async (req, res) => {
       nic,
       phone,
       address,
-      coursePackage,
+      coursePackage: cleanCoursePackage,
     });
 
     res

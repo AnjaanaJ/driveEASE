@@ -204,9 +204,17 @@ function StudentProfilePage() {
                 <section className="rounded-xl border border-slate-700 bg-surface p-5">
                   <h2 className="text-lg font-semibold text-text-primary">My documents</h2>
                   <ul className="mt-3 space-y-2">
-                    {student.documents.map((doc, index) => (
+                     {student.documents.map((doc, index) => (
                       <li key={`${doc.fileName}-${index}`} className="flex items-center gap-2 rounded-lg bg-background/50 px-3 py-2 text-sm text-text-secondary">
-                        <span className="text-accent">&#128196;</span>{doc.fileName}
+                        <span className="text-accent">&#128196;</span>
+                        
+                          < a href={`http://localhost:5000${doc.fileUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-accent underline hover:text-white transition"
+                        >
+                          {doc.fileName}
+                        </a>
                       </li>
                     ))}
                   </ul>

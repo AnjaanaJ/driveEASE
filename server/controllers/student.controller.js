@@ -133,7 +133,7 @@ const updateStudent = async (req, res) => {
   try {
     const student = req.student;
 
-    const { phone, address, coursePackage } = req.body;
+    const { phone, address, coursePackage, assignedInstructor } = req.body;
 
     // Phone format validation (only if they're actually changing it)
     if (phone) {
@@ -159,6 +159,27 @@ const updateStudent = async (req, res) => {
       }
       student.coursePackage = coursePackage;
     }
+
+    // Only admins can assign an instructor to a student
+if (assignedInstructor !== undefined) {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({
+      message: "Only admins can assign an instructor",
+    });
+  }
+
+  const Instructor = require("../models/Instructor");
+
+  const instructorExists = await Instructor.findById(assignedInstructor);
+
+  if (!instructorExists) {
+    return res.status(400).json({
+      message: "Invalid instructor selected",
+    });
+  }
+
+  student.assignedInstructor = assignedInstructor;
+}
 
     await student.save();
 

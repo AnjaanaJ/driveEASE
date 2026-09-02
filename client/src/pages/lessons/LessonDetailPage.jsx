@@ -18,11 +18,15 @@ function LessonDetailPage() {
   const [newStartTime, setNewStartTime] = useState("");
   const [newEndTime, setNewEndTime] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+  const [remarks, setRemarks] = useState("");
 
   const fetchLesson = async () => {
     try {
       const res = await getLessonById(id);
       setLesson(res.data);
+      setProgress(res.data.progress || "");
+      setRemarks(res.data.remarks || "");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load lesson.");
     } finally {
@@ -95,6 +99,31 @@ function LessonDetailPage() {
       setActionLoading(false);
     }
   };
+  const handleSaveProgress = async (e) => {
+    e.preventDefault();
+
+    setActionLoading(true);
+    setError("");
+    setActionMessage("");
+
+    try {
+     await updateLesson(id, {
+       progress,
+       remarks,
+    });
+
+    setActionMessage("Progress and remarks updated successfully.");
+    await fetchLesson();
+    } catch (err) {
+    setError(
+      err.response?.data?.message ||
+      "Failed to update progress and remarks."
+    );
+    } finally {
+    setActionLoading(false);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] p-8">
@@ -139,6 +168,57 @@ function LessonDetailPage() {
           <div className="flex justify-between">
             <span className="text-slate-400 text-sm">Instructor ID</span>
             <span className="text-white text-sm">{lesson.instructorId}</span>
+          </div>
+          <div className="pt-3 border-t border-white/10">
+            <h2 className="text-white font-medium mb-3">
+              Lesson Progress & Remarks
+            </h2>
+
+            <form onSubmit={handleSaveProgress} className="space-y-3">
+
+          <div>
+            <label className="block text-slate-300 mb-1 text-sm">
+              Progress
+            </label>
+
+            <textarea
+              value={progress}
+              onChange={(e) => setProgress(e.target.value)}
+              placeholder="Enter student's lesson progress..."
+              rows="3"
+              disabled={user?.role !== "instructor"}
+              className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm disabled:opacity-60"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-300 mb-1 text-sm">
+              Remarks
+            </label>
+
+            <textarea
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              placeholder="Enter remarks about the lesson..."
+              rows="3"
+              disabled={user?.role !== "instructor"}
+              className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm disabled:opacity-60"
+            />
+          </div>
+
+         {user?.role === "instructor" && (
+         <button
+           type="submit"
+           disabled={actionLoading}
+           className="w-full py-2 rounded-md text-sm text-white bg-[var(--color-accent)] hover:opacity-90 disabled:opacity-50"
+         >
+          {actionLoading
+           ? "Saving..."
+           : "Save Progress & Remarks"}
+         </button>
+         )}
+
+            </form>
           </div>
 
         <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">

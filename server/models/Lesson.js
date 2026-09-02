@@ -33,6 +33,17 @@ const lessonSchema = new mongoose.Schema(
       enum: ['Scheduled', 'Completed', 'Cancelled'],
       default: 'Scheduled',
     },
+    progress: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    remarks: {
+      type: String,
+      trim: true,
+      default: "",
+    },
   },
   { timestamps: true }
 );

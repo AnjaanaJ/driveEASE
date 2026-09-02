@@ -178,7 +178,72 @@ const updateInstructorAvailability = async (req, res) => {
       });
     }
 
-    instructor.availability = req.body.availability;
+    const availability = req.body.availability;
+
+    // Check that availability is an array
+    if (!Array.isArray(availability)) {
+      return res.status(400).json({
+        success: false,
+        message: "Availability must be an array",
+      });
+    }
+
+    // Convert HH:MM time into minutes
+    const timeToMinutes = (time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
+    // Validate each availability slot
+    for (const slot of availability) {
+      if (!slot.day || !slot.startTime || !slot.endTime) {
+        return res.status(400).json({
+          success: false,
+          message: "Each availability slot must have day, startTime and endTime",
+        });
+      }
+
+      const start = timeToMinutes(slot.startTime);
+      const end = timeToMinutes(slot.endTime);
+
+      // End time must be after start time
+      if (start >= end) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid time slot for ${slot.day}: end time must be after start time`,
+        });
+      }
+    }
+
+    // Check for overlapping slots on the same day
+    for (let i = 0; i < availability.length; i++) {
+      for (let j = i + 1; j < availability.length; j++) {
+        const slotA = availability[i];
+        const slotB = availability[j];
+
+        // Only compare slots on the same day
+        if (slotA.day !== slotB.day) {
+          continue;
+        }
+
+        const startA = timeToMinutes(slotA.startTime);
+        const endA = timeToMinutes(slotA.endTime);
+
+        const startB = timeToMinutes(slotB.startTime);
+        const endB = timeToMinutes(slotB.endTime);
+
+        // Check if the two slots overlap
+        if (startA < endB && endA > startB) {
+          return res.status(400).json({
+            success: false,
+            message: `Availability slots overlap on ${slotA.day}: ${slotA.startTime}-${slotA.endTime} and ${slotB.startTime}-${slotB.endTime}`,
+          });
+        }
+      }
+    }
+
+    // Save only after all validation passes
+    instructor.availability = availability;
 
     await instructor.save();
 

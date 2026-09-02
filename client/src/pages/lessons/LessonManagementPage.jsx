@@ -14,6 +14,7 @@ import TimeSlotPicker from "../../components/lessons/TimeSlotPicker";
 import LessonTable from "../../components/lessons/LessonTable";
 import LessonStatusBadge from "../../components/lessons/LessonStatusBadge";
 import NotificationBell from "../../components/lessons/NotificationBell";
+import axiosInstance from "../../services/axiosInstance";
 
 function LessonManagementPage() {
   const { user } = useAuth();
@@ -39,6 +40,9 @@ function LessonManagementPage() {
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
 
+  const [instructors, setInstructors] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+
   const fetchLessons = async () => {
     try {
       let res;
@@ -56,6 +60,22 @@ function LessonManagementPage() {
   useEffect(() => {
     if (user) fetchLessons();
   }, [user]);
+
+  useEffect(() => {
+  const fetchInstructorsAndVehicles = async () => {
+    try {
+      const [instructorsRes, vehiclesRes] = await Promise.all([
+        axiosInstance.get("/instructors"),
+        axiosInstance.get("/vehicles"),
+      ]);
+      setInstructors(instructorsRes.data.data || []);
+      setVehicles(vehiclesRes.data.data || []);
+    } catch (err) {
+      console.error("Failed to load instructors/vehicles:", err);
+    }
+  };
+  fetchInstructorsAndVehicles();
+}, []);
 
   // Group lessons by date,used for the admin/instructor "lessons on this day" view
   const lessonsByDate = {};
@@ -77,7 +97,11 @@ function LessonManagementPage() {
 
    const expandedLesson = lessons.find((l) => l._id === expandedLessonId);
    const currentUserRole = user?.role;
-   const isOwner = expandedLesson && currentUserId === expandedLesson.studentId;
+   const isOwner = expandedLesson && (
+    expandedLesson.studentId?.userId?._id === currentUserId ||
+    expandedLesson.studentId?._id === currentUserId ||
+    expandedLesson.studentId === currentUserId
+  );
    const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin");
    const canReschedule = canCancel;
    const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student";
@@ -174,7 +198,7 @@ function LessonManagementPage() {
             setSuccessMsg("");
             try {
                 await bookLesson({
-                    studentId: currentUserId,
+                    //studentId: currentUserId,
                     instructorId,
                     vehicleId,
                     date: selectedDate,
@@ -232,6 +256,7 @@ function LessonManagementPage() {
             )}
           </div>
         </div>
+
 
         {error && <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded">{error}</p>}
         {successMsg && <p className="bg-green-500/10 text-green-400 text-sm p-2 rounded">{successMsg}</p>}
@@ -382,6 +407,11 @@ function LessonManagementPage() {
                 <select value={instructorId} onChange={(e) => setInstructorId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700">
                   <option value="">Select instructor</option>
+                  {instructors.map((inst) => (
+                    <option key={inst._id} value={inst._id}>
+                      {inst.user?.name || inst.licenseNumber || inst._id}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -389,6 +419,11 @@ function LessonManagementPage() {
                 <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700">
                   <option value="">Select vehicle</option>
+                  {vehicles.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      {v.brand} {v.model} - {v.registrationNumber}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

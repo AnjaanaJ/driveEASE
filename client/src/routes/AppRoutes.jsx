@@ -19,6 +19,9 @@ import RegisterPage from "../pages/auth/RegisterPage";
 // Dashboard Pages
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
+import InstructorProfilePage from "../pages/instructor/InstructorProfilePage";
+import InstructorAvailabilityPage from "../pages/instructor/InstructorAvailabilityPage";
+import InstructorDocumentsPage from "../pages/instructor/InstructorDocumentsPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import InstructorAnalyticsPage from "../pages/instructor/InstructorAnalyticsPage";
 
@@ -177,6 +180,30 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["instructor"]}>
               <InstructorDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/profile"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/availability"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorAvailabilityPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/documents"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorDocumentsPage />
             </ProtectedRoute>
           }
         />

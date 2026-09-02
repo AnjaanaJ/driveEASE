@@ -127,7 +127,43 @@ const updateVehicleMaintenance = async (req, res) => {
       });
     }
 
-    vehicle.maintenanceLog.push(req.body);
+    const { maintenanceDate, description, cost } = req.body;
+
+    // Check that maintenance date is provided
+    if (!maintenanceDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Maintenance date is required",
+      });
+    }
+
+    const date = new Date(maintenanceDate);
+
+    // Check that the date is valid
+    if (isNaN(date.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid maintenance date",
+      });
+    }
+
+    // Compare only the date portion so today's date is allowed
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    // Maintenance date cannot be in the future
+    if (date > today) {
+      return res.status(400).json({
+        success: false,
+        message: "Maintenance date cannot be in the future",
+      });
+    }
+
+    vehicle.maintenanceLog.push({
+      maintenanceDate: date,
+      description,
+      cost,
+    });
 
     await vehicle.save();
 

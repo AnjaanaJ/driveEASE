@@ -21,7 +21,13 @@ function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel
     setError("");
     setLoading(true);
     try {
-      await onSubmit(formData);
+      // Converting 'price' and 'lessonCount' from strings to numbers.
+      const payload = {
+        ...formData,
+        price: Number(formData.price),
+        lessonCount: Number(formData.lessonCount),
+      };
+      await onSubmit(payload);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     } finally {

@@ -29,7 +29,7 @@ router.put('/:id', verifyToken, checkStudentOwnership, updateStudent);
 router.delete('/:id', verifyToken, requireRole('admin'), deleteStudent);
 
 router.get('/:id/attendance', verifyToken, checkStudentOwnership, getAttendance);
-router.put('/:id/attendance', verifyToken, checkStudentOwnership, updateAttendance);
+router.put('/:id/attendance', verifyToken, requireRole('admin'), checkStudentOwnership, updateAttendance);
 router.post(
   '/:id/documents',
   verifyToken,

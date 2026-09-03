@@ -7,7 +7,9 @@ import AuthLayout from "../layouts/AuthLayout";
 
 // Auth
 import ProtectedRoute from "../components/auth/ProtectedRoute";
-
+import InstructorLessonPage from "../pages/instructor/InstructorLessonPage";
+import InstructorLessonsPage from "../pages/instructor/InstructorLessonsPage";
+import InstructorStudentsPage from "../pages/instructor/InstructorStudentsPage";
 // Public Pages
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -207,6 +209,34 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        
+
+        <Route
+          path="/instructor/lessons/:id"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+            <InstructorLessonPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/lessons"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+            <InstructorLessonsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/students"
+          element={
+           <ProtectedRoute allowedRoles={["instructor"]}>
+           <InstructorStudentsPage />
+           </ProtectedRoute>
+          }
+        />
+
+
 
         {/* ================= STUDENT ================= */}
 

@@ -93,17 +93,50 @@ const getLessonById = async (req, res) => {
       .populate('vehicleId', 'registrationNumber brand model');
 
     if (!lesson) {
-      return res.status(404).json({ message: 'Lesson not found' });
+      return res.status(404).json({
+        message: 'Lesson not found',
+      });
     }
-    const isOwner =
-      (lesson.studentId && req.user.id === lesson.studentId._id.toString()) ||
-      (lesson.instructorId && req.user.id === lesson.instructorId._id.toString());
-    if (!isOwner && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
+
+    let isOwner = false;
+
+    // Admin can access any lesson
+    if (req.user.role === 'admin') {
+      isOwner = true;
     }
+
+    // Check instructor ownership
+    if (
+      req.user.role === 'instructor' &&
+      lesson.instructorId &&
+      lesson.instructorId.user &&
+      lesson.instructorId.user._id.toString() === req.user.id
+    ) {
+      isOwner = true;
+    }
+
+    // Check student ownership
+    if (
+      req.user.role === 'student' &&
+      lesson.studentId &&
+      lesson.studentId.userId &&
+      lesson.studentId.userId._id.toString() === req.user.id
+    ) {
+      isOwner = true;
+    }
+
+    if (!isOwner) {
+      return res.status(403).json({
+        message: 'Access denied',
+      });
+    }
+
     res.status(200).json(lesson);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch lesson', error: error.message });
+    res.status(500).json({
+      message: 'Failed to fetch lesson',
+      error: error.message,
+    });
   }
 };
 const updateLesson = async (req, res) => {
@@ -112,7 +145,18 @@ const updateLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
-    const { date, startTime, endTime, status } = req.body;
+    if (req.user.role === "instructor") {
+    const instructor = await require("../models/Instructor").findOne({
+      user: req.user.id,
+    });
+
+    if (!instructor || instructor._id.toString() !== lesson.instructorId.toString()) {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
+}
+    const { date, startTime, endTime, status, progress, remarks } = req.body;
 
     if (status && req.user.role === 'student') {
       return res.status(403).json({ message: 'Students cannot change lesson status' });
@@ -123,6 +167,8 @@ const updateLesson = async (req, res) => {
     if (startTime) lesson.startTime = startTime;
     if (endTime) lesson.endTime = endTime;
     if (status) lesson.status = status;
+    if (progress !== undefined) lesson.progress = progress;
+    if (remarks !== undefined) lesson.remarks = remarks;
 
     await lesson.save();
 
@@ -232,25 +278,68 @@ const getLessonsByStudent = async (req, res) => {
 
 const getLessonsByInstructor = async (req, res) => {
   try {
-    if (req.user.id !== req.params.instructorId && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
+    const Instructor = require("../models/Instructor");
+
+    let isOwner = false;
+
+    // Admin can view any instructor's lessons
+    if (req.user.role === "admin") {
+      isOwner = true;
     }
-    const lessons = await Lesson.find({ instructorId: req.params.instructorId })
-    .populate({
-        path: 'studentId',
-        select: 'nic phone userId',
-        populate: { path: 'userId', select: 'name email' },
+
+    // Instructor can only view their own lessons
+    if (req.user.role === "instructor") {
+      const instructor = await Instructor.findOne({
+        user: req.user.id,
+      });
+
+      if (
+        instructor &&
+        instructor._id.toString() === req.params.instructorId
+      ) {
+        isOwner = true;
+      }
+    }
+
+    if (!isOwner) {
+      return res.status(403).json({
+        message: "Access denied",
+      });
+    }
+
+    const lessons = await Lesson.find({
+      instructorId: req.params.instructorId,
+    })
+      .populate({
+        path: "studentId",
+        select: "nic phone userId",
+        populate: {
+          path: "userId",
+          select: "name email",
+        },
       })
       .populate({
-        path: 'instructorId',
-        select: 'licenseNumber phone user',
-        populate: { path: 'user', select: 'name email' },
+        path: "instructorId",
+        select: "licenseNumber phone user",
+        populate: {
+          path: "user",
+          select: "name email",
+        },
       })
-      .populate('vehicleId', 'registrationNumber brand model')
+      .populate(
+        "vehicleId",
+        "registrationNumber brand model"
+      )
       .sort({ date: -1 });
+
     res.status(200).json(lessons);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
+    console.error("Error fetching instructor lessons:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch lessons",
+      error: error.message,
+    });
   }
 };
 

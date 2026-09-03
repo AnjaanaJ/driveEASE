@@ -33,7 +33,7 @@ function VehicleDetailPage() {
         Vehicle Details
       </h1>
 
-      <div className="bg-white shadow rounded-lg p-6 space-y-3">
+      <div className="bg-background rounded-lg p-6 space-y-3">
 
         <p><strong>Registration Number:</strong> {vehicle.registrationNumber}</p>
 

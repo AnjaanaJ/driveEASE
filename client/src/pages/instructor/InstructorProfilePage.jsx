@@ -24,45 +24,79 @@ function InstructorProfilePage() {
   }, []);
 
   if (loading) {
-    return <p>Loading profile...</p>;
+    return (
+      <div className="p-5">
+        <h2 className="text-2xl font-bold">
+          Loading profile...
+        </h2>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <div className="p-5">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
   }
 
   if (!profile) {
-    return <p>No profile information found.</p>;
+    return (
+      <div className="p-5">
+        <p>No profile information found.</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>My Instructor Profile</h1>
+    <div className="p-5">
+      <h2 className="text-2xl font-bold mb-6">
+        My Instructor Profile
+      </h2>
 
-      <div>
-        <p>
-          <strong>Phone:</strong> {profile.phone}
-        </p>
+      <div className="border border-gray-300 rounded-lg p-6 max-w-2xl">
+        <div className="mb-5">
+          <p className="text-gray-600 mb-1">Phone</p>
+          <p className="text-lg font-medium">
+            {profile.phone || "N/A"}
+          </p>
+        </div>
 
-        <p>
-          <strong>NIC:</strong> {profile.nic}
-        </p>
+        <div className="mb-5">
+          <p className="text-gray-600 mb-1">NIC</p>
+          <p className="text-lg font-medium">
+            {profile.nic || "N/A"}
+          </p>
+        </div>
 
-        <p>
-          <strong>License Number:</strong> {profile.licenseNumber}
-        </p>
+        <div className="mb-5">
+          <p className="text-gray-600 mb-1">License Number</p>
+          <p className="text-lg font-medium">
+            {profile.licenseNumber || "N/A"}
+          </p>
+        </div>
 
-        <p>
-          <strong>Experience:</strong> {profile.experience}
-        </p>
+        <div className="mb-5">
+          <p className="text-gray-600 mb-1">Experience</p>
+          <p className="text-lg font-medium">
+            {profile.experience || "N/A"}
+          </p>
+        </div>
 
-        <p>
-          <strong>Qualification:</strong> {profile.qualification}
-        </p>
+        <div className="mb-5">
+          <p className="text-gray-600 mb-1">Qualification</p>
+          <p className="text-lg font-medium">
+            {profile.qualification || "N/A"}
+          </p>
+        </div>
 
-        <p>
-          <strong>Status:</strong> {profile.status}
-        </p>
+        <div>
+          <p className="text-gray-600 mb-1">Status</p>
+          <p className="text-lg font-medium">
+            {profile.status || "N/A"}
+          </p>
+        </div>
       </div>
     </div>
   );

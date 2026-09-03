@@ -2,6 +2,7 @@ const Lesson = require('../models/Lesson');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Student = require('../models/Student');
+const Vehicle = require('../models/Vehicle');
 
 const MAX_DURATION_MINUTES = 60;
 
@@ -23,6 +24,19 @@ const createLesson = async (req, res) => {
       return res.status(400).json({ message: 'No student profile found for this account. Please complete your student registration first.' });
     }
     const studentId = student._id;
+    const vehicle = await Vehicle.findById(vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({
+       message: 'Vehicle not found'
+      });
+    }
+
+    if (vehicle.status === 'Maintenance') {
+      return res.status(400).json({
+        message: 'Vehicle is currently under maintenance and cannot be assigned to a lesson'
+      });
+    }     
 
     const chosenDate = new Date(date);
     const today = new Date();

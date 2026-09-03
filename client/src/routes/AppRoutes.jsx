@@ -20,7 +20,6 @@ import RegisterPage from "../pages/auth/RegisterPage";
 
 // Dashboard Pages
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
-import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
 import InstructorProfilePage from "../pages/instructor/InstructorProfilePage";
 import InstructorAvailabilityPage from "../pages/instructor/InstructorAvailabilityPage";
 import InstructorDocumentsPage from "../pages/instructor/InstructorDocumentsPage";
@@ -181,7 +180,7 @@ function AppRoutes() {
           path="/instructor/dashboard"
           element={
             <ProtectedRoute allowedRoles={["instructor"]}>
-              <InstructorDashboardPage />
+            <InstructorAnalyticsPage />
             </ProtectedRoute>
           }
         />

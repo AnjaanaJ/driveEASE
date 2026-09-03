@@ -23,11 +23,11 @@ function InstructorDetailPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">
+      <h1 className="text-3xl font-bold mb-6 text-text-primary">
         Instructor Details
       </h1>
 
-      <div className="bg-white shadow rounded-lg p-6 space-y-3">
+      <div className="bg-background rounded-lg p-6 space-y-3">
 
         <p><strong>NIC:</strong> {instructor.nic}</p>
 

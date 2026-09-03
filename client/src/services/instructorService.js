@@ -17,4 +17,7 @@ export const updateInstructorAvailability = (id, data) => {
         data
     );
 
+};export const getMyInstructorProfile = async () => {
+    const response = await axiosInstance.get("/instructors/me");
+    return response.data;
 };

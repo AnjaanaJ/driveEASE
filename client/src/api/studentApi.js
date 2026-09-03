@@ -6,9 +6,15 @@ export const createStudent = async (studentData) => {
   return res.data;
 };
 
-// Get all students (admin only)
-export const getAllStudents = async (search = "") => {
-  const res = await axiosInstance.get(`/students?search=${search}`);
+// Get all students (admin only) - supports search, status, and course filters
+export const getAllStudents = async (filters = {}) => {
+  const { search = "", status = "", course = "" } = filters;
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (status) params.append("status", status);
+  if (course) params.append("course", course);
+
+  const res = await axiosInstance.get(`/students?${params.toString()}`);
   return res.data;
 };
 
@@ -33,5 +39,43 @@ export const updateStudent = async (id, updatedData) => {
 // Delete student (admin only)
 export const deleteStudent = async (id) => {
   const res = await axiosInstance.delete(`/students/${id}`);
+  return res.data;
+};
+// Upload a document for a student
+export const uploadStudentDocument = async (id, file) => {
+  const formData = new FormData();
+  formData.append("document", file);
+
+  const res = await axiosInstance.post(`/students/${id}/documents`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+// Get attendance history for a student
+export const getStudentAttendance = async (id) => {
+  const res = await axiosInstance.get(`/students/${id}/attendance`);
+  return res.data;
+};
+
+// Log attendance for a student
+export const updateStudentAttendance = async (id, attendanceData) => {
+  const res = await axiosInstance.put(
+    `/students/${id}/attendance`,
+    attendanceData,
+  );
+  return res.data;
+};
+// Approve a student profile (admin only)
+export const approveStudent = async (id) => {
+  const res = await axiosInstance.put(`/students/${id}/approve`);
+  return res.data;
+};
+
+// Reject a student profile (admin only)
+export const rejectStudent = async (id) => {
+  const res = await axiosInstance.put(`/students/${id}/reject`);
   return res.data;
 };

@@ -1,7 +1,7 @@
 import Footer from "../../components/shared/Footer";
 import { useState, useEffect } from "react";
 import { getAllCourses } from "../../api/courseApi";
-
+import CoursePackageCard from "../../components/courses/CoursePackageCard";
 
 function CoursePackagesPage() {
   const [courses, setCourses] = useState([]);
@@ -25,9 +25,10 @@ function CoursePackagesPage() {
 
   return (
     <>
-
       {loading ? (
-        <div className="p-8 text-center text-text-secondary">Loading course packages...</div>
+        <div className="p-8 text-center text-text-secondary">
+          Loading course packages...
+        </div>
       ) : error ? (
         <div className="p-8 text-center text-red-400">{error}</div>
       ) : (
@@ -46,30 +47,13 @@ function CoursePackagesPage() {
           </div>
 
           {courses.length === 0 ? (
-            <p className="text-text-secondary text-center">No course packages available yet.</p>
+            <p className="text-text-secondary text-center">
+              No course packages available yet.
+            </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {courses.map((course) => (
-                <div
-                  key={course._id}
-                  className="bg-surface border border-slate-700 rounded-2xl p-7 hover:border-accent transition-all hover:-translate-y-1 shadow-lg"
-                >
-                  <span className="inline-block bg-background text-accent text-xs font-semibold px-3 py-1 rounded-full mb-4 border border-slate-700">
-                    {course.type}
-                  </span>
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">{course.name}</h2>
-                  <p className="text-text-secondary text-sm mb-6 min-h-[40px]">
-                    {course.description}
-                  </p>
-                  <div className="text-gradient-brand text-3xl font-extrabold mb-1">
-                    Rs. {course.price.toLocaleString()}
-                  </div>
-                  <div className="text-text-secondary text-sm mb-6">{course.lessonCount} lessons</div>
-
-                  <button className="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold py-2.5 rounded-lg hover:opacity-90 transition">
-                    Choose Package
-                  </button>
-                </div>
+                <CoursePackageCard key={course._id} course={course} />
               ))}
             </div>
           )}

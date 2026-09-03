@@ -17,8 +17,8 @@ function ProtectedRoute({ children, allowedRoles }) {
   if (!user) {
     return <Navigate to="/login" replace/>;
   }
-if (user.role == "admin"  && !user.isApproved){
-  return <Navigate to ="/pending-approval" replace/>
+if (user.isApproved === false && user.role !== "admin") {
+  return <Navigate to="/pending-approval" replace />;
 }
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;

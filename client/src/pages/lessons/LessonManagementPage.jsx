@@ -14,6 +14,7 @@ import TimeSlotPicker from "../../components/lessons/TimeSlotPicker";
 import LessonTable from "../../components/lessons/LessonTable";
 import LessonStatusBadge from "../../components/lessons/LessonStatusBadge";
 import NotificationBell from "../../components/lessons/NotificationBell";
+import axiosInstance from "../../services/axiosInstance";
 
 function LessonManagementPage() {
   const { user } = useAuth();
@@ -39,11 +40,14 @@ function LessonManagementPage() {
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
 
+  const [instructors, setInstructors] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+
   const fetchLessons = async () => {
     try {
       let res;
       if (user.role === "admin") res = await getAllLessons();
-      else if (user.role === "instructor") res = await getLessonsByInstructor(currentUserId);
+      else if (user.role === "instructor") res = await getLessonsByInstructor("me");
       else res = await getLessonsByStudent(currentUserId);
       setLessons(res.data);
     } catch (err) {
@@ -56,6 +60,22 @@ function LessonManagementPage() {
   useEffect(() => {
     if (user) fetchLessons();
   }, [user]);
+
+  useEffect(() => {
+  const fetchInstructorsAndVehicles = async () => {
+    try {
+      const [instructorsRes, vehiclesRes] = await Promise.all([
+        axiosInstance.get("/instructors"),
+        axiosInstance.get("/vehicles"),
+      ]);
+      setInstructors(instructorsRes.data.data || []);
+      setVehicles(vehiclesRes.data.data || []);
+    } catch (err) {
+      console.error("Failed to load instructors/vehicles:", err);
+    }
+  };
+  fetchInstructorsAndVehicles();
+}, []);
 
   // Group lessons by date,used for the admin/instructor "lessons on this day" view
   const lessonsByDate = {};
@@ -77,7 +97,11 @@ function LessonManagementPage() {
 
    const expandedLesson = lessons.find((l) => l._id === expandedLessonId);
    const currentUserRole = user?.role;
-   const isOwner = expandedLesson && currentUserId === expandedLesson.studentId;
+   const isOwner = expandedLesson && (
+    expandedLesson.studentId?.userId?._id === currentUserId ||
+    expandedLesson.studentId?._id === currentUserId ||
+    expandedLesson.studentId === currentUserId
+  );
    const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin");
    const canReschedule = canCancel;
    const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student";
@@ -174,7 +198,7 @@ function LessonManagementPage() {
             setSuccessMsg("");
             try {
                 await bookLesson({
-                    studentId: currentUserId,
+                    //studentId: currentUserId,
                     instructorId,
                     vehicleId,
                     date: selectedDate,
@@ -233,6 +257,7 @@ function LessonManagementPage() {
           </div>
         </div>
 
+
         {error && <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded">{error}</p>}
         {successMsg && <p className="bg-green-500/10 text-green-400 text-sm p-2 rounded">{successMsg}</p>}
 
@@ -267,8 +292,12 @@ function LessonManagementPage() {
                     >
                         {l.startTime} - {l.endTime}
                     </button>
-                    <span className="text-slate-400">Student: {l.studentId}</span>
-                    <span className="text-slate-400">Instructor: {l.instructorId}</span>
+                    <span className="text-slate-400">
+                      Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.userId?.name || l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
+                    </span>
+                    <span className="text-slate-400">
+                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
+                      </span>
                     <LessonStatusBadge status={l.status} />
                   </li>
                 ))}
@@ -300,13 +329,23 @@ function LessonManagementPage() {
             <span className="text-slate-400 text-sm">Time</span>
             <span className="text-white">{expandedLesson.startTime} - {expandedLesson.endTime}</span>
         </div>
+
+
         <div className="flex justify-between">
-            <span className="text-slate-400 text-sm">Student ID</span>
-            <span className="text-white text-sm">{expandedLesson.studentId}</span>
+          <span className="text-slate-400 text-sm">Student ID</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.studentId === "object" && expandedLesson.studentId !== null
+            ? expandedLesson.studentId?.userId?.name || expandedLesson.studentId?.nic || expandedLesson.studentId?._id
+            : expandedLesson.studentId || "—"}
+          </span>
         </div>
         <div className="flex justify-between">
-            <span className="text-slate-400 text-sm">Instructor ID</span>
-            <span className="text-white text-sm">{expandedLesson.instructorId}</span>
+          <span className="text-slate-400 text-sm">Instructor ID</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.instructorId === "object" && expandedLesson.instructorId !== null
+            ? expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
+            : expandedLesson.instructorId || "—"}
+          </span>
         </div>
 
         <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">
@@ -333,15 +372,21 @@ function LessonManagementPage() {
                     <label className="block text-slate-300 mb-1 text-xs">New Date</label>
                     <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
                 </div>
-                <div className="flex gap-2">
-                    <div className="flex-1">
-                        <label className="block text-slate-300 mb-1 text-xs">Start Time</label>
-                        <input type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
-                    </div>
-                    <div className="flex-1">
-                        <label className="block text-slate-300 mb-1 text-xs">End Time</label>
-                        <input type="time" value={newEndTime} onChange={(e) => setNewEndTime(e.target.value)} className="w-full px-2 py-1.5 rounded-md bg-slate-900/60 text-white border border-slate-700 text-sm" />
-                    </div>
+                <div>
+                  <label className="block text-slate-300 mb-1 text-xs">New Time Slot</label>
+                  <TimeSlotPicker
+                    date={newDate}
+                    instructorId={expandedLesson?.instructorId?._id || expandedLesson?.instructorId}
+                    vehicleId={expandedLesson?.vehicleId?._id || expandedLesson?.vehicleId}
+                    selectedSlot={newStartTime}
+                    onSelectSlot={(slot) => {
+                      const [h, m] = slot.split(":").map(Number);
+                      let endH = h, endM = m + 30;
+                      if (endM >= 60) { endM = 0; endH += 1; }
+                        setNewStartTime(slot);
+                        setNewEndTime(`${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`);
+                      }}
+                  />
                 </div>
                 <button type="submit" disabled={actionLoading} className="w-full py-1.5 rounded-md text-sm text-white bg-[var(--color-accent)] hover:opacity-90 disabled:opacity-50">
                     {actionLoading ? "Saving..." : "Confirm Reschedule"}
@@ -362,6 +407,11 @@ function LessonManagementPage() {
                 <select value={instructorId} onChange={(e) => setInstructorId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700">
                   <option value="">Select instructor</option>
+                  {instructors.map((inst) => (
+                    <option key={inst._id} value={inst._id}>
+                      {inst.user?.name || inst.licenseNumber || inst._id}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -369,6 +419,11 @@ function LessonManagementPage() {
                 <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700">
                   <option value="">Select vehicle</option>
+                  {vehicles.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      {v.brand} {v.model} - {v.registrationNumber}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

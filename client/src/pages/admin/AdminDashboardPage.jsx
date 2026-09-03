@@ -3,6 +3,7 @@ import { getAdminDashboard } from '../../api/dashboardApi';
 import StatCard from '../../components/dashboard/StatCard';
 import RevenueChart from '../../components/dashboard/RevenueChart';
 import VehicleUsageChart from '../../components/dashboard/VehicleUsageChart';
+import QuickAccessShortcuts from '../../components/dashboard/QuickAccessShortcuts';
 
 function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
@@ -31,8 +32,6 @@ function AdminDashboardPage() {
     );
   }
 
-  const revenueChartData = [{ label: 'Total', revenue: stats.totalRevenue }];
-
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-6xl mx-auto">
@@ -45,6 +44,8 @@ function AdminDashboardPage() {
         </h1>
         <p className="text-text-secondary mb-8">Overview of students, instructors, bookings, and revenue.</p>
 
+        <QuickAccessShortcuts/>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard label="Total students" value={stats.totalStudents} />
           <StatCard label="Total instructors" value={stats.totalInstructors} />
@@ -53,7 +54,7 @@ function AdminDashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RevenueChart data={revenueChartData} />
+          <RevenueChart data={stats.revenueChartData} />
           <VehicleUsageChart data={stats.vehicleStatusBreakdown} />
         </div>
       </div>

@@ -7,7 +7,8 @@ import AuthLayout from "../layouts/AuthLayout";
 
 // Auth
 import ProtectedRoute from "../components/auth/ProtectedRoute";
-
+import InstructorLessonPage from "../pages/instructor/InstructorLessonPage";
+import InstructorStudentsPage from "../pages/instructor/InstructorStudentsPage";
 // Public Pages
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -19,7 +20,11 @@ import RegisterPage from "../pages/auth/RegisterPage";
 // Dashboard Pages
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import InstructorDashboardPage from "../pages/instructor/InstructorDashboardPage";
+import InstructorProfilePage from "../pages/instructor/InstructorProfilePage";
+import InstructorAvailabilityPage from "../pages/instructor/InstructorAvailabilityPage";
+import InstructorDocumentsPage from "../pages/instructor/InstructorDocumentsPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
+import InstructorAnalyticsPage from "../pages/instructor/InstructorAnalyticsPage";
 
 // Instructor Management
 import InstructorListPage from "../pages/admin/InstructorListPage";
@@ -48,6 +53,10 @@ import LessonManagementPage from "../pages/lessons/LessonManagementPage";
 
 // Payments
 import PaymentListPage from "../pages/admin/PaymentListPage";
+import PaymentDetailPage from "../pages/admin/PaymentDetailPage";
+
+//Reports
+import ReportsDashboardPage from "../pages/admin/ReportsDashboardPage";
 
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
@@ -81,6 +90,17 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= REPORTS ================= */}
+
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <ReportsDashboardPage />
             </ProtectedRoute>
           }
         />
@@ -164,6 +184,51 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/instructor/profile"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/availability"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorAvailabilityPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/instructor/documents"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorDocumentsPage />
+            </ProtectedRoute>
+          }
+        />
+        
+
+        <Route
+          path="/instructor/lessons/:id"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+            <InstructorLessonPage />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/instructor/students"
+          element={
+           <ProtectedRoute allowedRoles={["instructor"]}>
+           <InstructorStudentsPage />
+           </ProtectedRoute>
+          }
+        />
+
+
 
         {/* ================= STUDENT ================= */}
 
@@ -172,6 +237,15 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/instructor/analytics"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}>
+              <InstructorAnalyticsPage/>
             </ProtectedRoute>
           }
         />
@@ -274,6 +348,14 @@ function AppRoutes() {
 
         {/* ================= USERS ================= */}
 
+        <Route
+          path="/admin/payments/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PaymentDetailPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route
           path="/admin/users"
           element={

@@ -16,12 +16,14 @@ import {
 import { getAllCourses } from "../../api/courseApi";
 import ApprovalTable from "../../components/admin/ApprovalTable";
 import AttendanceTable from "../../components/students/AttendanceTable";
+import StudentEditModal from "../../components/students/StudentEditModal";
 
 function AdminUserManagementPage() {
   const [users, setUsers] = useState([]);
   const [studentProfiles, setStudentProfiles] = useState([]);
   const [courses, setCourses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudentAttendance, setSelectedStudentAttendance] = useState(
     [],
   );
@@ -241,7 +243,7 @@ function AdminUserManagementPage() {
     studentProfiles.map((s) => s.userId?._id).filter(Boolean),
   );
   const nonStudentUsers = users.filter((u) => u.role !== "student");
-    const filteredStudentUsers = getSortedStudentUsers(
+  const filteredStudentUsers = getSortedStudentUsers(
     users.filter((u) => u.role === "student" && studentUserIds.has(u._id)),
     sortKey,
   );
@@ -329,16 +331,24 @@ function AdminUserManagementPage() {
         <div className="mt-8 rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Student request review</h2>
-            <button
-              onClick={() => {
-                setSelectedStudent(null);
-                setSelectedStudentAttendance([]);
-              }}
-              className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-white/20 text-slate-300 hover:bg-white/10 hover:text-white transition"
-              title="Close"
-            >
-              ✕
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setEditingStudent(selectedStudent)}
+                className="px-3 py-1.5 text-sm rounded-lg bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedStudent(null);
+                  setSelectedStudentAttendance([]);
+                }}
+                className="w-8 h-8 inline-flex items-center justify-center rounded-full border border-white/20 text-slate-300 hover:bg-white/10 hover:text-white transition"
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
           </div>
           <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
             <div>
@@ -398,6 +408,38 @@ function AdminUserManagementPage() {
             />
           </div>
         </div>
+      )}
+      {editingStudent && (
+        <StudentEditModal
+          student={editingStudent}
+          onClose={() => setEditingStudent(null)}
+          onUpdated={(updated) => {
+            // The update response might not include populated userId/coursePackage
+            // objects (just raw IDs), so merge with the existing selected student
+            // to avoid losing the display data (name, email, package name).
+            const mergedStudent = {
+              ...selectedStudent,
+              ...updated,
+              userId: updated.userId?.name
+                ? updated.userId
+                : selectedStudent?.userId,
+              coursePackage: updated.coursePackage?.name
+                ? updated.coursePackage
+                : selectedStudent?.coursePackage,
+            };
+
+            setStudentProfiles((prev) =>
+              prev.map((s) =>
+                s._id === mergedStudent._id ? mergedStudent : s,
+              ),
+            );
+            setSelectedStudent(mergedStudent);
+          }}
+          onDeleted={(id) => {
+            setStudentProfiles((prev) => prev.filter((s) => s._id !== id));
+            setSelectedStudent(null);
+          }}
+        />
       )}
     </div>
   );

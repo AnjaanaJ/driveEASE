@@ -47,7 +47,7 @@ function LessonManagementPage() {
     try {
       let res;
       if (user.role === "admin") res = await getAllLessons();
-      else if (user.role === "instructor") res = await getLessonsByInstructor(currentUserId);
+      else if (user.role === "instructor") res = await getLessonsByInstructor("me");
       else res = await getLessonsByStudent(currentUserId);
       setLessons(res.data);
     } catch (err) {

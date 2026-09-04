@@ -295,6 +295,7 @@ const getLessonsByInstructor = async (req, res) => {
     const Instructor = require("../models/Instructor");
 
     let isOwner = false;
+    let targetInstructorId = req.params.instructorId;
 
     // Admin can view any instructor's lessons
     if (req.user.role === "admin") {
@@ -306,11 +307,15 @@ const getLessonsByInstructor = async (req, res) => {
       const instructor = await Instructor.findOne({
         user: req.user.id,
       });
-
-      if (
-        instructor &&
-        instructor._id.toString() === req.params.instructorId
-      ) {
+      if (!instructor) {
+        return res.status(404).json({
+          message: "No instructor profile found for this account.",
+        });
+      }
+      if (req.params.instructorId === "me") {
+        targetInstructorId = instructor._id.toString();
+        isOwner = true;
+      } else if (instructor._id.toString() === req.params.instructorId) {
         isOwner = true;
       }
     }
@@ -322,7 +327,7 @@ const getLessonsByInstructor = async (req, res) => {
     }
 
     const lessons = await Lesson.find({
-      instructorId: req.params.instructorId,
+      instructorId: targetInstructorId,
     })
       .populate({
         path: "studentId",

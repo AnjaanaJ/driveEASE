@@ -207,5 +207,47 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+// @desc   Update logged-in user's own profile (name, email)
+// @route  PUT /api/auth/update-profile
+const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
 
-module.exports = { registerUser, loginUser, logoutUser, changePassword, forgotPassword, resetPassword };
+    if (!name && !email) {
+      return res.status(400).json({ message: 'Please provide a name or email to update' });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // If email is changing, make sure it's not already taken by someone else
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email is already in use' });
+      }
+      user.email = email;
+    }
+
+    if (name) {
+      user.name = name;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isApproved: user.isApproved,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, changePassword, forgotPassword, resetPassword ,updateProfile};

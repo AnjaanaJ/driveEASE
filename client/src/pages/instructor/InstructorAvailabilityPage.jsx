@@ -125,51 +125,57 @@ function InstructorAvailabilityPage() {
   };
 
   if (loading) {
-    return <div>Loading availability...</div>;
+    return (
+      <div className="p-5">
+        <h2 className="text-2xl font-bold">
+          Loading availability...
+        </h2>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>My Availability</h1>
+    <div className="p-5">
+      <h2 className="text-2xl font-bold mb-4">
+        My Availability
+      </h2>
 
-      <p>
+      <p className="mb-5">
         Set the days and times when you are available for driving lessons.
       </p>
 
       {message && (
-        <p style={{ color: "green" }}>
+        <p className="text-green-600 mb-4">
           {message}
         </p>
       )}
 
       {error && (
-        <p style={{ color: "red" }}>
+        <p className="text-red-600 mb-4">
           {error}
         </p>
       )}
 
       {availability.length === 0 && (
-        <p>No availability has been set.</p>
+        <div className="border border-gray-300 rounded-lg p-4 mb-5">
+          <p>No availability has been set.</p>
+        </div>
       )}
 
       {availability.map((slot, index) => (
         <div
           key={index}
-          style={{
-            marginBottom: "15px",
-            padding: "15px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-          }}
+          className="mb-4 p-4 border border-gray-300 rounded-lg"
         >
           <div>
-            <label>Day: </label>
+            <label className="mr-2">Day: </label>
 
             <select
               value={slot.day}
               onChange={(e) =>
                 handleChange(index, "day", e.target.value)
               }
+              className="border border-gray-300 rounded px-2 py-1"
             >
               {days.map((day) => (
                 <option key={day} value={day}>
@@ -179,8 +185,8 @@ function InstructorAvailabilityPage() {
             </select>
           </div>
 
-          <div style={{ marginTop: "10px" }}>
-            <label>Start Time: </label>
+          <div className="mt-3">
+            <label className="mr-2">Start Time: </label>
 
             <input
               type="time"
@@ -188,11 +194,12 @@ function InstructorAvailabilityPage() {
               onChange={(e) =>
                 handleChange(index, "startTime", e.target.value)
               }
+              className="border border-gray-300 rounded px-2 py-1"
             />
           </div>
 
-          <div style={{ marginTop: "10px" }}>
-            <label>End Time: </label>
+          <div className="mt-3">
+            <label className="mr-2">End Time: </label>
 
             <input
               type="time"
@@ -200,20 +207,25 @@ function InstructorAvailabilityPage() {
               onChange={(e) =>
                 handleChange(index, "endTime", e.target.value)
               }
+              className="border border-gray-300 rounded px-2 py-1"
             />
           </div>
 
           <button
             type="button"
             onClick={() => removeSlot(index)}
-            style={{ marginTop: "10px" }}
+            className="mt-3 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
           >
             Remove
           </button>
         </div>
       ))}
 
-      <button type="button" onClick={addSlot}>
+      <button
+        type="button"
+        onClick={addSlot}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
         Add Availability
       </button>
 
@@ -221,7 +233,7 @@ function InstructorAvailabilityPage() {
         type="button"
         onClick={saveAvailability}
         disabled={saving}
-        style={{ marginLeft: "10px" }}
+        className="ml-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Availability"}
       </button>

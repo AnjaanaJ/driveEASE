@@ -24,10 +24,10 @@ function InstructorLessonPage() {
 
       const data = response.data;
 
-       setLesson(data);
-       setProgress(data.progress || "");
-       setRemarks(data.remarks || "");
-       setStatus(data.status || "Scheduled");
+      setLesson(data);
+      setProgress(data.progress || "");
+      setRemarks(data.remarks || "");
+      setStatus(data.status || "Scheduled");
     } catch (error) {
       console.error("Error fetching lesson:", error);
       setMessage("Failed to load lesson.");
@@ -51,6 +51,7 @@ function InstructorLessonPage() {
       setMessage("Progress and remarks saved successfully.");
     } catch (error) {
       console.error("Error saving progress:", error);
+
       setMessage(
         error.response?.data?.message ||
           "Failed to save progress and remarks."
@@ -59,136 +60,196 @@ function InstructorLessonPage() {
       setSaving(false);
     }
   };
+
   const handleCancel = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to cancel this lesson?"
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  try {
-    setCancelling(true);
-    setMessage("");
-
-    const response = await axiosInstance.delete(`/lessons/${id}`);
-
-    setLesson(response.data.lesson);
-    setStatus(response.data.lesson.status);
-
-    setMessage("Lesson cancelled successfully.");
-  } catch (error) {
-    console.error("Error cancelling lesson:", error);
-
-    setMessage(
-      error.response?.data?.message ||
-        "Failed to cancel lesson."
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this lesson?"
     );
-  } finally {
-    setCancelling(false);
-  }
-};
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      setMessage("");
+
+      const response = await axiosInstance.delete(`/lessons/${id}`);
+
+      setLesson(response.data.lesson);
+      setStatus(response.data.lesson.status);
+
+      setMessage("Lesson cancelled successfully.");
+    } catch (error) {
+      console.error("Error cancelling lesson:", error);
+
+      setMessage(
+        error.response?.data?.message ||
+          "Failed to cancel lesson."
+      );
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   if (loading) {
-    return <p>Loading lesson...</p>;
+    return (
+      <div className="p-5">
+        <h2 className="text-2xl font-bold">
+          Loading lesson...
+        </h2>
+      </div>
+    );
   }
 
   if (!lesson) {
-    return <p>Lesson not found.</p>;
+    return (
+      <div className="p-5">
+        <p>Lesson not found.</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Lesson Details</h1>
+    <div className="p-5">
+      <h2 className="text-2xl font-bold mb-6">
+        Lesson Details
+      </h2>
 
-      <p>
-        <strong>Status:</strong> {lesson.status}
-      </p>
+      {/* Lesson Information */}
+      <div className="border border-gray-300 rounded-lg p-6 max-w-3xl mb-8">
+        <h3 className="text-xl font-semibold mb-5">
+          Lesson Information
+        </h3>
 
-      <p>
-        <strong>Date:</strong> {lesson.date}
-      </p>
+        <div className="space-y-5">
+          <div>
+            <p className="text-gray-600 mb-1">Status</p>
+            <p className="text-lg font-medium">
+              {lesson.status}
+            </p>
+          </div>
 
-      <p>
-        <strong>Time:</strong> {lesson.startTime} - {lesson.endTime}
-      </p>
+          <div>
+            <p className="text-gray-600 mb-1">Date</p>
+            <p className="text-lg font-medium">
+              {new Date(lesson.date).toLocaleDateString()}
+            </p>
+          </div>
 
-      <p>
-        <strong>Student ID:</strong>{" "}
-        {lesson.studentId?._id || lesson.studentId}
-      </p>
+          <div>
+            <p className="text-gray-600 mb-1">Time</p>
+            <p className="text-lg font-medium">
+              {lesson.startTime} - {lesson.endTime}
+            </p>
+          </div>
 
-      <p>
-        <strong>Instructor ID:</strong>{" "}
-        {lesson.instructorId?._id || lesson.instructorId}
-      </p>
+          <div>
+            <p className="text-gray-600 mb-1">Student ID</p>
+            <p className="text-lg font-medium">
+              {lesson.studentId?._id || lesson.studentId || "N/A"}
+            </p>
+          </div>
 
-      <hr />
-      <hr />
-
-        <h2>Lesson Status</h2>
-
-       <select
-         value={status}
-         onChange={(e) => setStatus(e.target.value)}
-       >
-        <option value="Scheduled">Scheduled</option>
-        <option value="Completed">Completed</option>
-        <option value="Cancelled">Cancelled</option>
-      </select>
-
-      <h2>Lesson Progress & Remarks</h2>
-
-      <div>
-        <label>
-          <strong>Progress</strong>
-        </label>
-
-        <br />
-
-        <textarea
-          value={progress}
-          onChange={(e) => setProgress(e.target.value)}
-          rows="5"
-          cols="50"
-          placeholder="Enter lesson progress..."
-        />
+          <div>
+            <p className="text-gray-600 mb-1">Instructor ID</p>
+            <p className="text-lg font-medium">
+              {lesson.instructorId?._id ||
+                lesson.instructorId ||
+                "N/A"}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <br />
+      {/* Lesson Status */}
+      <div className="border border-gray-300 rounded-lg p-6 max-w-3xl mb-8">
+        <h3 className="text-xl font-semibold mb-5">
+          Lesson Status
+        </h3>
 
-      <div>
-        <label>
-          <strong>Remarks</strong>
+        <label className="block text-gray-600 mb-2">
+          Current Status
         </label>
 
-        <br />
-
-        <textarea
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          rows="5"
-          cols="50"
-          placeholder="Enter remarks..."
-        />
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2 w-full max-w-md bg-background text-text-primary"
+        >
+          <option value="Scheduled">Scheduled</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
       </div>
 
-      <br />
+      {/* Lesson Progress & Remarks */}
+      <div className="border border-gray-300 rounded-lg p-6 max-w-3xl mb-8">
+        <h3 className="text-xl font-semibold mb-6">
+          Lesson Progress & Remarks
+        </h3>
 
-      <button onClick={handleSave} disabled={saving}>
-        {saving ? "Saving..." : "Save Progress & Remarks"}
-      </button>
-      {lesson.status !== "Cancelled" && (
-     <button
-         onClick={handleCancel}
-        disabled={cancelling}
-     >
-       {cancelling ? "Cancelling..." : "Cancel Lesson"}
-     </button>
-     )}
+        <div className="mb-6">
+          <label className="block text-gray-600 mb-2">
+            Progress
+          </label>
 
-      {message && <p>{message}</p>}
+          <textarea
+            value={progress}
+            onChange={(e) => setProgress(e.target.value)}
+            rows="5"
+            placeholder="Enter lesson progress..."
+            className="border border-gray-300 rounded px-3 py-2 w-full resize-y"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-gray-600 mb-2">
+            Remarks
+          </label>
+
+          <textarea
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            rows="5"
+            placeholder="Enter remarks..."
+            className="border border-gray-300 rounded px-3 py-2 w-full resize-y"
+          />
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Progress & Remarks"}
+          </button>
+
+          {lesson.status !== "Cancelled" && (
+            <button
+              onClick={handleCancel}
+              disabled={cancelling}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
+            >
+              {cancelling ? "Cancelling..." : "Cancel Lesson"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Message */}
+      {message && (
+        <p
+          className={
+            message.includes("successfully")
+              ? "text-green-600"
+              : "text-red-600"
+          }
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 }

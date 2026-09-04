@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { getAllCourses } from "../../api/courseApi";
 
-function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUserId = true }) {
+function StudentForm({
+  initialData = {},
+  onSubmit,
+  submitLabel = "Save",
+  showUserId = true,
+}) {
   const [formData, setFormData] = useState({
     userId: initialData.userId || "",
     nic: initialData.nic || "",
@@ -29,13 +34,20 @@ function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUse
     };
     fetchCourses();
   }, []);
+  // Beginner card එක එහෙමම තියලා, Refresher සහ VIP විතරක් dropdown එකේ order එකේ swap කරනවා
+  const courseOrder = ["Beginner", "VIP", "Refresher"];
+  const sortedCourses = [...courses].sort(
+    (a, b) => courseOrder.indexOf(a.type) - courseOrder.indexOf(b.type),
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((current) => ({
       ...current,
       [name]: value,
-      ...(name === "preferredVehicleType" && value !== "Car" ? { preferredTransmission: "" } : {}),
+      ...(name === "preferredVehicleType" && value !== "Car"
+        ? { preferredTransmission: "" }
+        : {}),
     }));
   };
 
@@ -156,42 +168,42 @@ function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUse
       )}
 
       <div>
-  <label className="block text-sm font-medium text-text-secondary mb-1">
-    Course Package
-  </label>
-  <select
-    name="coursePackage"
-    value={formData.coursePackage}
-    onChange={handleChange}
-    className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
-  >
-    <option value="">-- Select a course package --</option>
-    {courses.map((course) => (
-      <option key={course._id} value={course._id}>
-        {course.name} ({course.type}) - Rs. {course.price}
-      </option>
-    ))}
-  </select>
+        <label className="block text-sm font-medium text-text-secondary mb-1">
+          Course Package
+        </label>
+        <select
+          name="coursePackage"
+          value={formData.coursePackage}
+          onChange={handleChange}
+          className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
+        >
+          <option value="">-- Select a course package --</option>
+          {sortedCourses.map((course) => (
+            <option key={course._id} value={course._id}>
+              {course.name} ({course.type}) - Rs. {course.price}
+            </option>
+          ))}
+        </select>
 
-  {selectedCourse && (
-    <div className="mt-3 p-4 bg-background border border-slate-700 rounded-lg">
-      <p className="text-text-primary font-semibold mb-1">
-        {selectedCourse.name}
-      </p>
-      <p className="text-text-secondary text-sm mb-2">
-        {selectedCourse.description}
-      </p>
-      <div className="flex justify-between text-sm">
-        <span className="text-accent font-semibold">
-          Rs. {selectedCourse.price.toLocaleString()}
-        </span>
-        <span className="text-text-secondary">
-          {selectedCourse.lessonCount} lessons
-        </span>
+        {selectedCourse && (
+          <div className="mt-3 p-4 bg-background border border-slate-700 rounded-lg">
+            <p className="text-text-primary font-semibold mb-1">
+              {selectedCourse.name}
+            </p>
+            <p className="text-text-secondary text-sm mb-2">
+              {selectedCourse.description}
+            </p>
+            <div className="flex justify-between text-sm">
+              <span className="text-accent font-semibold">
+                Rs. {selectedCourse.price.toLocaleString()}
+              </span>
+              <span className="text-text-secondary">
+                {selectedCourse.lessonCount} lessons
+              </span>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  )}
-</div>
 
       <button
         type="submit"

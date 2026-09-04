@@ -48,16 +48,43 @@ const getAdminDashboard = async (req, res) => {
 
 const getInstructorDashboard = async (req, res) => {
   try {
-    const instructorId = req.params.id;
+    const id = req.params.id;
 
-    const assignedStudents = await Student.find({ assignedInstructor: instructorId })
-      .select('userId nic phone');
+    // Find the instructor using either:
+    // 1. Instructor _id
+    // 2. Linked User _id
+    const instructor = await Instructor.findOne({
+      $or: [
+        { _id: id },
+        { userId: id },
+      ],
+    });
 
+    if (!instructor) {
+      return res.status(404).json({
+        message: 'Instructor not found',
+      });
+    }
+
+    const instructorId = instructor._id;
+
+    // Find students assigned to this instructor
+    const assignedStudents = await Student.find({
+      assignedInstructor: instructorId,
+    }).select('userId nic phone');
+
+    // Start of today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Find upcoming scheduled lessons
     const upcomingLessons = await Lesson.find({
-      instructorId,
-      date: { $gte: new Date() },
+      instructorId: instructorId,
+      date: { $gte: today },
       status: 'Scheduled',
-    }).sort({ date: 1 });
+    }).sort({
+      date: 1,
+    });
 
     res.status(200).json({
       totalAssignedStudents: assignedStudents.length,
@@ -65,7 +92,12 @@ const getInstructorDashboard = async (req, res) => {
       upcomingLessons,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Instructor dashboard error:', error);
+
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
   }
 };
 

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
 
@@ -41,79 +42,138 @@ function InstructorStudentsPage() {
 
   if (loading) {
     return (
-      <div className="p-5">
-        <h2 className="text-2xl font-bold">
-          Loading assigned students...
-        </h2>
+      <div className="min-h-screen p-8 md:p-12">
+        <div className="rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
+          <h2 className="text-2xl font-bold text-white">
+            Loading assigned students...
+          </h2>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-5">
-      <h2 className="text-2xl font-bold mb-6">
-        My Assigned Students
-      </h2>
+    <div className="min-h-screen p-8 md:p-12">
+      {/* Page Header */}
+      <div className="mb-8">
+        <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 mb-4">
+          Instructor panel
+        </span>
 
-      {message && (
-        <p className="text-red-600 mb-4">
-          {message}
+        <h1 className="text-4xl font-bold text-white mb-2">
+          My{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">
+            assigned students
+          </span>
+        </h1>
+
+        <p className="text-slate-400">
+          View the students currently assigned to you.
         </p>
+      </div>
+
+      {/* Error Message */}
+      {message && (
+        <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-400">
+          {message}
+        </div>
       )}
 
+      {/* No Students */}
       {students.length === 0 ? (
-        <div className="border border-gray-300 rounded-lg p-4">
-          <p>No students are currently assigned to you.</p>
+        <div className="rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
+          <p className="text-slate-400 text-center">
+            No students are currently assigned to you.
+          </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="table-auto border-collapse border border-gray-300 w-full">
-            <thead>
-              <tr className="bg-background text-text-primary">
-                <th className="border border-gray-300 p-3">
-                  Name
-                </th>
-                <th className="border border-gray-300 p-3">
-                  Email
-                </th>
-                <th className="border border-gray-300 p-3">
-                  NIC
-                </th>
-                <th className="border border-gray-300 p-3">
-                  Phone
-                </th>
-                <th className="border border-gray-300 p-3">
-                  Status
-                </th>
-              </tr>
-            </thead>
+        /* Students Table Card */
+        <div className="rounded-3xl border border-white/20 bg-white/[0.03] overflow-hidden text-white shadow-2xl">
+          <div className="p-6 border-b border-white/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">
+                  Assigned Students
+                </h2>
 
-            <tbody>
-              {students.map((student) => (
-                <tr key={student._id}>
-                  <td className="border border-gray-300 p-3">
-                    {student.userId?.name || "N/A"}
-                  </td>
+                <p className="mt-1 text-sm text-slate-400">
+                  Students currently assigned to your instructor profile.
+                </p>
+              </div>
 
-                  <td className="border border-gray-300 p-3">
-                    {student.userId?.email || "N/A"}
-                  </td>
+              <span className="rounded-full bg-white/[0.03] border border-white/20 px-3 py-1 text-sm text-slate-300">
+                {students.length}{" "}
+                {students.length === 1 ? "Student" : "Students"}
+              </span>
+            </div>
+          </div>
 
-                  <td className="border border-gray-300 p-3">
-                    {student.nic || "N/A"}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-white/[0.03] text-white">
+                  <th className="border-b border-white/10 p-4 text-left font-semibold">
+                    Name
+                  </th>
 
-                  <td className="border border-gray-300 p-3">
-                    {student.phone || "N/A"}
-                  </td>
+                  <th className="border-b border-white/10 p-4 text-left font-semibold">
+                    Email
+                  </th>
 
-                  <td className="border border-gray-300 p-3">
-                    {student.status || "N/A"}
-                  </td>
+                  <th className="border-b border-white/10 p-4 text-left font-semibold">
+                    NIC
+                  </th>
+
+                  <th className="border-b border-white/10 p-4 text-left font-semibold">
+                    Phone
+                  </th>
+
+                  <th className="border-b border-white/10 p-4 text-left font-semibold">
+                    Status
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {students.map((student) => (
+                  <tr
+                    key={student._id}
+                    className="transition-colors hover:bg-white/10"
+                  >
+                    <td className="border-b border-white/10 p-4 text-white">
+                      {student.userId?.name || "N/A"}
+                    </td>
+
+                    <td className="border-b border-white/10 p-4 text-slate-300">
+                      {student.userId?.email || "N/A"}
+                    </td>
+
+                    <td className="border-b border-white/10 p-4 text-slate-300">
+                      {student.nic || "N/A"}
+                    </td>
+
+                    <td className="border-b border-white/10 p-4 text-slate-300">
+                      {student.phone || "N/A"}
+                    </td>
+
+                    <td className="border-b border-white/10 p-4">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
+                          student.status === "Approved"
+                            ? "text-green-400 bg-green-500/10 border border-green-500/20"
+                            : student.status === "Rejected"
+                              ? "text-red-400 bg-red-500/10 border border-red-500/20"
+                              : "text-yellow-400 bg-yellow-500/10 border border-yellow-500/20"
+                        }`}
+                      >
+                        {student.status || "N/A"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
@@ -121,3 +181,4 @@ function InstructorStudentsPage() {
 }
 
 export default InstructorStudentsPage;
+

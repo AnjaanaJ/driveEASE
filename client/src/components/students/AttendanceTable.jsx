@@ -13,7 +13,7 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
   };
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-surface p-5 transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface/95 hover:shadow-2xl hover:shadow-primary/15">
+    <div className="rounded-2xl border border-slate-700 bg-surface p-5 transition duration-300 hover:border-primary/30 hover:bg-surface/95 hover:shadow-2xl hover:shadow-primary/15">
       <h2 className="mb-4 text-lg font-extrabold text-white">Attendance History</h2>
 
       {editable && (

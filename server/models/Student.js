@@ -26,6 +26,14 @@ const studentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
     },
+    preferredVehicleType: {
+      type: String,
+      enum: ["Car", "Bike"],
+    },
+    preferredTransmission: {
+      type: String,
+      enum: ["Manual", "Automatic"],
+    },
     assignedInstructor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor",

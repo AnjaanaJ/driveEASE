@@ -1,12 +1,18 @@
 import { useState } from "react";
 
-function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel }) {
+function CourseForm({
+  initialData = {},
+  onSubmit,
+  submitLabel = "Save",
+  onCancel,
+}) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     type: initialData.type || "Beginner",
     description: initialData.description || "",
     price: initialData.price || "",
     lessonCount: initialData.lessonCount || "",
+    featuresText: (initialData.features || []).join("\n"),
   });
 
   const [loading, setLoading] = useState(false);
@@ -22,11 +28,19 @@ function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel
     setLoading(true);
     try {
       // Converting 'price' and 'lessonCount' from strings to numbers.
+      const featuresArray = formData.featuresText
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+
+      const { featuresText, ...rest } = formData;
       const payload = {
-        ...formData,
+        ...rest,
         price: Number(formData.price),
         lessonCount: Number(formData.lessonCount),
+        features: featuresArray,
       };
+
       await onSubmit(payload);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
@@ -71,7 +85,9 @@ function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel
         </div>
 
         <div>
-          <label className="block text-sm text-text-secondary mb-1">Price (Rs.)</label>
+          <label className="block text-sm text-text-secondary mb-1">
+            Price (Rs.)
+          </label>
           <input
             type="number"
             name="price"
@@ -84,7 +100,9 @@ function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel
         </div>
 
         <div>
-          <label className="block text-sm text-text-secondary mb-1">Lesson Count</label>
+          <label className="block text-sm text-text-secondary mb-1">
+            Lesson Count
+          </label>
           <input
             type="number"
             name="lessonCount"
@@ -98,13 +116,31 @@ function CourseForm({ initialData = {}, onSubmit, submitLabel = "Save", onCancel
       </div>
 
       <div>
-        <label className="block text-sm text-text-secondary mb-1">Description</label>
+        <label className="block text-sm text-text-secondary mb-1">
+          Description
+        </label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
           rows={2}
+        />
+      </div>
+
+                  <div>
+        <label className="block text-sm text-text-secondary mb-1">
+          Features (one per line)
+        </label>
+        <textarea
+          name="featuresText"
+          value={formData.featuresText}
+          onChange={handleChange}
+          placeholder={
+            "12 one-hour lessons\nProgress tracking\nBasic manoeuvres & road rules"
+          }
+          className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
+          rows={4}
         />
       </div>
 

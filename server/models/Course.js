@@ -36,6 +36,10 @@ const courseSchema = new mongoose.Schema(
         message: "Lesson count must be a positive whole number",
       },
     },
+    features: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true },
 );

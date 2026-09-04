@@ -5,7 +5,7 @@ const Course = require("../models/Course");
 // POST /api/students
 const createStudent = async (req, res) => {
   try {
-    const { nic, phone, address, coursePackage } = req.body;
+    const { nic, phone, address, coursePackage, preferredVehicleType, preferredTransmission } = req.body;
 
     // 1. Decide which userId this student profile belongs to.
     //    - Normal users (students) can ONLY create a profile for themselves.
@@ -26,6 +26,9 @@ const createStudent = async (req, res) => {
       ? coursePackage
       : undefined;
 
+    const cleanPreferredVehicleType = preferredVehicleType || undefined;
+    const cleanPreferredTransmission = preferredTransmission || undefined;
+
     // 1a. Required fields check
     if (!userId || !nic || !phone) {
       return res
@@ -38,6 +41,18 @@ const createStudent = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Please provide a valid NIC number" });
+    }
+    if (
+      cleanPreferredVehicleType &&
+      !["Car", "Bike"].includes(cleanPreferredVehicleType)
+    ) {
+      return res.status(400).json({ message: "Invalid preferred vehicle type" });
+    }
+    if (
+      cleanPreferredVehicleType === "Car" &&
+      !["Manual", "Automatic"].includes(cleanPreferredTransmission)
+    ) {
+      return res.status(400).json({ message: "Please select a transmission for the car" });
     }
 
     // 2. Check NIC already exists
@@ -71,6 +86,8 @@ const createStudent = async (req, res) => {
       phone,
       address,
       coursePackage: cleanCoursePackage,
+      preferredVehicleType: cleanPreferredVehicleType,
+      preferredTransmission: cleanPreferredVehicleType === "Car" ? cleanPreferredTransmission : undefined,
     });
 
     res
@@ -140,7 +157,7 @@ const updateStudent = async (req, res) => {
   try {
     const student = req.student;
 
-    const { phone, address, coursePackage, assignedInstructor } = req.body;
+    const { phone, address, coursePackage, assignedInstructor, preferredVehicleType, preferredTransmission } = req.body;
 
     // Phone format validation (only if they're actually changing it)
     if (phone) {
@@ -155,6 +172,20 @@ const updateStudent = async (req, res) => {
     }
 
     if (address) student.address = address;
+
+    if (preferredVehicleType !== undefined) {
+      if (!["Car", "Bike"].includes(preferredVehicleType)) {
+        return res.status(400).json({ message: "Invalid preferred vehicle type" });
+      }
+      if (
+        preferredVehicleType === "Car" &&
+        !["Manual", "Automatic"].includes(preferredTransmission)
+      ) {
+        return res.status(400).json({ message: "Please select a transmission for the car" });
+      }
+      student.preferredVehicleType = preferredVehicleType;
+      student.preferredTransmission = preferredVehicleType === "Car" ? preferredTransmission : undefined;
+    }
 
     // Course exists validation (only if they're actually changing it)
     if (coursePackage) {

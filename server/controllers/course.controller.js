@@ -29,7 +29,7 @@ const getCourseById = async (req, res) => {
 // POST /api/courses
 const createCourse = async (req, res) => {
   try {
-    const { name, type, description, price, lessonCount } = req.body;
+    const { name, type, description, price, lessonCount, features } = req.body;
 
     if (!name || !type || price === undefined || !lessonCount) {
       return res
@@ -54,6 +54,7 @@ const createCourse = async (req, res) => {
       description,
       price,
       lessonCount,
+      features: features || [],
     });
 
     res

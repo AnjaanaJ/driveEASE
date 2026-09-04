@@ -23,11 +23,11 @@ function InstructorPerformancePage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">
+      <h1 className="text-3xl font-bold mb-6 text-text-primary">
         Instructor Performance
       </h1>
 
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
+      <div className="bg-background rounded-lg shadow p-6 space-y-4">
 
         <p>
           <strong>Total Students:</strong>{" "}

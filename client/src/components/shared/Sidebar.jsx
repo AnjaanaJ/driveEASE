@@ -16,7 +16,11 @@ const adminLinks = [
 const instructorLinks = [
   { to: "/", label: "Home" },
   { to: "/instructor/dashboard", label: "Dashboard" },
-  { to: "/instructor/lessons", label: "My Schedule" },
+  { to: "/instructor/profile", label: "My Profile" },
+  { to: "/instructor/lessons", label: "My Lessons" },
+  { to: "/instructor/students", label: "My Students" },
+  { to: "/instructor/documents", label: "My Documents" },
+  { to: "/instructor/availability", label: "My Availability" },
   { to: "/notifications", label: "Notifications" },
 ];
 

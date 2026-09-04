@@ -113,7 +113,7 @@ function VehicleMaintenancePage() {
 </form>
 
       <table className="w-full border">
-        <thead className="bg-gray-200">
+        <thead className="bg-background">
           <tr>
             <th className="p-3">Date</th>
             <th className="p-3">Description</th>
@@ -122,7 +122,7 @@ function VehicleMaintenancePage() {
         </thead>
 
         <tbody>
-          {logs.map((log) => (
+          {logs.filter((log) => log !== null).map((log) => (
             <tr key={log._id}>
               <td className="p-3">
                 {new Date(log.maintenanceDate).toLocaleDateString()}

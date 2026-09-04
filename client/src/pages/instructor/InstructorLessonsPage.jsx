@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
@@ -25,7 +26,7 @@ function InstructorLessonsPage() {
 
       // Get lessons belonging to this instructor
       const response = await axiosInstance.get(
-        `/lessons/instructor/${instructorId}`
+        "/lessons/instructor/" + instructorId
       );
 
       setLessons(response.data);
@@ -42,72 +43,123 @@ function InstructorLessonsPage() {
   };
 
   if (loading) {
-    return <p>Loading lessons...</p>;
+    return (
+      <div className="p-5">
+        <h2 className="text-2xl font-bold">
+          Loading lessons...
+        </h2>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>My Lessons</h1>
+    <div className="p-5">
 
-      {message && <p>{message}</p>}
+      <h2 className="text-2xl font-bold mb-6">
+        My Lessons
+      </h2>
+
+      {message && (
+        <p className="text-red-600 mb-4">
+          {message}
+        </p>
+      )}
 
       {lessons.length === 0 ? (
-        <p>No lessons assigned to you.</p>
+        <div className="border border-gray-300 rounded-lg p-4">
+          <p>No lessons assigned to you.</p>
+        </div>
       ) : (
-        <table border="1" cellPadding="10">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Student</th>
-              <th>Vehicle</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+        <div className="overflow-x-auto">
 
-          <tbody>
-            {lessons.map((lesson) => (
-              <tr key={lesson._id}>
-                <td>
-                  {new Date(lesson.date).toLocaleDateString()}
-                </td>
+          <table className="table-auto border-collapse border border-gray-300 w-full">
 
-                <td>
-                  {lesson.startTime} - {lesson.endTime}
-                </td>
+            <thead>
+              <tr className="bg-background text-text-primary">
 
-                <td>{lesson.status}</td>
+                <th className="border border-gray-300 p-3">
+                  Date
+                </th>
 
-                <td>
-                  {lesson.studentId?.userId?.name ||
-                    lesson.studentId?.nic ||
-                    lesson.studentId?._id ||
-                    "N/A"}
-                </td>
+                <th className="border border-gray-300 p-3">
+                  Time
+                </th>
 
-                <td>
-                  {lesson.vehicleId?.registrationNumber ||
-                    lesson.vehicleId?._id ||
-                    "N/A"}
-                </td>
+                <th className="border border-gray-300 p-3">
+                  Status
+                </th>
 
-                <td>
-                  <button
-                    onClick={() =>
-                      navigate(`/instructor/lessons/${lesson._id}`)
-                    }
-                  >
-                    View Lesson
-                  </button>
-                </td>
+                <th className="border border-gray-300 p-3">
+                  Student
+                </th>
+
+                <th className="border border-gray-300 p-3">
+                  Vehicle
+                </th>
+
+                <th className="border border-gray-300 p-3">
+                  Action
+                </th>
+
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+
+              {lessons.map((lesson) => (
+                <tr key={lesson._id}>
+
+                  <td className="border border-gray-300 p-3">
+                    {new Date(lesson.date).toLocaleDateString()}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
+                    {lesson.startTime} - {lesson.endTime}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
+                    {lesson.status}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
+                    {lesson.studentId?.userId?.name ||
+                      lesson.studentId?.nic ||
+                      lesson.studentId?._id ||
+                      "N/A"}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
+                    {lesson.vehicleId?.registrationNumber ||
+                      lesson.vehicleId?._id ||
+                      "N/A"}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
+
+                    <button
+                      onClick={() =>
+                        navigate("/instructor/lessons/" + lesson._id)
+                      }
+                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    >
+                      View Lesson
+                    </button>
+
+                  </td>
+
+                </tr>
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
       )}
+
     </div>
   );
 }
 
 export default InstructorLessonsPage;
+

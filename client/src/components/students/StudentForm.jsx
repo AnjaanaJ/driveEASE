@@ -8,6 +8,8 @@ function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUse
     phone: initialData.phone || "",
     address: initialData.address || "",
     coursePackage: initialData.coursePackage || "",
+    preferredVehicleType: initialData.preferredVehicleType || "",
+    preferredTransmission: initialData.preferredTransmission || "",
   });
 
   const [courses, setCourses] = useState([]);
@@ -29,7 +31,12 @@ function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUse
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+      ...(name === "preferredVehicleType" && value !== "Car" ? { preferredTransmission: "" } : {}),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -111,6 +118,42 @@ function StudentForm({ initialData = {}, onSubmit, submitLabel = "Save", showUse
           className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
         />
       </div>
+
+      <div>
+        <label className="block text-sm font-medium text-text-secondary mb-1">
+          Preferred Vehicle Type
+        </label>
+        <select
+          name="preferredVehicleType"
+          value={formData.preferredVehicleType}
+          onChange={handleChange}
+          required
+          className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
+        >
+          <option value="">-- Select a vehicle type --</option>
+          <option value="Car">Car</option>
+          <option value="Bike">Bike</option>
+        </select>
+      </div>
+
+      {formData.preferredVehicleType === "Car" && (
+        <div>
+          <label className="block text-sm font-medium text-text-secondary mb-1">
+            Car Transmission
+          </label>
+          <select
+            name="preferredTransmission"
+            value={formData.preferredTransmission}
+            onChange={handleChange}
+            required
+            className="w-full bg-background border border-slate-600 rounded px-3 py-2 text-text-primary focus:outline-none focus:border-accent"
+          >
+            <option value="">-- Select transmission --</option>
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
+          </select>
+        </div>
+      )}
 
       <div>
   <label className="block text-sm font-medium text-text-secondary mb-1">

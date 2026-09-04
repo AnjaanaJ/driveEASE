@@ -34,13 +34,18 @@ function StudentProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({ phone: "", address: "" });
+  const [formData, setFormData] = useState({ phone: "", address: "", preferredVehicleType: "", preferredTransmission: "" });
 
   const fetchProfile = async () => {
     try {
       const data = await getStudentByUserId(user?.id || user?._id);
       setStudent(data);
-      setFormData({ phone: data.phone || "", address: data.address || "" });
+      setFormData({
+        phone: data.phone || "",
+        address: data.address || "",
+        preferredVehicleType: data.preferredVehicleType || "",
+        preferredTransmission: data.preferredTransmission || "",
+      });
 
       if (data?.status === "Approved" && data?._id) {
         const attendanceData = await getStudentAttendance(data._id);
@@ -58,7 +63,12 @@ function StudentProfilePage() {
   }, [user]);
 
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+      ...(name === "preferredVehicleType" && value !== "Car" ? { preferredTransmission: "" } : {}),
+    }));
   };
 
   const handleSubmit = async (event) => {
@@ -102,16 +112,13 @@ function StudentProfilePage() {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8 sm:px-8">
+    <div className="min-h-screen bg-background p-4 sm:p-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <span className="mb-3 inline-flex rounded-full border border-white/10 bg-surface px-3 py-1 text-xs font-medium tracking-wide text-accent">
-            STUDENT PORTAL
-          </span>
           <h1 className="text-3xl font-bold text-text-primary sm:text-4xl">
             My <span className="text-gradient-brand">profile</span>
           </h1>
-          <p className="mt-2 text-text-secondary">Keep your contact details and learning records in one place.</p>
+          <p className="mt-2 text-text-secondary">Your personal details, learning preferences, and records in one place.</p>
         </div>
 
         {(success || error) && (
@@ -120,32 +127,34 @@ function StudentProfilePage() {
           </div>
         )}
 
-        <section className="relative mb-6 overflow-hidden rounded-3xl border border-white/10 bg-surface/70 p-6 backdrop-blur-xl sm:p-8">
-          <div className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-xl font-bold text-white shadow-lg shadow-primary/20">
-                {initials}
+        <div className="relative mb-6">
+          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-primary/15 to-accent/15 blur-xl" />
+          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-surface/70 p-6 backdrop-blur-xl sm:p-8">
+            <div className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-primary/20 blur-3xl" />
+            <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-xl font-bold text-white shadow-lg shadow-primary/20">
+                  {initials}
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">Student account</p>
+                  <h2 className="mt-1 text-xl font-bold text-text-primary">{user?.name || "Student"}</h2>
+                  <p className="mt-1 text-sm text-text-secondary">{user?.email || "Student account"}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-text-primary">{user?.name || "Student"}</h2>
-                <p className="mt-1 text-sm text-text-secondary">{user?.email || "Student account"}</p>
+              <div className="sm:text-right">
+                <span className={`inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-sm font-semibold ${profileStatus.badge}`}>
+                  <span className="mr-2 h-1.5 w-1.5 rounded-full bg-current" />
+                  {student.status || "Pending"}
+                </span>
+                <p className="mt-2 max-w-xs text-sm text-text-secondary">{profileStatus.detail}</p>
               </div>
             </div>
-            <span className={`inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-sm font-semibold ${profileStatus.badge}`}>
-              <span className="mr-2 h-1.5 w-1.5 rounded-full bg-current" />
-              {student.status || "Pending"}
-            </span>
-          </div>
-        </section>
-
-        <div className={`mb-6 rounded-2xl border p-4 text-sm ${profileStatus.panel}`}>
-          <p className="font-semibold">Registration {student.status?.toLowerCase() || "pending"}</p>
-          <p className="mt-1 opacity-80">{profileStatus.detail}</p>
+          </section>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-5">
-          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-surface/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface hover:shadow-2xl hover:shadow-primary/15 backdrop-blur-xl lg:col-span-3 sm:p-8">
+        <div className="space-y-6">
+          <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-surface/70 p-6 transition duration-300 hover:border-primary/30 hover:bg-surface hover:shadow-2xl hover:shadow-primary/15 backdrop-blur-xl sm:p-8">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-extrabold text-white">Personal details</h2>
@@ -168,6 +177,24 @@ function StudentProfilePage() {
                   <label htmlFor="address" className="mb-2 block text-sm font-medium text-text-secondary">Address</label>
                   <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full resize-none rounded-xl border border-white/10 bg-background/70 px-4 py-3 text-text-primary outline-none transition placeholder:text-text-secondary focus:border-accent focus:ring-2 focus:ring-accent/20" />
                 </div>
+                <div>
+                  <label htmlFor="preferredVehicleType" className="mb-2 block text-sm font-medium text-text-secondary">Preferred vehicle type</label>
+                  <select id="preferredVehicleType" name="preferredVehicleType" value={formData.preferredVehicleType} onChange={handleChange} required className="w-full rounded-xl border border-white/10 bg-background/70 px-4 py-3 text-text-primary outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20">
+                    <option value="">Select a vehicle type</option>
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike</option>
+                  </select>
+                </div>
+                {formData.preferredVehicleType === "Car" && (
+                  <div>
+                    <label htmlFor="preferredTransmission" className="mb-2 block text-sm font-medium text-text-secondary">Car transmission</label>
+                    <select id="preferredTransmission" name="preferredTransmission" value={formData.preferredTransmission} onChange={handleChange} required className="w-full rounded-xl border border-white/10 bg-background/70 px-4 py-3 text-text-primary outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20">
+                      <option value="">Select transmission</option>
+                      <option value="Manual">Manual</option>
+                      <option value="Automatic">Automatic</option>
+                    </select>
+                  </div>
+                )}
                 <div className="flex gap-3">
                   <button type="submit" className="rounded-xl bg-gradient-to-r from-primary to-secondary px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90">Save changes</button>
                   <button type="button" onClick={() => setEditing(false)} className="rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium text-text-primary transition hover:bg-white/5">Cancel</button>
@@ -177,17 +204,18 @@ function StudentProfilePage() {
               <dl className="grid gap-4 sm:grid-cols-2">
                 <DetailItem label="NIC" value={student.nic} />
                 <DetailItem label="Phone" value={student.phone} />
-                <DetailItem label="Address" value={student.address || "Not added yet"} />
-                <DetailItem label="Course package" value={student.coursePackage?.name || "Not assigned yet"} accent={Boolean(student.coursePackage?.name)} />
-                <DetailItem label="Assigned instructor" value={student.assignedInstructor?.name || "Not yet assigned"} accent={Boolean(student.assignedInstructor?.name)} />
+                <div className="sm:col-span-2"><DetailItem label="Address" value={student.address || "Not added yet"} /></div>
               </dl>
             )}
           </section>
 
-          <section className="rounded-3xl border border-white/10 bg-surface/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface hover:shadow-2xl hover:shadow-primary/15 backdrop-blur-xl lg:col-span-2 sm:p-8">
-            <h2 className="text-xl font-extrabold text-white">Profile overview</h2>
-            <p className="mt-1 text-sm text-text-secondary">A quick look at your account.</p>
+          <section className="rounded-3xl border border-white/10 bg-surface/70 p-6 transition duration-300 hover:border-primary/30 hover:bg-surface hover:shadow-2xl hover:shadow-primary/15 backdrop-blur-xl sm:p-8">
+            <h2 className="text-xl font-extrabold text-white">Learning overview</h2>
+            <p className="mt-1 text-sm text-text-secondary">Your selected package and learning setup.</p>
             <div className="mt-6 space-y-4">
+              <OverviewItem label="Course package" value={student.coursePackage?.name || "Not assigned yet"} />
+              <OverviewItem label="Preferred vehicle" value={student.preferredVehicleType ? `${student.preferredVehicleType}${student.preferredTransmission ? ` · ${student.preferredTransmission}` : ""}` : "Not selected yet"} />
+              <OverviewItem label="Assigned instructor" value={student.assignedInstructor?.name || "Not yet assigned"} />
               <OverviewItem label="Attendance records" value={attendance.length} />
               <OverviewItem label="Uploaded documents" value={student.documents?.length || 0} />
               <OverviewItem label="Member since" value={student.createdAt ? new Date(student.createdAt).toLocaleDateString() : "-"} />
@@ -196,7 +224,7 @@ function StudentProfilePage() {
         </div>
 
         {isApproved && (
-          <div className="mt-6 grid gap-6 xl:grid-cols-2">
+          <div className="mt-6 space-y-6">
             <AttendanceTable attendance={attendance} editable={false} />
             <div className="space-y-6">
               <DocumentUploader studentId={student._id} onUploadSuccess={fetchProfile} />

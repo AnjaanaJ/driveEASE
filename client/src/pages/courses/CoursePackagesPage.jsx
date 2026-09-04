@@ -22,6 +22,10 @@ function CoursePackagesPage() {
 
     fetchCourses();
   }, []);
+  const order = ["Beginner", "VIP", "Refresher"];
+const sortedCourses = [...courses].sort(
+  (a, b) => order.indexOf(a.type) - order.indexOf(b.type)
+);
 
   return (
     <>
@@ -47,16 +51,16 @@ function CoursePackagesPage() {
           </div>
 
           {courses.length === 0 ? (
-            <p className="text-text-secondary text-center">
-              No course packages available yet.
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {courses.map((course) => (
-                <CoursePackageCard key={course._id} course={course} />
-              ))}
-            </div>
-          )}
+  <p className="text-text-secondary text-center">
+    No course packages available yet.
+  </p>
+) : (
+  <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+    {sortedCourses.map((course) => (
+      <CoursePackageCard key={course._id} course={course} />
+    ))}
+  </div>
+)}
         </div>
       )}
     </>

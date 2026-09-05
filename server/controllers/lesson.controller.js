@@ -159,48 +159,94 @@ const updateLesson = async (req, res) => {
     if (!lesson) {
       return res.status(404).json({ message: 'Lesson not found' });
     }
-    if (req.user.role === "instructor") {
-    const instructor = await require("../models/Instructor").findOne({
-      user: req.user.id,
-    });
-
-    if (!instructor || instructor._id.toString() !== lesson.instructorId.toString()) {
-      return res.status(403).json({
-        message: "Access denied",
-      });
-    }
-}
-    const { date, startTime, endTime, status, progress, remarks } = req.body;
+    const { date, startTime, endTime, status } = req.body;
 
     if (status && req.user.role === 'student') {
       return res.status(403).json({ message: 'Students cannot change lesson status' });
     }
-    const isReschedule = date || startTime || endTime;
+    const isReschedule = Boolean(date || startTime || endTime);
 
+    if (isReschedule) {
+      if (lesson.status !== 'Scheduled') {
+        return res.status(400).json({ message: `Cannot reschedule a lesson that is already ${lesson.status}` });
+      }
+      const newDate = date || lesson.date;
+      const newStartTime = startTime || lesson.startTime;
+      const newEndTime = endTime || lesson.endTime;
+      const chosenDate = new Date(newDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (chosenDate < today) {
+        return res.status(400).json({ message: 'Cannot reschedule to a past date' });
+      }
+      if (newEndTime <= newStartTime) {
+        return res.status(400).json({ message: 'End time must be after start time' });
+      }
+      const durationMinutes = getDurationMinutes(newStartTime, newEndTime);
+      if (durationMinutes > MAX_DURATION_MINUTES) {
+        return res.status(400).json({ message: `Lesson duration cannot exceed ${MAX_DURATION_MINUTES} minutes` });
+      }
+    }
+    if (status) {
+      if (status === 'Completed') {
+        if (lesson.status !== 'Scheduled') {
+          return res.status(400).json({ message: `Cannot mark a ${lesson.status} lesson as Completed` });
+        }
+        const lessonDateTime = new Date(`${lesson.date.toISOString().split('T')[0]}T${lesson.endTime}`);
+        if (lessonDateTime > new Date()) {
+          return res.status(400).json({ message: 'Cannot mark a future lesson as Completed' });
+        }
+      }
+    }
     if (date) lesson.date = date;
     if (startTime) lesson.startTime = startTime;
     if (endTime) lesson.endTime = endTime;
     if (status) lesson.status = status;
-    if (progress !== undefined) lesson.progress = progress;
-    if (remarks !== undefined) lesson.remarks = remarks;
 
     await lesson.save();
 
+    const student = await Student.findById(lesson.studentId);
+    const studentUserId = student ? student.userId : null;
+
+    const dateStr = lesson.date.toISOString().split('T')[0];
     const message = isReschedule
-      ? `Your lesson has been rescheduled to ${lesson.date.toISOString().split('T')[0]} at ${lesson.startTime}.`
+      ? `Your lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
       : `Your lesson status has been updated to "${lesson.status}".`;
 
+      if (studentUserId) {
+      await Notification.create({
+        userId: studentUserId,
+        message,
+        type: isReschedule ? 'Reminder' : 'StatusUpdate',
+      });
+    }
+
     await Notification.create({
-      userId: lesson.studentId,
-      message: message,
+      userId: lesson.instructorId,
+      message: isReschedule
+        ? `The lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
+        : `A lesson's status has been updated to "${lesson.status}".`,
       type: isReschedule ? 'Reminder' : 'StatusUpdate',
     });
+
+    const admin = await User.findOne({ role: 'admin' });
+    if (admin) {
+      await Notification.create({
+        userId: admin._id,
+        message: isReschedule
+          ? `A lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
+          : `A lesson's status has been updated to "${lesson.status}".`,
+        type: isReschedule ? 'Reminder' : 'StatusUpdate',
+      });
+    }
 
     res.status(200).json({ message: 'Lesson updated successfully', lesson });
   } catch (error) {
     res.status(400).json({ message: 'Failed to update lesson', error: error.message });
   }
 };
+
 const cancelLesson = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.id);

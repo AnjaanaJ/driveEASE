@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import axiosInstance from "../../services/axiosInstance";
 
@@ -126,119 +127,186 @@ function InstructorAvailabilityPage() {
 
   if (loading) {
     return (
-      <div className="p-5">
-        <h2 className="text-2xl font-bold">
-          Loading availability...
-        </h2>
+      <div className="min-h-screen p-8 md:p-12">
+        <div className="rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
+          <h2 className="text-2xl font-bold text-white">
+            Loading availability...
+          </h2>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-5">
-      <h2 className="text-2xl font-bold mb-4">
-        My Availability
-      </h2>
+    <div className="min-h-screen p-8 md:p-12">
+      {/* Page Header */}
+      <div className="mb-8">
+        <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 mb-4">
+          Instructor panel
+        </span>
 
-      <p className="mb-5">
-        Set the days and times when you are available for driving lessons.
-      </p>
+        <h1 className="text-4xl font-bold text-white mb-2">
+          My{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">
+            availability
+          </span>
+        </h1>
 
+        <p className="text-slate-400">
+          Set the days and times when you are available for driving lessons.
+        </p>
+      </div>
+
+      {/* Success Message */}
       {message && (
-        <p className="text-green-600 mb-4">
+        <div className="mb-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-4 text-green-400">
           {message}
-        </p>
-      )}
-
-      {error && (
-        <p className="text-red-600 mb-4">
-          {error}
-        </p>
-      )}
-
-      {availability.length === 0 && (
-        <div className="border border-gray-300 rounded-lg p-4 mb-5">
-          <p>No availability has been set.</p>
         </div>
       )}
 
-      {availability.map((slot, index) => (
-        <div
-          key={index}
-          className="mb-4 p-4 border border-gray-300 rounded-lg"
-        >
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-400">
+          {error}
+        </div>
+      )}
+
+      {/* Availability Section */}
+      <div className="rounded-3xl border border-white/20 bg-white/[0.03] p-6 text-white shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <label className="mr-2">Day: </label>
+            <h2 className="text-lg font-semibold text-white">
+              Available Time Slots
+            </h2>
 
-            <select
-              value={slot.day}
-              onChange={(e) =>
-                handleChange(index, "day", e.target.value)
-              }
-              className="border border-gray-300 rounded px-2 py-1"
+            <p className="mt-1 text-sm text-slate-400">
+              Manage the days and time periods when students can book lessons
+              with you.
+            </p>
+          </div>
+
+          <span className="rounded-full bg-white/[0.03] border border-white/20 px-3 py-1 text-sm text-slate-300">
+            {availability.length}{" "}
+            {availability.length === 1 ? "Slot" : "Slots"}
+          </span>
+        </div>
+
+        {/* No Availability */}
+        {availability.length === 0 && (
+          <div className="mb-6 rounded-2xl border border-dashed border-white/20 p-8 text-center">
+            <p className="text-slate-400">
+              No availability has been set.
+            </p>
+
+            <p className="mt-1 text-sm text-slate-400">
+              Add an availability slot below to get started.
+            </p>
+          </div>
+        )}
+
+        {/* Availability Slots */}
+        <div className="space-y-4">
+          {availability.map((slot, index) => (
+            <div
+              key={index}
+              className="rounded-2xl border border-white/10 p-5 transition-colors hover:bg-white/10"
             >
-              {days.map((day) => (
-                <option key={day} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Day */}
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-slate-300">
+                    Day
+                  </label>
 
-          <div className="mt-3">
-            <label className="mr-2">Start Time: </label>
+                  <select
+                    value={slot.day}
+                    onChange={(e) =>
+                      handleChange(index, "day", e.target.value)
+                    }
+                    className="w-full bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  >
+                    {days.map((day) => (
+                      <option
+                        key={day}
+                        value={day}
+                        className="bg-[var(--color-background)] text-white"
+                      >
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <input
-              type="time"
-              value={slot.startTime}
-              onChange={(e) =>
-                handleChange(index, "startTime", e.target.value)
-              }
-              className="border border-gray-300 rounded px-2 py-1"
-            />
-          </div>
+                {/* Start Time */}
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-slate-300">
+                    Start Time
+                  </label>
 
-          <div className="mt-3">
-            <label className="mr-2">End Time: </label>
+                  <input
+                    type="time"
+                    value={slot.startTime}
+                    onChange={(e) =>
+                      handleChange(index, "startTime", e.target.value)
+                    }
+                    className="w-full bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
 
-            <input
-              type="time"
-              value={slot.endTime}
-              onChange={(e) =>
-                handleChange(index, "endTime", e.target.value)
-              }
-              className="border border-gray-300 rounded px-2 py-1"
-            />
-          </div>
+                {/* End Time */}
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-slate-300">
+                    End Time
+                  </label>
+
+                  <input
+                    type="time"
+                    value={slot.endTime}
+                    onChange={(e) =>
+                      handleChange(index, "endTime", e.target.value)
+                    }
+                    className="w-full bg-[var(--color-background)] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
+              </div>
+
+              {/* Remove */}
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => removeSlot(index)}
+                  className="px-3 py-1.5 text-sm rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Actions */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={addSlot}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
+          >
+            + Add Availability
+          </button>
 
           <button
             type="button"
-            onClick={() => removeSlot(index)}
-            className="mt-3 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+            onClick={saveAvailability}
+            disabled={saving}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Remove
+            {saving ? "Saving..." : "Save Availability"}
           </button>
         </div>
-      ))}
-
-      <button
-        type="button"
-        onClick={addSlot}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Add Availability
-      </button>
-
-      <button
-        type="button"
-        onClick={saveAvailability}
-        disabled={saving}
-        className="ml-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-      >
-        {saving ? "Saving..." : "Save Availability"}
-      </button>
+      </div>
     </div>
   );
 }
 
 export default InstructorAvailabilityPage;
+

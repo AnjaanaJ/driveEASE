@@ -51,6 +51,11 @@ const studentSchema = new mongoose.Schema(
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
+    studentId: {
+      type: String,
+      unique: true,
+      sparse: true, // allows many students to have "no studentId yet" without breaking uniqueness
+    },
     status: {
       type: String,
       enum: ["Pending", "Approved", "Rejected"],

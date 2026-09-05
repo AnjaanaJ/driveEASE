@@ -7,13 +7,13 @@ function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student");
+  const role = "student";
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { register } = useAuth();
@@ -48,9 +48,6 @@ function RegisterPage() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (!agreedToTerms) {
-      newErrors.terms = "You must agree to the Terms & Conditions";
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -99,23 +96,7 @@ function RegisterPage() {
                 Get started with driveEASE today
               </p>
 
-              {/* Functional role tabs */}
-              <div className="flex gap-2 mb-5">
-                {["student", "instructor"].map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setRole(r)}
-                    className={`flex-1 py-1.5 rounded-full text-xs font-medium capitalize transition ${
-                      role === r
-                        ? "bg-[var(--color-accent)] text-white"
-                        : "bg-slate-800 text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
+            
               <form onSubmit={handleSubmit}>
                 {serverError && (
                   <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded mb-4">
@@ -171,7 +152,7 @@ function RegisterPage() {
                     <div className="relative">
                       <input
                         id="password"
-                        type={showPassword? "text":"password"}
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full pr-9 pl-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
@@ -232,26 +213,54 @@ function RegisterPage() {
                       Confirm password
                     </label>
                     <div className="relative">
-                    <input
-                      id="confirmPassword"
-                      type={showConfirmPassword? "text":"password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-                    />
-                    <button
+                      <input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
+                      />
+                      <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
                       >
                         {showConfirmPassword ? (
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.4 5.5A9.6 9.6 0 0 1 12 5c5 0 9 4 10 7-.4 1.1-1.2 2.4-2.3 3.5M6.3 6.3C4.2 7.7 2.7 9.6 2 12c1 3 5 7 10 7 1.3 0 2.5-.3 3.6-.7" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.4 5.5A9.6 9.6 0 0 1 12 5c5 0 9 4 10 7-.4 1.1-1.2 2.4-2.3 3.5M6.3 6.3C4.2 7.7 2.7 9.6 2 12c1 3 5 7 10 7 1.3 0 2.5-.3 3.6-.7"
+                            />
                           </svg>
                         ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"
+                            />
                             <circle cx="12" cy="12" r="3" />
                           </svg>
                         )}
@@ -264,20 +273,7 @@ function RegisterPage() {
                     )}
                   </div>
                 </div>
-                <div className="mb-5">
-                  <label className="flex items-center gap-2 text-sm text-slate-400">
-                    <input
-                      type="checkbox"
-                      checked={agreedToTerms}
-                      onChange={(e) => setAgreedToTerms(e.target.checked)}
-                      className="w-4 h-4 rounded accent-[var(--color-accent)]"
-                    />
-                    I agree to the Terms & Conditions
-                  </label>
-                  {errors.terms && (
-                    <p className="text-red-400 text-sm mt-1">{errors.terms}</p>
-                  )}
-                </div>
+
                 <button
                   type="submit"
                   disabled={submitting}

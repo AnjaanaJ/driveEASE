@@ -1,19 +1,29 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { getInstructorDashboard } from '../../api/dashboardApi';
 import StatCard from '../../components/dashboard/StatCard';
 
 function InstructorAnalyticsPage() {
+  const { user } = useAuth();
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const instructorId = '650000000000000000000099';
+    if (!user?._id && !user?.id) return;
+
+    const instructorId = user._id || user.id;
 
     getInstructorDashboard(instructorId)
-      .then((res) => setData(res.data))
-      .catch((err) => console.error(err))
+      .then((res) => {
+        console.log('Instructor dashboard response:', res.data);
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.error('Instructor dashboard error:', err);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   if (loading) {
     return (
@@ -66,7 +76,7 @@ function InstructorAnalyticsPage() {
               </p>
             ) : (
               <ul className="space-y-2">
-                {data.upcomingLessons.map((lesson) => (
+                {data?.upcomingLessons?.map((lesson) => (
                   <li
                     key={lesson._id}
                     className="text-text-secondary text-sm border-b border-white/5 pb-2"

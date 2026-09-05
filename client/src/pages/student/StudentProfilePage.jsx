@@ -177,13 +177,18 @@ function StudentProfilePage() {
                   </p>
                 </div>
               </div>
-              <div className="sm:text-right">
+                            <div className="sm:text-right">
                 <span
                   className={`inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-sm font-semibold ${profileStatus.badge}`}
                 >
                   <span className="mr-2 h-1.5 w-1.5 rounded-full bg-current" />
                   {student.status || "Pending"}
                 </span>
+                {student.studentId && (
+                  <p className="mt-2 text-sm font-semibold text-accent">
+                    ID: {student.studentId}
+                  </p>
+                )}
                 <p className="mt-2 max-w-xs text-sm text-text-secondary">
                   {profileStatus.detail}
                 </p>

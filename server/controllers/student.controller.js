@@ -1,6 +1,21 @@
 const Student = require("../models/Student");
 const Course = require("../models/Course");
 
+// Helper: generates a unique, human-readable Student ID like STU-2026-0001
+// Format: STU-<year>-<4 digit sequence number>
+const generateStudentId = async () => {
+  const year = new Date().getFullYear();
+
+  // Count how many students already have a studentId assigned.
+  // We use that count to decide the next sequence number.
+  const count = await Student.countDocuments({
+    studentId: { $exists: true, $ne: null },
+  });
+
+  const nextNumber = (count + 1).toString().padStart(4, "0"); // e.g. 1 -> "0001"
+  return `STU-${year}-${nextNumber}`;
+};
+
 // Create a new student profile
 // POST /api/students
 const createStudent = async (req, res) => {
@@ -316,9 +331,19 @@ const approveStudent = async (req, res) => {
     }
 
     student.status = "Approved";
+
+    // Only generate a new ID if this student doesn't already have one.
+    // Prevents wasting sequence numbers if a student is rejected then re-approved.
+    if (!student.studentId) {
+      student.studentId = await generateStudentId();
+    }
+
     await student.save();
 
-    res.status(200).json({ message: "Student approved successfully", student });
+    res.status(200).json({
+      message: "Student approved successfully",
+      student,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

@@ -33,7 +33,7 @@ router.post(
 router.get(
   "/",
   verifyToken,
-  requireRole("admin"),
+  requireRole("admin", "instructor", "student"),
   getInstructors
 );
 

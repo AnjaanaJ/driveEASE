@@ -10,14 +10,15 @@ function CoursePackageCard({ course }) {
 
   return (
     <div
-      className={`relative bg-surface border rounded-2xl p-7 transition-all hover:-translate-y-1 shadow-lg ${
-        isPopular
-          ? "border-accent ring-1 ring-accent"
-          : "border-slate-700 hover:border-accent"
+      className={`relative overflow-hidden rounded-3xl p-7 border bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-colors ${
+        isPopular ? "border-white/30" : "border-white/20"
       }`}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+      <div className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/20 blur-3xl" />
+
       {isPopular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white text-xs font-semibold px-4 py-1 rounded-full shadow-md">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold px-4 py-1 rounded-full">
           Most popular
         </span>
       )}
@@ -31,7 +32,7 @@ function CoursePackageCard({ course }) {
       <p className="text-text-secondary text-sm mb-6 min-h-[40px]">
         {course.description}
       </p>
-      <div className="text-gradient-brand text-3xl font-extrabold mb-1">
+      <div className="text-accent text-3xl font-extrabold mb-1">
         Rs. {course.price.toLocaleString()}
       </div>
       <div className="text-text-secondary text-sm mb-6">
@@ -54,7 +55,7 @@ function CoursePackageCard({ course }) {
 
       <button
         onClick={handleChoosePackage}
-        className="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold py-2.5 rounded-lg hover:opacity-90 transition"
+        className="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold py-2.5 rounded-lg hover:bg-white/15 transition-colors"
       >
         Choose Package
       </button>

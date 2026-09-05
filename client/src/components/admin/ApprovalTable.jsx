@@ -67,13 +67,15 @@ function UserRow({
                 </button>
               )}
             </>
-          ) : !u.isApproved && (
-            <button
-              onClick={() => onApprove(u._id)}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
-            >
-              Approve
-            </button>
+          ) : (
+            !u.isApproved && (
+              <button
+                onClick={() => onApprove(u._id)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
+              >
+                Approve
+              </button>
+            )
           )}
           {!isStudentProfile && u.isApproved && (
             <button
@@ -83,42 +85,7 @@ function UserRow({
               Reject
             </button>
           )}
-          <select
-            defaultValue=""
-            onChange={(e) => {
-              if (e.target.value) {
-                onChangeRole(u._id, e.target.value);
-                e.target.value = "";
-              }
-            }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-primary)]/15 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/25 cursor-pointer transition-colors"
-          >
-            <option
-              value=""
-              disabled
-              className="bg-[var(--color-surface)] text-white"
-            >
-              Change role
-            </option>
-            <option
-              value="admin"
-              className="bg-[var(--color-surface)] text-white"
-            >
-              Admin
-            </option>
-            <option
-              value="instructor"
-              className="bg-[var(--color-surface)] text-white"
-            >
-              Instructor
-            </option>
-            <option
-              value="student"
-              className="bg-[var(--color-surface)] text-white"
-            >
-              Student
-            </option>
-          </select>
+
           {u.role === "student" && (
             <button
               onClick={() => onViewDetails(u)}
@@ -172,35 +139,35 @@ function RoleTable({
             No students match this filter.
           </p>
         ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-white border-separate border-spacing-y-3">
-            <thead>
-              <tr className="text-gray-400 uppercase text-xs tracking-wider">
-                <th className="px-6 py-3 text-left">Name</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-center">Role</th>
-                <th className="px-6 py-3 text-center">Status</th>
-                <th className="px-6 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <UserRow
-                  key={u._id}
-                  u={u}
-                  studentProfiles={studentProfiles}
-                  onApprove={onApprove}
-                  onReject={onReject}
-                  onApproveStudentProfile={onApproveStudentProfile}
-                  onRejectStudentProfile={onRejectStudentProfile}
-                  onDelete={onDelete}
-                  onChangeRole={onChangeRole}
-                  onViewDetails={onViewDetails}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-white border-separate border-spacing-y-3">
+              <thead>
+                <tr className="text-gray-400 uppercase text-xs tracking-wider">
+                  <th className="px-6 py-3 text-left">Name</th>
+                  <th className="px-6 py-3 text-left">Email</th>
+                  <th className="px-6 py-3 text-center">Role</th>
+                  <th className="px-6 py-3 text-center">Status</th>
+                  <th className="px-6 py-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <UserRow
+                    key={u._id}
+                    u={u}
+                    studentProfiles={studentProfiles}
+                    onApprove={onApprove}
+                    onReject={onReject}
+                    onApproveStudentProfile={onApproveStudentProfile}
+                    onRejectStudentProfile={onRejectStudentProfile}
+                    onDelete={onDelete}
+                    onChangeRole={onChangeRole}
+                    onViewDetails={onViewDetails}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

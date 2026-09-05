@@ -13,7 +13,7 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
   };
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-surface p-5 transition duration-300 hover:border-primary/30 hover:bg-surface/95 hover:shadow-2xl hover:shadow-primary/15">
+    <div className="rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
       <h2 className="mb-4 text-lg font-extrabold text-white">Attendance History</h2>
 
       {editable && (
@@ -41,7 +41,7 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
           </div>
           <button
             type="submit"
-            className="bg-primary text-white px-4 py-2 rounded hover:opacity-90 transition"
+            className="bg-[var(--color-primary)]/15 text-sky-300 border border-[var(--color-primary)]/30 px-4 py-2 rounded-lg hover:bg-[var(--color-primary)]/25 transition-colors"
           >
             Log
           </button>

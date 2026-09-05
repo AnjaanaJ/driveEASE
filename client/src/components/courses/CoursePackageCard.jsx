@@ -7,21 +7,22 @@ function CoursePackageCard({ course }) {
   const handleChoosePackage = () => {
     navigate(`/student/register-profile?course=${course._id}`);
   };
+  
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl p-7 border bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-colors ${
+      className={`relative rounded-3xl p-7 border bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-colors ${
         isPopular ? "border-white/30" : "border-white/20"
       }`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-      <div className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/20 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-t-3xl overflow-hidden" />
+      <div className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/20 blur-3xl overflow-hidden" />
 
       {isPopular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold px-4 py-1 rounded-full">
-          Most popular
-        </span>
-      )}
+  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
+    Most popular
+  </span>
+)}
 
       <span className="inline-block bg-background text-accent text-xs font-semibold px-3 py-1 rounded-full mb-4 border border-slate-700">
         {course.type}
@@ -54,11 +55,11 @@ function CoursePackageCard({ course }) {
       )}
 
       <button
-        onClick={handleChoosePackage}
-        className="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold py-2.5 rounded-lg hover:bg-white/15 transition-colors"
-      >
-        Choose Package
-      </button>
+  onClick={handleChoosePackage}
+  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity"
+>
+  Choose Package
+</button>
     </div>
   );
 }

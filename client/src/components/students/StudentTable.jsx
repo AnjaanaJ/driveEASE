@@ -20,6 +20,7 @@ function StudentTable({
       <table className="w-full text-left">
         <thead className="bg-background text-text-secondary text-sm">
           <tr>
+            <th className="p-3">Student ID</th>
             <th className="p-3">Name</th>
             <th className="p-3">Email</th>
             <th className="p-3">NIC</th>
@@ -32,6 +33,9 @@ function StudentTable({
         <tbody>
           {students.map((student) => (
             <tr key={student._id} className="border-t border-slate-700">
+               <td className="p-3 font-medium text-accent">
+                {student.studentId || "—"}
+              </td>
               <td className="p-3 text-text-primary">{student.userId?.name}</td>
               <td className="p-3 text-text-secondary">
                 {student.userId?.email}

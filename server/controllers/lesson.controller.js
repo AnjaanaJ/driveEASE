@@ -3,6 +3,7 @@ const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Student = require('../models/Student');
 const Vehicle = require('../models/Vehicle');
+const Instructor = require('../models/Instructor');
 
 const MAX_DURATION_MINUTES = 60;
 
@@ -77,7 +78,7 @@ const getLessons = async (req, res) => {
     const lessons = await Lesson.find()
       .populate({
         path: 'studentId',
-        select: 'nic phone userId',
+        select: 'nic phone userId studentId',
         populate: { path: 'userId', select: 'name email' },
       })
       .populate({
@@ -96,7 +97,7 @@ const getLessonById = async (req, res) => {
     const lesson = await Lesson.findById(req.params.id)
       .populate({
         path: 'studentId',
-        select: 'nic phone userId',
+        select: 'nic phone userId studentId',
         populate: { path: 'userId', select: 'name email' },
       })
       .populate({
@@ -118,7 +119,6 @@ const getLessonById = async (req, res) => {
     if (req.user.role === 'admin') {
       isOwner = true;
     }
-
     // Check instructor ownership
     if (
       req.user.role === 'instructor' &&
@@ -128,7 +128,6 @@ const getLessonById = async (req, res) => {
     ) {
       isOwner = true;
     }
-
     // Check student ownership
     if (
       req.user.role === 'student' &&
@@ -138,13 +137,11 @@ const getLessonById = async (req, res) => {
     ) {
       isOwner = true;
     }
-
     if (!isOwner) {
       return res.status(403).json({
         message: 'Access denied',
       });
     }
-
     res.status(200).json(lesson);
   } catch (error) {
     res.status(500).json({
@@ -165,6 +162,9 @@ const updateLesson = async (req, res) => {
       return res.status(403).json({ message: 'Students cannot change lesson status' });
     }
     const isReschedule = Boolean(date || startTime || endTime);
+    if (isReschedule && req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admins cannot reschedule lessons' });
+    }
 
     if (isReschedule) {
       if (lesson.status !== 'Scheduled') {
@@ -206,41 +206,66 @@ const updateLesson = async (req, res) => {
 
     await lesson.save();
 
+    const Instructor = require('../models/Instructor');
     const student = await Student.findById(lesson.studentId);
+    const instructor = await Instructor.findById(lesson.instructorId);
     const studentUserId = student ? student.userId : null;
+    const studentDisplayId = student?.studentId || lesson.studentId;
+    const instructorUserId = instructor ? instructor.user : null;
+    const instructorDisplayId = instructor?.licenseNumber || lesson.instructorId;
+    const actorRole = req.user.role;
 
     const dateStr = lesson.date.toISOString().split('T')[0];
-    const message = isReschedule
-      ? `Your lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
-      : `Your lesson status has been updated to "${lesson.status}".`;
+    const actionLabel = isReschedule ? 'rescheduled' : `updated to "${lesson.status}"`;
 
+    if (actorRole === 'student') {
+      if (instructorUserId) {
+        await Notification.create({
+          userId: instructorUserId,
+          message: `The lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime} by student ID ${studentDisplayId}.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+      }
+    } else if (actorRole === 'instructor') {
       if (studentUserId) {
-      await Notification.create({
-        userId: studentUserId,
-        message,
-        type: isReschedule ? 'Reminder' : 'StatusUpdate',
-      });
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime} by the instructor.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+      }
+    } else if (actorRole === 'admin') {
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime} by admin.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+      }
+      if (instructorUserId) {
+        await Notification.create({
+          userId: instructorUserId,
+          message: `The lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime} by admin.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+      }
     }
-
-    await Notification.create({
-      userId: lesson.instructorId,
-      message: isReschedule
-        ? `The lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
-        : `A lesson's status has been updated to "${lesson.status}".`,
-      type: isReschedule ? 'Reminder' : 'StatusUpdate',
-    });
 
     const admin = await User.findOne({ role: 'admin' });
     if (admin) {
+      const actorDescription =
+        actorRole === 'student'
+          ? `by student ID ${studentDisplayId}`
+          : actorRole === 'instructor'
+          ? `by the instructor (ID ${instructorDisplayId})`
+          : 'by admin';
+
       await Notification.create({
         userId: admin._id,
-        message: isReschedule
-          ? `A lesson has been rescheduled to ${dateStr} at ${lesson.startTime}.`
-          : `A lesson's status has been updated to "${lesson.status}".`,
+        message: `A lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime} ${actorDescription}.`,
         type: isReschedule ? 'Reminder' : 'StatusUpdate',
       });
     }
-
     res.status(200).json({ message: 'Lesson updated successfully', lesson });
   } catch (error) {
     res.status(400).json({ message: 'Failed to update lesson', error: error.message });
@@ -263,26 +288,68 @@ const cancelLesson = async (req, res) => {
     await lesson.save();
     const dateStr = lesson.date.toISOString().split('T')[0];
 
-    await Notification.create({
-      userId: lesson.studentId,
-      message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
-      type: 'Cancellation',
-    });
+    const Instructor = require('../models/Instructor');
+    const student = await Student.findById(lesson.studentId);
+    const instructor = await Instructor.findById(lesson.instructorId);
+    const studentUserId = student ? student.userId : null;
+    const studentDisplayId = student?.studentId || lesson.studentId; 
+    const instructorUserId = instructor ? instructor.user : null;
+    const instructorDisplayId = instructor?.licenseNumber || lesson.instructorId;
+    const actorRole = req.user.role;
 
-    await Notification.create({
-      userId: lesson.instructorId,
-      message: `The lesson on ${dateStr} at ${lesson.startTime} has been cancelled by the student.`,
-      type: 'Cancellation',
-    });
+    if (actorRole === 'student') {
+      // Notify instructor
+      if (instructorUserId) {
+        await Notification.create({
+          userId: instructorUserId,
+          message: `The lesson on ${dateStr} at ${lesson.startTime} has been cancelled by student ID ${studentDisplayId}.`,
+          type: 'Cancellation',
+        });
+      }
+    } else if (actorRole === 'instructor') {
+      // Notify student
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled by the instructor.`,
+          type: 'Cancellation',
+        });
+      }
 
+    } else if (actorRole === 'admin') {
+      // Admin cancelled on behalf of someone,notify both
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled by admin.`,
+          type: 'Cancellation',
+        });
+      }
+      if (instructorUserId) {
+        await Notification.create({
+          userId: instructorUserId,
+          message: `The lesson on ${dateStr} at ${lesson.startTime} has been cancelled by admin.`,
+          type: 'Cancellation',
+        });
+      }
+    }
+    // Admin always gets notified,with context on who did it
     const admin = await User.findOne({ role: 'admin' });
     if (admin) {
+      const actorDescription =
+        actorRole === 'student'
+          ? `by student ID ${studentDisplayId}`
+          : actorRole === 'instructor'
+          ? `by the instructor (ID ${instructorDisplayId})`
+          : 'by admin';
+
       await Notification.create({
         userId: admin._id,
-        message: `A lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
+        message: `A lesson on ${dateStr} at ${lesson.startTime} has been cancelled ${actorDescription}.`,
         type: 'Cancellation',
       });
     }
+
     
     res.status(200).json({ message: 'Lesson cancelled successfully', lesson });
   } catch (error) {
@@ -320,7 +387,7 @@ const getLessonsByStudent = async (req, res) => {
     const lessons = await Lesson.find({ studentId: student._id })
     .populate({
         path: 'studentId',
-        select: 'nic phone userId',
+        select: 'nic phone userId studentId',
         populate: { path: 'userId', select: 'name email' },
       })
       .populate({
@@ -347,7 +414,7 @@ const getLessonsByInstructor = async (req, res) => {
     if (req.user.role === "admin") {
       isOwner = true;
     }
-
+    
     // Instructor can only view their own lessons
     if (req.user.role === "instructor") {
       const instructor = await Instructor.findOne({
@@ -377,7 +444,7 @@ const getLessonsByInstructor = async (req, res) => {
     })
       .populate({
         path: "studentId",
-        select: "nic phone userId",
+        select: "nic phone userId studentId",
         populate: {
           path: "userId",
           select: "name email",

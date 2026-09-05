@@ -29,7 +29,7 @@ function LessonTable({ lessons,onSelectLesson }) {
               <td className="p-3">{lesson.startTime} - {lesson.endTime}</td>
               <td className="p-3">
                 {typeof lesson.studentId === "object" && lesson.studentId !== null
-                ? lesson.studentId?.userId?.name ||lesson.studentId?.nic || lesson.studentId?._id || "—"
+                ? lesson.studentId?.studentId || lesson.studentId?.userId?.name || lesson.studentId?.nic || lesson.studentId?._id || "—"
                 : lesson.studentId || "—"}
               </td>
               <td className="p-3">

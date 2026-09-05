@@ -39,9 +39,9 @@ function LessonDetailPage() {
   }, [id]);//re-run if the id in the URL ever changes
   
   const currentUserId = user?._id || user?.id;
-  const isOwner = lesson && currentUserId === lesson.studentId;
-  const canCancel = lesson?.status === "Scheduled" && (isOwner || user?.role === "admin");
-  const canReschedule = canCancel; // same rule for now
+  const isOwner = lesson && lesson.studentId?.userId?._id === currentUserId;
+  const canCancel = lesson?.status === "Scheduled" && (isOwner || user?.role === "admin" || user?.role === "instructor");
+  const canReschedule = lesson?.status === "Scheduled" && isOwner;
   const canMarkCompleted = lesson?.status === "Scheduled" && user?.role !== "student";
 
   const handleCancel = async () => {

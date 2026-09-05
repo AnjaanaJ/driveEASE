@@ -18,7 +18,12 @@ const {
 // Vehicle Management - Admin only
 router.post("/", verifyToken, requireRole("admin"), createVehicle);
 
-router.get("/", verifyToken, requireRole("admin"), getVehicles);
+router.get(
+  "/",
+  verifyToken,
+  requireRole("admin", "instructor", "student"),
+  getVehicles
+);
 
 router.get("/:id", verifyToken, requireRole("admin"), getVehicleById);
 

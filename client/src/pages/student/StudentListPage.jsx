@@ -153,7 +153,7 @@ function StudentListPage() {
       {loading ? (
         <div className="text-text-secondary">Loading...</div>
       ) : (
-        <div className="rounded-xl overflow-hidden shadow-[0_0_25px_-5px_var(--color-primary)]">
+      
           <StudentTable
             students={students}
             showActions={true}
@@ -161,7 +161,6 @@ function StudentListPage() {
             onReject={handleReject}
             onDelete={handleDelete}
           />
-        </div>
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Footer from "../../components/shared/Footer.jsx";
+import { LogOut } from "lucide-react";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [roleTab, setRoleTab] = useState("student");
 
-  const { login } = useAuth();
+  const { login ,LogOut} = useAuth();
   const navigate = useNavigate();
 
   const validate = () => {
@@ -41,10 +42,15 @@ function LoginPage() {
 
     setSubmitting(true);
     try {
-      
       const data = await login(email, password);
       const role = data.role || data.user?.role;
       const isApproved = data.isApproved ?? data.user?.isApproved;
+
+      if (role !== roleTab) {
+        LogOut();
+        setServerError("This is not registered as ${roleTab} account");
+        return;
+      }
 
       if (isApproved === false) {
         navigate("/pending-approval");

@@ -102,8 +102,8 @@ function LessonManagementPage() {
     expandedLesson.studentId?._id === currentUserId ||
     expandedLesson.studentId === currentUserId
   );
-   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin");
-   const canReschedule = canCancel;
+   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor");
+   const canReschedule = expandedLesson?.status === "Scheduled" && isOwner;
    const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student";
 
    const handleCancelLesson = async () => {
@@ -293,7 +293,9 @@ function LessonManagementPage() {
                         {l.startTime} - {l.endTime}
                     </button>
                     <span className="text-slate-400">
-                      Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.userId?.name || l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
+                      <span className="text-slate-400">
+                        Student: {typeof l.studentId === "object" && l.studentId !== null ? l.studentId?.studentId || l.studentId?.userId?.name || l.studentId?.nic || l.studentId?._id : l.studentId || "—"}
+                      </span>
                     </span>
                     <span className="text-slate-400">
                       Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
@@ -335,7 +337,7 @@ function LessonManagementPage() {
           <span className="text-slate-400 text-sm">Student ID</span>
           <span className="text-white text-sm">
             {typeof expandedLesson.studentId === "object" && expandedLesson.studentId !== null
-            ? expandedLesson.studentId?.userId?.name || expandedLesson.studentId?.nic || expandedLesson.studentId?._id
+            ? expandedLesson.studentId?.studentId || expandedLesson.studentId?.userId?.name || expandedLesson.studentId?.nic || expandedLesson.studentId?._id
             : expandedLesson.studentId || "—"}
           </span>
         </div>
@@ -381,7 +383,7 @@ function LessonManagementPage() {
                     selectedSlot={newStartTime}
                     onSelectSlot={(slot) => {
                       const [h, m] = slot.split(":").map(Number);
-                      let endH = h, endM = m + 30;
+                      let endH = h+1, endM = m ;
                       if (endM >= 60) { endM = 0; endH += 1; }
                         setNewStartTime(slot);
                         setNewEndTime(`${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`);

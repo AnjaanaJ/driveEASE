@@ -1,19 +1,31 @@
 const Student = require("../models/Student");
 const Course = require("../models/Course");
 
-// Helper: generates a unique, human-readable Student ID like STU-2026-0001
-// Format: STU-<year>-<4 digit sequence number>
+// Helper: generates a unique, human-readable Student ID like STU_2601
+// Format: STU_<2-digit year><2-digit sequence number>
 const generateStudentId = async () => {
-  const year = new Date().getFullYear();
+  const year = new Date().getFullYear().toString().slice(-2); // e.g. 2026 -> "26"
+  const prefix = `STU_${year}`;
 
-  // Count how many students already have a studentId assigned.
-  // We use that count to decide the next sequence number.
-  const count = await Student.countDocuments({
-    studentId: { $exists: true, $ne: null },
+  // Find all students whose ID already starts with this year's prefix,
+  // then work out the highest sequence number used so far. This is
+  // safer than counting documents, because it still works correctly
+  // even if a student was deleted or an ID was set manually.
+  const studentsThisYear = await Student.find({
+    studentId: { $regex: `^${prefix}` },
+  }).select("studentId");
+
+  let maxSeq = 0;
+  studentsThisYear.forEach((s) => {
+    const seqPart = s.studentId.slice(prefix.length); // e.g. "STU_2601" -> "01"
+    const seqNum = parseInt(seqPart, 10);
+    if (!isNaN(seqNum) && seqNum > maxSeq) {
+      maxSeq = seqNum;
+    }
   });
 
-  const nextNumber = (count + 1).toString().padStart(4, "0"); // e.g. 1 -> "0001"
-  return `STU-${year}-${nextNumber}`;
+  const nextNumber = (maxSeq + 1).toString().padStart(2, "0"); // e.g. 4 -> "04"
+  return `${prefix}${nextNumber}`;
 };
 
 // Create a new student profile
@@ -172,7 +184,19 @@ const updateStudent = async (req, res) => {
   try {
     const student = req.student;
 
-    const { phone, address, coursePackage, assignedInstructor, preferredVehicleType, preferredTransmission } = req.body;
+    const { phone, address, coursePackage, assignedInstructor, preferredVehicleType, preferredTransmission, studentId } = req.body;
+
+    // Only admins can manually set/change a student's studentId.
+    // This is mainly used for backfilling IDs on old students that
+    // were approved before the auto-ID feature existed.
+    if (studentId !== undefined) {
+      if (req.user.role !== "admin") {
+        return res.status(403).json({
+          message: "Only admins can set a student ID",
+        });
+      }
+      student.studentId = studentId;
+    }
 
     // Phone format validation (only if they're actually changing it)
     if (phone) {

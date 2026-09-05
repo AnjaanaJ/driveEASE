@@ -64,19 +64,19 @@ function StudentRegistrationPage() {
     const isRejected = student.status === "Rejected";
 
     return (
-      <div className="max-w-2xl mx-auto mt-10 mb-10 p-8">
-        <span className="inline-block bg-surface border border-slate-700 text-accent text-xs px-3 py-1 rounded-full mb-4">
-          Student portal
+            <div className="max-w-2xl mx-auto mt-6 mb-6 p-6">
+        <span className="inline-block bg-white/[0.03] backdrop-blur-3xl border border-white/20 text-accent text-xs px-3 py-1 rounded-full mb-3">
+          Student panel 
         </span>
         <h1 className="text-3xl font-bold text-text-primary mb-1">
-          My <span className="text-gradient-brand">registration</span>
+                             My <span className="text-gradient-brand">registration</span>
         </h1>
-        <p className="text-text-secondary mb-6">
+        <p className="text-text-secondary mb-4">
           Your submitted registration details.
         </p>
 
-        <div className="rounded-xl bg-surface border border-slate-700 overflow-hidden shadow-[0_0_25px_-5px_var(--color-primary)]">
-          <div className="p-6">
+        <div className="rounded-xl bg-white/[0.03] backdrop-blur-3xl border border-white/20 shadow-2xl overflow-hidden">
+          <div className="p-5">
             {isApproved ? (
               <div className="mb-6 p-4 bg-green-900/40 text-green-200 rounded border border-green-700">
                 <p className="font-semibold">
@@ -108,7 +108,7 @@ function StudentRegistrationPage() {
 
             {error && <p className="mb-4 text-red-300">{error}</p>}
 
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <dt className="text-sm text-text-secondary">NIC</dt>
                 <dd className="text-text-primary">{student.nic}</dd>
@@ -152,8 +152,8 @@ function StudentRegistrationPage() {
             </dl>
           </div>
 
-          {isApproved && (
-            <div className="border-t border-slate-700 p-6">
+                  {isApproved && (
+            <div className="border-t border-white/10 p-5">
               <AttendanceTable attendance={attendance} editable={false} />
             </div>
           )}
@@ -163,18 +163,18 @@ function StudentRegistrationPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 mb-10 p-8">
-      <span className="inline-block bg-surface border border-slate-700 text-accent text-xs px-3 py-1 rounded-full mb-4">
-        Student portal
+        <div className="max-w-md mx-auto mt-6 mb-6 p-6">
+      <span className="inline-block bg-white/[0.03] backdrop-blur-3xl border border-white/20 text-accent text-xs px-3 py-1 rounded-full mb-3">
+        Student panel
       </span>
       <h1 className="text-3xl font-bold text-text-primary mb-1">
-        Student <span className="text-gradient-brand">registration</span>
+                         My <span className="text-gradient-brand">registration</span>
       </h1>
-      <p className="text-text-secondary mb-6">
+      <p className="text-text-secondary mb-4">
         Complete your profile to get started.
       </p>
 
-      <div className="rounded-xl bg-surface border border-slate-700 overflow-hidden shadow-[0_0_25px_-5px_var(--color-primary)] p-6">
+      <div className="rounded-xl bg-white/[0.03] backdrop-blur-3xl border border-white/20 shadow-2xl p-5">
         {error && <p className="mb-4 text-red-300">{error}</p>}
 
         <StudentForm

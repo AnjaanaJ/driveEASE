@@ -196,7 +196,7 @@ function StudentProfilePage() {
           <section className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)] sm:p-8">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-extrabold text-white">
+                <h2 className="text-lg font-semibold text-white">
                   Personal details
                 </h2>
                 <p className="mt-1 text-sm text-text-secondary">
@@ -322,7 +322,7 @@ function StudentProfilePage() {
 
           <section className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)] sm:p-8">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-            <h2 className="text-xl font-extrabold text-white">
+            <h2 className="text-lg font-semibold text-white">
               Learning overview
             </h2>
             <p className="mt-1 text-sm text-text-secondary">
@@ -375,7 +375,7 @@ function StudentProfilePage() {
               />
               {student.documents?.length > 0 && (
                 <section className="rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-                  <h2 className="text-lg font-semibold text-text-primary">
+                  <h2 className="text-lg font-semibold text-white">
                     My documents
                   </h2>
                   <ul className="mt-3 space-y-2">

@@ -14,7 +14,7 @@ function AttendanceTable({ attendance = [], editable = false, onAddAttendance })
 
   return (
     <div className="rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-      <h2 className="mb-4 text-lg font-extrabold text-white">Attendance History</h2>
+      <h2 className="mb-4 text-lg font-semibold text-white">Attendance History</h2>
 
       {editable && (
         <form onSubmit={handleSubmit} className="flex gap-3 items-end mb-4">

@@ -53,7 +53,7 @@ function DocumentUploader({ studentId, onUploadSuccess }) {
 
   return (
     <div className="rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-      <h2 className="mb-3 text-lg font-extrabold text-white">Upload document</h2>
+      <h2 className="mb-3 text-lg font-semibold text-white">Upload document</h2>
       <input
        ref={fileInputRef}
         type="file"

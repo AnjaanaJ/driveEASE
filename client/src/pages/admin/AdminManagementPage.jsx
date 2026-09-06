@@ -33,11 +33,14 @@ function AdminManagementPage() {
   const validateForm = () => {
     if (!name.trim()) return "Name is required";
     if (!email.trim()) return "Email is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Enter a valid email address";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return "Enter a valid email address";
     if (!password) return "Password is required";
     if (password.length < 8) return "Password must be at least 8 characters";
-    if (!/[A-Z]/.test(password)) return "Password must contain at least 1 uppercase letter";
-    if (!/[0-9]/.test(password)) return "Password must contain at least 1 number";
+    if (!/[A-Z]/.test(password))
+      return "Password must contain at least 1 uppercase letter";
+    if (!/[0-9]/.test(password))
+      return "Password must contain at least 1 number";
     return "";
   };
 
@@ -64,7 +67,8 @@ function AdminManagementPage() {
       setPendingAdmin(null);
     } catch (err) {
       setFormError(
-        err.response?.data?.message || "Failed to create admin. Please try again.",
+        err.response?.data?.message ||
+          "Failed to create admin. Please try again.",
       );
       setPendingAdmin(null);
     } finally {
@@ -117,126 +121,145 @@ function AdminManagementPage() {
         Add new administrator accounts or remove existing ones.
       </p>
 
-      <div className="relative rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 mb-8">
-        <h3 className="text-lg font-semibold text-white mb-4">Add new admin</h3>
+      <div className="relative rounded-3xl border border-white/25 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 md:p-8 mb-8 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-trnasparent" />
+        <div className="pointer-events-none absolute -top-24 -left-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/25 blur-3xl" />
+        <div className="relative">
+          <h3 className="text-lg font-semibold text-white mb-6">
+            Add new admin
+          </h3>
 
-        {formError && (
-          <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded mb-4">
-            {formError}
-          </p>
-        )}
-
-        {!pendingAdmin ? (
-          <form onSubmit={handleFormSubmit} className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-slate-300 mb-1 text-sm">Full Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-300 mb-1 text-sm">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-300 mb-1 text-sm">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition"
-              />
-            </div>
-            <div className="md:col-span-3">
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90 transition"
-              >
-                Review and create
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
-            <p className="text-amber-200 text-sm mb-4">
-              Confirm: grant full admin access to{" "}
-              <span className="font-semibold">{pendingAdmin.name}</span> (
-              {pendingAdmin.email})? This account will be able to manage all
-              users, students, instructors, and system settings.
+          {formError && (
+            <p className="bg-red-500/10 text-red-400 text-sm p-2 rounded mb-4">
+              {formError}
             </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleConfirmCreate}
-                disabled={submitting}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition disabled:opacity-50"
-              >
-                {submitting ? "Creating..." : "Confirm & create admin"}
-              </button>
-              <button
-                onClick={handleCancelCreate}
-                disabled={submitting}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-white/10 text-slate-300 border border-white/20 hover:bg-white/20 transition"
-              >
-                Cancel
-              </button>
+          )}
+
+          {!pendingAdmin ? (
+            <form
+              onSubmit={handleFormSubmit}
+              className="grid md:grid-cols-3 gap-4"
+            >
+              <div>
+                <label className="block text-slate-300 mb-2 text-sm">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg bg-black/30 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 mb-2 text-sm">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg bg-black/30 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 mb-2 text-sm">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg bg-black/30 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-lg text-sm font-medium bg-[var(--color-primary)] hover:opacity-90 disabled:opacity-50 transition"
+                >
+                  Review and create
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+              <p className="text-amber-200 text-sm mb-4">
+                Confirm: grant full admin access to{" "}
+                <span className="font-semibold">{pendingAdmin.name}</span> (
+                {pendingAdmin.email})? This account will be able to manage all
+                users, students, instructors, and system settings.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleConfirmCreate}
+                  disabled={submitting}
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition disabled:opacity-50"
+                >
+                  {submitting ? "Creating..." : "Confirm & create admin"}
+                </button>
+                <button
+                  onClick={handleCancelCreate}
+                  disabled={submitting}
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-white/10 text-slate-300 border border-white/20 hover:bg-white/20 transition"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      <div className="relative rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">
-          Current admins{" "}
-          <span className="text-slate-400 font-normal text-sm">
-            ({admins.length})
-          </span>
-        </h3>
+      <div className="relative rounded-3xl border border-white/25 bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 md:p-8 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via/white/50 to-transparent" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-secondary)]/25 blur-3xl" />
+        <div className="relative">
+          <h3 className="text-lg font-semibold text-white mb-4">
+            Current admins{" "}
+            <span className="text-slate-400 font-normal text-white mb-6">
+              ({admins.length})
+            </span>
+          </h3>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-white border-separate border-spacing-y-3">
-            <thead>
-              <tr className="text-gray-400 uppercase text-xs tracking-wider">
-                <th className="px-6 py-3 text-left">Name</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admins.map((a) => (
-                <tr
-                  key={a._id}
-                  className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors"
-                >
-                  <td className="px-6 py-5 rounded-l-2xl align-middle font-medium">
-                    {a.name}{" "}
-                    {a._id === currentUser?._id && (
-                      <span className="text-xs text-slate-400">(you)</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-5 align-middle text-gray-300">
-                    {a.email}
-                  </td>
-                  <td className="px-6 py-5 rounded-r-2xl align-middle text-center">
-                    <button
-                      onClick={() => handleDelete(a._id)}
-                      disabled={a._id === currentUser?._id}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      Remove
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-white border-separate border-spacing-y-3">
+              <thead>
+                <tr className="text-gray-400 uppercase text-xs tracking-wider">
+                  <th className="px-6 py-3 text-left">Name</th>
+                  <th className="px-6 py-3 text-left">Email</th>
+                  <th className="px-6 py-3 text-center">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {admins.map((a) => (
+                  <tr
+                    key={a._id}
+                    className="bg-[var(--color-background)]/50 hover:bg-white/5 transition-colors"
+                  >
+                    <td className="px-6 py-5 rounded-l-2xl align-middle font-medium">
+                      {a.name}{" "}
+                      {a._id === currentUser?._id && (
+                        <span className="text-xs text-slate-400">(you)</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-5 align-middle text-gray-300">
+                      {a.email}
+                    </td>
+                    <td className="px-6 py-5 rounded-r-2xl align-middle text-center">
+                      <button
+                        onClick={() => handleDelete(a._id)}
+                        disabled={a._id === currentUser?._id}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ const {
   getAttendance,
   updateAttendance,
   uploadDocument,
+  deleteDocument,
   approveStudent,
   rejectStudent,
   getStudentByUserId,
@@ -36,6 +37,12 @@ router.post(
   checkStudentOwnership,
   upload.single('document'),
   uploadDocument
+);
+router.delete(
+  '/:id/documents/:docId',
+  verifyToken,
+  checkStudentOwnership,
+  deleteDocument
 );
 
 router.put('/:id/approve', verifyToken, requireRole('admin'), approveStudent);

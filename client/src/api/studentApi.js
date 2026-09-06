@@ -54,6 +54,13 @@ export const uploadStudentDocument = async (id, file) => {
   return res.data;
 };
 
+export const deleteStudentDocument = async (studentId, docId) => {
+  const response = await axiosInstance.delete(
+    `/students/${studentId}/documents/${docId}`
+  );
+  return response.data;
+};
+
 // Get attendance history for a student
 export const getStudentAttendance = async (id) => {
   const res = await axiosInstance.get(`/students/${id}/attendance`);

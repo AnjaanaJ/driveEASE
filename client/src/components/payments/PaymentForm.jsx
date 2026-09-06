@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { recordPayment } from '../../api/paymentApi';
+import { CreditCard } from 'lucide-react';
 
 function PaymentForm({ onSuccess }) {
   
@@ -40,7 +41,7 @@ function PaymentForm({ onSuccess }) {
         className="relative bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
       >
         <h2 className="text-lg font-bold text-text-primary flex items-center gap-2 mb-5">
-          <span className="text-accent">💳</span> Record payment
+          <CreditCard className="w-5 h-5 text-accent"/> Record payment
         </h2>
         {error && <p className="text-sm text-red-400">{error}</p>}
 

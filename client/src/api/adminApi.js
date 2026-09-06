@@ -46,3 +46,9 @@ export const getActivityLogs = async () => {
   const res = await axiosInstance.get("/admin/logs");
   return res.data;
 };
+
+// Create a new admin account
+export const createAdmin = async (data) => {
+  const res = await axiosInstance.post("/admin/admins", data);
+  return res.data;
+};

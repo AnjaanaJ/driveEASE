@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllPayments, downloadInvoice } from '../../api/paymentApi';
 import PaymentForm from '../../components/payments/PaymentForm';
 import PaymentStatusBadge from '../../components/payments/PaymentStatusBadge';
+import { ClipboardList } from 'lucide-react';
 
 function PaymentListPage() {
 
@@ -48,7 +49,7 @@ function PaymentListPage() {
         <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-              <span className="text-accent">📋</span> Recent transactions
+              <ClipboardList className="w-5 h-5 text-accent"/> Recent transactions
             </h2>
             <div className="flex gap-2">
               <button className="text-sm text-text-secondary border border-white/10 rounded-lg px-3 py-1.5 hover:bg-white/5 transition-colors">
@@ -93,7 +94,7 @@ function PaymentListPage() {
                     <tr 
                         key={p._id} 
                         onClick={() => navigate(`/admin/payments/${p._id}`)}
-                        className="norder-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 transition-colors">
+                        className="border-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 transition-colors">
                       <td className="py-3 px-3 text-text-primary font-medium">
                         {p.studentId?.name || p.studentId?._id || (typeof p.studentId === 'string' ? p.studentId : 'Unknown')}
                       </td>

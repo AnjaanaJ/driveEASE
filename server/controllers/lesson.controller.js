@@ -67,7 +67,25 @@ const createLesson = async (req, res) => {
       message: `Your lesson on ${date} at ${startTime} has been booked and confirmed.`,
       type: 'Booking',
     });
+    const studentDisplayId = student.studentId || student._id;
+    const instructor = await Instructor.findById(instructorId);
+    const instructorUserId = instructor ? instructor.user : null;
 
+    if (instructorUserId) {
+      await Notification.create({
+        userId: instructorUserId,
+        message: `A new lesson has been booked with you on ${date} at ${startTime} by student ID ${studentDisplayId}.`,
+        type: 'Booking',
+       });
+    }
+    const admin = await User.findOne({ role: 'admin' });
+      if (admin) {
+        await Notification.create({
+          userId: admin._id,
+          message: `A new lesson has been booked on ${date} at ${startTime} by student ID ${studentDisplayId} with instructor ID ${instructor?.licenseNumber || instructorId}.`,
+          type: 'Booking',
+      });
+    }
     res.status(201).json({ message: 'Lesson booked successfully', lesson });
   } catch (error) {
     res.status(400).json({ message: 'Failed to book lesson', error: error.message });
@@ -460,8 +478,7 @@ const getLessonsByInstructor = async (req, res) => {
       })
       .populate(
         "vehicleId",
-        "registrationNumber brand model",
-        "vehicleType transmission"
+        "registrationNumber brand model vehicleType transmission",
       )
       .sort({ date: -1 });
 

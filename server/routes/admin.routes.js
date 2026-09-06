@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getAllUsers, approveUser, rejectUser, deleteUser,getActivityLogs ,updateSettings,updateUserRole,getSettings} = require('../controllers/admin.controller');
+const { getAllUsers, approveUser, rejectUser, deleteUser,getActivityLogs ,updateSettings,updateUserRole,getSettings,createAdmin} = require('../controllers/admin.controller');
 const verifyToken = require('../middleware/verifyToken');
 const requireRole = require('../middleware/requireRole');
 
 
 router.get('/users', verifyToken, requireRole('admin'), getAllUsers);
+router.post('/admins',verifyToken,requireRole('admin'),createAdmin);
 router.put('/users/:id/approve', verifyToken, requireRole('admin'), approveUser);
 router.put('/users/:id/reject', verifyToken, requireRole('admin'), rejectUser);
 router.put('/users/:id/role', verifyToken, requireRole('admin'), updateUserRole);

@@ -344,6 +344,44 @@ const uploadDocument = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+// Delete a document from a student's profile
+// DELETE /api/students/:id/documents/:docId
+const fs = require("fs");
+const path = require("path");
+
+const deleteDocument = async (req, res) => {
+  try {
+    const student = req.student;
+    const { docId } = req.params;
+
+    // Find the document inside the student's documents array
+    const document = student.documents.id(docId);
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    // Try to delete the actual file from the server's disk too,
+    // not just the database reference. If the file is somehow
+    // already missing, we don't want that to block the DB cleanup.
+    const filePath = path.join(__dirname, "..", document.fileUrl);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log("File delete warning:", err.message);
+      }
+    });
+
+    // Remove the document sub-document from the array
+    document.deleteOne();
+    await student.save();
+
+    res.status(200).json({
+      message: "Document deleted successfully",
+      documents: student.documents,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 // Approve a student profile (admin only)
 // PUT /api/students/:id/approve
@@ -428,6 +466,7 @@ module.exports = {
   getAttendance,
   updateAttendance,
   uploadDocument,
+  deleteDocument,
   approveStudent,
   rejectStudent,
   getStudentByUserId,

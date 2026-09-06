@@ -6,6 +6,7 @@ import {
   getStudentByUserId,
   updateStudent,
   getStudentAttendance,
+  deleteStudentDocument,
 } from "../../api/studentApi";
 import AttendanceTable from "../../components/students/AttendanceTable";
 import DocumentUploader from "../../components/students/DocumentUploader";
@@ -96,6 +97,20 @@ function StudentProfilePage() {
       setError(err.response?.data?.message || "Update failed");
     }
   };
+  const handleDeleteDocument = async (docId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document?",
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteStudentDocument(student._id, docId);
+      setSuccess("Document deleted successfully.");
+      fetchProfile(); // refresh the document list
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete document");
+    }
+  };
 
   if (loading) {
     return (
@@ -177,7 +192,7 @@ function StudentProfilePage() {
                   </p>
                 </div>
               </div>
-                            <div className="sm:text-right">
+              <div className="sm:text-right">
                 <span
                   className={`inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-sm font-semibold ${profileStatus.badge}`}
                 >
@@ -384,21 +399,30 @@ function StudentProfilePage() {
                     My documents
                   </h2>
                   <ul className="mt-3 space-y-2">
-                    {student.documents.map((doc, index) => (
+                    {student.documents.map((doc) => (
                       <li
-                        key={`${doc.fileName}-${index}`}
-                        className="flex items-center gap-2 rounded-lg bg-background/50 px-3 py-2 text-sm text-text-secondary"
+                        key={doc._id}
+                        className="flex items-center justify-between gap-2 rounded-lg bg-background/50 px-3 py-2 text-sm text-text-secondary"
                       >
-                        <span className="text-accent">&#128196;</span>
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="text-accent">&#128196;</span>
 
-                        <a
-                          href={`http://localhost:5000${doc.fileUrl}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-accent underline hover:text-white transition"
+                          <a
+                            href={`http://localhost:5000${doc.fileUrl}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="truncate text-accent underline hover:text-white transition"
+                          >
+                            {doc.fileName}
+                          </a>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteDocument(doc._id)}
+                          className="shrink-0 rounded-lg border border-red-400/25 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:bg-red-500/20"
                         >
-                          {doc.fileName}
-                        </a>
+                          Delete
+                        </button>
                       </li>
                     ))}
                   </ul>

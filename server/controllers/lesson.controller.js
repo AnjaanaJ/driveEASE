@@ -86,7 +86,7 @@ const getLessons = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model');
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
@@ -105,7 +105,7 @@ const getLessonById = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model');
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
 
     if (!lesson) {
       return res.status(404).json({
@@ -395,7 +395,7 @@ const getLessonsByStudent = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model')
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission')
       .sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
@@ -460,7 +460,8 @@ const getLessonsByInstructor = async (req, res) => {
       })
       .populate(
         "vehicleId",
-        "registrationNumber brand model"
+        "registrationNumber brand model",
+        "vehicleType transmission"
       )
       .sort({ date: -1 });
 

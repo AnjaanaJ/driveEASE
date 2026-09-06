@@ -104,7 +104,13 @@ function LessonManagementPage() {
   );
    const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor");
    const canReschedule = expandedLesson?.status === "Scheduled" && isOwner;
-   const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student";
+
+   const now = new Date();
+   const lessonEndDateTime = expandedLesson
+    ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
+    : null;
+   const isLessonInPast = lessonEndDateTime ? lessonEndDateTime <= now : false;
+   const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student" && isLessonInPast;
 
    const handleCancelLesson = async () => {
     setActionLoading(true);

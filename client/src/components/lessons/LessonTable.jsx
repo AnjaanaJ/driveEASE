@@ -12,6 +12,7 @@ function LessonTable({ lessons,onSelectLesson }) {
             <th className="p-3">Time</th>
             <th className="p-3">Student</th>
             <th className="p-3">Instructor</th>
+            <th className="p-3">Vehicle</th>
             <th className="p-3">Status</th>
           </tr>
         </thead>
@@ -36,6 +37,11 @@ function LessonTable({ lessons,onSelectLesson }) {
                 {typeof lesson.instructorId === "object" && lesson.instructorId !== null
                 ? lesson.instructorId?.user?.name ||lesson.instructorId?.licenseNumber ||lesson.instructorId?._id || "—"
                 : lesson.instructorId || "—"}
+              </td>
+              <td className="p-3">
+                {typeof lesson.vehicleId === "object" && lesson.vehicleId !== null
+                ? `${lesson.vehicleId?.brand || ""} ${lesson.vehicleId?.model || ""} (${lesson.vehicleId?.registrationNumber || "—"})`
+                : lesson.vehicleId || "—"}
               </td>
               <td className="p-3"><LessonStatusBadge status={lesson.status} /></td>
             </tr>

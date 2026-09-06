@@ -349,6 +349,14 @@ function LessonManagementPage() {
             : expandedLesson.instructorId || "—"}
           </span>
         </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400 text-sm">Vehicle</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.vehicleId === "object" && expandedLesson.vehicleId !== null
+            ? `${expandedLesson.vehicleId?.brand || ""} ${expandedLesson.vehicleId?.model || ""} (${expandedLesson.vehicleId?.registrationNumber || "—"}) - ${expandedLesson.vehicleId?.vehicleType || ""}${expandedLesson.vehicleId?.transmission ? ` (${expandedLesson.vehicleId.transmission})` : ""}`
+            : expandedLesson.vehicleId || "—"}
+          </span>
+        </div>
 
         <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">
             {canReschedule && (

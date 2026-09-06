@@ -67,7 +67,25 @@ const createLesson = async (req, res) => {
       message: `Your lesson on ${date} at ${startTime} has been booked and confirmed.`,
       type: 'Booking',
     });
+    const studentDisplayId = student.studentId || student._id;
+    const instructor = await Instructor.findById(instructorId);
+    const instructorUserId = instructor ? instructor.user : null;
 
+    if (instructorUserId) {
+      await Notification.create({
+        userId: instructorUserId,
+        message: `A new lesson has been booked with you on ${date} at ${startTime} by student ID ${studentDisplayId}.`,
+        type: 'Booking',
+       });
+    }
+    const admin = await User.findOne({ role: 'admin' });
+      if (admin) {
+        await Notification.create({
+          userId: admin._id,
+          message: `A new lesson has been booked on ${date} at ${startTime} by student ID ${studentDisplayId} with instructor ID ${instructor?.licenseNumber || instructorId}.`,
+          type: 'Booking',
+      });
+    }
     res.status(201).json({ message: 'Lesson booked successfully', lesson });
   } catch (error) {
     res.status(400).json({ message: 'Failed to book lesson', error: error.message });
@@ -86,7 +104,7 @@ const getLessons = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model');
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch lessons', error: error.message });
@@ -105,7 +123,7 @@ const getLessonById = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model');
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
 
     if (!lesson) {
       return res.status(404).json({
@@ -395,7 +413,7 @@ const getLessonsByStudent = async (req, res) => {
         select: 'licenseNumber phone user',
         populate: { path: 'user', select: 'name email' },
       })
-      .populate('vehicleId', 'registrationNumber brand model')
+      .populate('vehicleId', 'registrationNumber brand model vehicleType transmission')
       .sort({ date: -1 });
     res.status(200).json(lessons);
   } catch (error) {
@@ -460,7 +478,7 @@ const getLessonsByInstructor = async (req, res) => {
       })
       .populate(
         "vehicleId",
-        "registrationNumber brand model"
+        "registrationNumber brand model vehicleType transmission",
       )
       .sort({ date: -1 });
 

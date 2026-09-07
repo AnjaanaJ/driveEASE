@@ -14,7 +14,7 @@ const paymentSchema = new mongoose.Schema(
     },
     method: {
       type: String,
-      enum: ['Cash', 'Card', 'Bank Transfer'],
+      enum: ['Online Transfer'],
       required: [true, 'Payment method is required'],
     },
     status: {
@@ -26,6 +26,9 @@ const paymentSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    receiptUrl: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

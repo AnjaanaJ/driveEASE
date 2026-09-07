@@ -11,8 +11,9 @@ const {
 } = require('../controllers/payment.controller');
 const verifyToken = require('../middleware/verifyToken');
 const requireRole = require('../middleware/requireRole');
+const upload = require('../middleware/uploadReceipt');
 
-router.post('/', verifyToken, createPayment);
+router.post('/', verifyToken, upload.single('receipt'), createPayment);
 router.get('/', verifyToken, requireRole('admin'), getAllPayments);
 router.get('/summary/monthly', verifyToken, requireRole('admin'), getMonthlySummary);
 router.get('/student/:studentId', verifyToken, getPaymentsByStudent);

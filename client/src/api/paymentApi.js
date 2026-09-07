@@ -5,7 +5,16 @@ const API_URL = 'http://localhost:5000/api/payments';
 const getToken = () => localStorage.getItem('token');
 const authHeader = () => ({ headers: { Authorization: `Bearer ${getToken()}` } });
 
-export const recordPayment = (data) => axios.post(API_URL, data, authHeader());
+export const recordPayment = (data) => {
+  if (data.receipt instanceof File) {
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => formData.append(key, data[key]));
+    return axios.post(API_URL, formData, {
+      headers: { ...authHeader().headers, 'Content-Type': 'multipart/form-data' },
+    });
+  }
+  return axios.post(API_URL, data, authHeader());
+};
 
 export const getAllPayments = () => axios.get(API_URL, authHeader());
 

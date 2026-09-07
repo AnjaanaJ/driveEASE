@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance";
@@ -76,6 +75,27 @@ function VehicleListPage() {
         );
       } else {
         alert("Failed to add vehicle.");
+      }
+    }
+  };
+
+  // PUT - Update vehicle status
+  const handleStatusChange = async (vehicleId, newStatus) => {
+    try {
+      await axiosInstance.put(`/vehicles/${vehicleId}`, {
+        status: newStatus,
+      });
+
+      alert(`Vehicle status changed to ${newStatus}`);
+
+      await fetchVehicles();
+    } catch (error) {
+      console.error("Error updating vehicle status:", error);
+
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Failed to update vehicle status.");
       }
     }
   };
@@ -329,26 +349,32 @@ function VehicleListPage() {
                     key={vehicle._id}
                     className="transition-colors hover:bg-white/10"
                   >
+                    {/* Registration */}
                     <td className="border-b border-white/10 p-4 text-white">
                       {vehicle.registrationNumber}
                     </td>
 
+                    {/* Brand */}
                     <td className="border-b border-white/10 p-4 text-slate-300">
                       {vehicle.brand}
                     </td>
 
+                    {/* Model */}
                     <td className="border-b border-white/10 p-4 text-slate-300">
                       {vehicle.model}
                     </td>
 
+                    {/* Transmission */}
                     <td className="border-b border-white/10 p-4 text-slate-300">
                       {vehicle.transmission}
                     </td>
 
+                    {/* Fuel */}
                     <td className="border-b border-white/10 p-4 text-slate-300">
                       {vehicle.fuelType}
                     </td>
 
+                    {/* Status */}
                     <td className="border-b border-white/10 p-4">
                       <span
                         className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
@@ -363,8 +389,10 @@ function VehicleListPage() {
                       </span>
                     </td>
 
+                    {/* Actions */}
                     <td className="border-b border-white/10 p-4">
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 items-center">
+                        {/* View */}
                         <Link
                           to={`/admin/vehicles/${vehicle._id}`}
                           className="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
@@ -372,12 +400,37 @@ function VehicleListPage() {
                           View
                         </Link>
 
+                        {/* Maintenance Page */}
                         <Link
                           to={`/admin/vehicles/${vehicle._id}/maintenance`}
                           className="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-primary)]/20 text-sky-300 border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/30 transition-colors"
                         >
                           Maintenance
                         </Link>
+
+                        {/* Change Status */}
+                        <select
+                          value={vehicle.status}
+                          onChange={(event) =>
+                            handleStatusChange(
+                              vehicle._id,
+                              event.target.value
+                            )
+                          }
+                          className="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-background)] text-white border border-white/10 focus:outline-none focus:border-[var(--color-primary)]"
+                        >
+                          <option value="Available">
+                            Available
+                          </option>
+
+                          <option value="In Lesson">
+                            In Lesson
+                          </option>
+
+                          <option value="Maintenance">
+                            Maintenance
+                          </option>
+                        </select>
                       </div>
                     </td>
                   </tr>
@@ -392,4 +445,3 @@ function VehicleListPage() {
 }
 
 export default VehicleListPage;
-

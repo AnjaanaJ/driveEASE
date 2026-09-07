@@ -259,10 +259,14 @@ function InstructorListPage() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-white/[0.03] text-white">
-                <th className="border-b border-white/10 p-4 text-left font-semibold">
-                  NIC
-                </th>
+             <tr className="bg-white/[0.03] text-white">
+              <th className="border-b border-white/10 p-4 text-left font-semibold">
+                Instructor ID
+              </th>
+
+             <th className="border-b border-white/10 p-4 text-left font-semibold">
+                NIC
+             </th>
 
                 <th className="border-b border-white/10 p-4 text-left font-semibold">
                   Phone
@@ -294,7 +298,7 @@ function InstructorListPage() {
               {instructors.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="8"
                     className="border-b border-white/10 p-8 text-center text-slate-400"
                   >
                     No instructors found.
@@ -303,12 +307,16 @@ function InstructorListPage() {
               ) : (
                 instructors.map((instructor) => (
                   <tr
-                    key={instructor._id}
-                    className="transition-colors hover:bg-white/10"
+                      key={instructor._id}
+                      className="transition-colors hover:bg-white/10"
                   >
-                    <td className="border-b border-white/10 p-4 text-white">
+                  <td className="border-b border-white/10 p-4 text-sky-300 font-semibold">
+                     {instructor.instructorId}
+                  </td>
+
+                  <td className="border-b border-white/10 p-4 text-white">
                       {instructor.nic}
-                    </td>
+                  </td>
 
                     <td className="border-b border-white/10 p-4 text-slate-300">
                       {instructor.phone}
@@ -329,15 +337,14 @@ function InstructorListPage() {
                     <td className="border-b border-white/10 p-4">
                       <span
                         className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
-                          instructor.status === "Approved"
-                            ? "text-green-400 bg-green-500/10 border border-green-500/20"
-                            : instructor.status === "Rejected"
-                              ? "text-red-400 bg-red-500/10 border border-red-500/20"
-                              : "text-yellow-400 bg-yellow-500/10 border border-yellow-500/20"
-                        }`}
-                      >
-                        {instructor.status}
+                           instructor.status === "Active"
+                              ? "text-green-400 bg-green-500/10 border border-green-500/20"
+      :                      "text-red-400 bg-red-500/10 border border-red-500/20"
+                             }`}
+                              >
+                             {instructor.status}
                       </span>
+                       
                     </td>
 
                     <td className="border-b border-white/10 p-4">

@@ -28,8 +28,8 @@ function MySettingsPage() {
     setProfileSaving(true);
 
     try {
-      const updated = await updateProfile({ name, email });
-      setUser((prev) => ({ ...prev, name: updated.name, email: updated.email }));
+      const updated = await updateProfile({ name});
+      setUser((prev) => ({ ...prev, name: updated.name }));
       setProfileMessage("Profile updated successfully.");
     } catch (err) {
       setProfileError(err.response?.data?.message || "Failed to update profile.");
@@ -126,9 +126,12 @@ function MySettingsPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  disabled
                   className="w-full px-3 py-2.5 rounded-lg bg-black/30 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition"
                 />
+                <p className="text-xs text-slate-500 mt-1">
+                  Email can not br changed. Contact an administrator if this need to be updated
+                </p>
               </div>
 
               <button

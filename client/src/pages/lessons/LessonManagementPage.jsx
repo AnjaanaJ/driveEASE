@@ -130,13 +130,19 @@ useEffect(() => {
     expandedLesson.studentId?._id === currentUserId ||
     expandedLesson.studentId === currentUserId
   );
-   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor");
+  const now = new Date();
+  const oneDayFromNow = new Date(now);
+  oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+  oneDayFromNow.setHours(0, 0, 0, 0);
+  const lessonStartDate = expandedLesson ? new Date(expandedLesson.date?.split("T")[0]) : null;
+  const isAtLeastOneDayAway = lessonStartDate ? lessonStartDate >= oneDayFromNow : false;
+
+   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor")&& isAtLeastOneDayAway;
    const canReschedule = expandedLesson?.status === "Scheduled" && isOwner;
 
-   const now = new Date();
    const lessonEndDateTime = expandedLesson
-    ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
-    : null;
+  ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
+  : null;
    const isLessonInPast = lessonEndDateTime ? lessonEndDateTime <= now : false;
    const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student" && isLessonInPast;
 
@@ -163,11 +169,13 @@ useEffect(() => {
     }
 
     const chosenDate = new Date(newDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (chosenDate < today) {
-        setActionError("Cannot reschedule to a past date.");
-        return;
+    const now = new Date();
+    const oneDayFromNow = new Date(now);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    oneDayFromNow.setHours(0, 0, 0, 0);
+    if (chosenDate < oneDayFromNow) {
+      setActionError("Lessons must be rescheduled to at least one day in advance.");
+    return;
     }
 
     if (newEndTime <= newStartTime) {

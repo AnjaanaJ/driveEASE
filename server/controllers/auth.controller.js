@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
         .json({ message: "User with this email already exists" });
     }
     const role = "student";
-    
+
     // 3. Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -156,11 +156,9 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       // Same response whether user exists or not - prevents email enumeration
-      return res
-        .status(200)
-        .json({
-          message: "If that email exists, a reset token has been generated",
-        });
+      return res.status(200).json({
+        message: "If that email exists, a reset token has been generated",
+      });
     }
 
     // 1. Generate a random raw token
@@ -227,12 +225,12 @@ const resetPassword = async (req, res) => {
 // @route  PUT /api/auth/update-profile
 const updateProfile = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name } = req.body;
 
-    if (!name && !email) {
+    if (!name) {
       return res
         .status(400)
-        .json({ message: "Please provide a name or email to update" });
+        .json({ message: "Please provide a name  to update" });
     }
 
     const user = await User.findById(req.user.id);
@@ -240,18 +238,7 @@ const updateProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // If email is changing, make sure it's not already taken by someone else
-    if (email && email !== user.email) {
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ message: "Email is already in use" });
-      }
-      user.email = email;
-    }
-
-    if (name) {
-      user.name = name;
-    }
+    user.name = name;
 
     await user.save();
 

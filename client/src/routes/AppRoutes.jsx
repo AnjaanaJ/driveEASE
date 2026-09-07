@@ -403,7 +403,7 @@ function AppRoutes() {
       <Route
         path="/my-settings"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <MySettingsPage />
           </ProtectedRoute>
         }

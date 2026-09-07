@@ -41,6 +41,7 @@ import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 import StudentListPage from "../pages/student/StudentListPage";
 import StudentProfilePage from "../pages/student/StudentProfilePage";
 
+
 // Courses
 import CoursePackagesPage from "../pages/courses/CoursePackagesPage";
 import AdminCourseManagementPage from "../pages/admin/AdminCourseManagementPage";
@@ -240,6 +241,7 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        
 
         <Route
           path="/instructor/analytics"

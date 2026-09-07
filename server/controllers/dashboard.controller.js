@@ -48,16 +48,9 @@ const getAdminDashboard = async (req, res) => {
 
 const getInstructorDashboard = async (req, res) => {
   try {
-    const id = req.params.id;
-
-    // Find the instructor using either:
-    // 1. Instructor _id
-    // 2. Linked User _id
+    // Find the instructor profile linked to the logged-in user
     const instructor = await Instructor.findOne({
-      $or: [
-        { _id: id },
-        { userId: id },
-      ],
+      user: req.user.id,
     });
 
     if (!instructor) {

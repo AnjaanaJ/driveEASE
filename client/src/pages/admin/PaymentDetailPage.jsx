@@ -74,7 +74,7 @@ function PaymentDetailPage() {
               <div>
                 <p className="text-text-secondary text-xs mb-1">Student</p>
                 <p className="text-text-primary font-medium">
-                  {payment.studentId?.name || payment.studentId || 'Unknown'}
+                  {payment.studentId?.userId?.name || payment.studentId?.studentId || (typeof payment.studentId === 'string' ? payment.studentId : 'Unknown')}
                 </p>
               </div>
               <div>

@@ -112,6 +112,7 @@ useEffect(() => {
     }
     return true;
   });
+  const isApprovedStudent = user?.role === "student" && studentProfile?.status === "Approved";
 
   const handleSlotSelect = (slot) => {
     const [hour] = slot.split(":");
@@ -129,13 +130,19 @@ useEffect(() => {
     expandedLesson.studentId?._id === currentUserId ||
     expandedLesson.studentId === currentUserId
   );
-   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor");
+  const now = new Date();
+  const oneDayFromNow = new Date(now);
+  oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+  oneDayFromNow.setHours(0, 0, 0, 0);
+  const lessonStartDate = expandedLesson ? new Date(expandedLesson.date?.split("T")[0]) : null;
+  const isAtLeastOneDayAway = lessonStartDate ? lessonStartDate >= oneDayFromNow : false;
+
+   const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor")&& isAtLeastOneDayAway;
    const canReschedule = expandedLesson?.status === "Scheduled" && isOwner;
 
-   const now = new Date();
    const lessonEndDateTime = expandedLesson
-    ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
-    : null;
+  ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
+  : null;
    const isLessonInPast = lessonEndDateTime ? lessonEndDateTime <= now : false;
    const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student" && isLessonInPast;
 
@@ -162,11 +169,13 @@ useEffect(() => {
     }
 
     const chosenDate = new Date(newDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (chosenDate < today) {
-        setActionError("Cannot reschedule to a past date.");
-        return;
+    const now = new Date();
+    const oneDayFromNow = new Date(now);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    oneDayFromNow.setHours(0, 0, 0, 0);
+    if (chosenDate < oneDayFromNow) {
+      setActionError("Lessons must be rescheduled to at least one day in advance.");
+    return;
     }
 
     if (newEndTime <= newStartTime) {
@@ -273,7 +282,7 @@ useEffect(() => {
           </div>
           <div className="flex items-center gap-3">
             <NotificationBell />
-            {user?.role === "student" && (
+            {isApprovedStudent && (
               <button
                 onClick={() => {
                   if (!selectedDate) setSelectedDate(new Date().toISOString().split("T")[0]);
@@ -440,7 +449,7 @@ useEffect(() => {
         )}
 
         {/* Student,book a new lesson */}
-        {selectedDate && user?.role === "student" && (
+        {selectedDate && isApprovedStudent && (
           <div id="confirm-booking-section" className="bg-[var(--color-surface)]/70 backdrop-blur-xl border border-white/20 rounded-2xl p-6 space-y-5 shadow-[0_0_30px_-5px_var(--color-accent)]">
             <h2 className="text-white font-medium">Available time slots for {selectedDate}</h2>
 
@@ -457,6 +466,7 @@ useEffect(() => {
                   ))}
                 </select>
               </div>
+             
               <div>
                 <label className="block text-slate-300 mb-1 text-sm">Vehicle</label>
                 <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}
@@ -497,6 +507,13 @@ useEffect(() => {
               </div>
             )}
         </div>
+        )}
+         {selectedDate && user?.role === "student" && studentProfile && studentProfile.status !== "Approved" && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 text-amber-200 text-sm">
+             {studentProfile.status === "Pending"
+                ? "Your registration is still pending admin approval. You'll be able to book lessons once approved."
+                : "Your registration was not approved. Please contact the driving school for more information."}
+            </div>
         )}
 
         {/*Upcoming Lessons*/}

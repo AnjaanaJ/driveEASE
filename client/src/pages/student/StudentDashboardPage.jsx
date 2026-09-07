@@ -58,6 +58,26 @@ function StudentDashboardPage() {
         </div>
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">          
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 to-accent/15 rounded-3xl blur-xl"/>
+            <div className="relative bg-surface/70 backdrop-blur-xl border border-white/10 rounded-3xl p-10">
+              <h2 className="text-xl font-bold text-text-primary mb-5">Upcoming Lessons</h2>
+              {data?.upcomingLessons?.length === 0? (
+                <p className="text-text-secondary text-sm">No upcoming lessons scheduled.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {data?.upcomingLessons?.map((lesson) => (
+                    <li key={lesson._id} className="text-text-secondary text-sm border-b border-white/5 pb-2">
+                      {new Date(lesson.date).toLocalDateString()} - {lesson.startTime} to {lesson.endTime}
+                    </li>
+                  ))}
+                </ul>
+              )
+    }
+            </div>
+            </div>
+          
         <div className="relative">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 to-accent/15 rounded-3xl blur-xl"/>
         <div className="relative bg-surface/70 backdrop-blur-x1 border border-white/10 rounded-3xl p-10">
@@ -76,8 +96,10 @@ function StudentDashboardPage() {
           )}
         </div>
         </div>
+        </div>
+        </div>
       </div>
-    </div>
+    
   );
 }
 

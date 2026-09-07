@@ -464,7 +464,7 @@ useEffect(() => {
                   <option value="">Select vehicle</option>
                   {filteredVehicles.map((v) => (
                     <option key={v._id} value={v._id}>
-                      {v.brand} {v.model} - {v.registrationNumber}
+                    {v.vehicleType === "Bike" ? "🏍️" : "🚗"} {v.registrationNumber} | {v.brand} {v.model} | {v.transmission}
                     </option>
                   ))}
                 </select>

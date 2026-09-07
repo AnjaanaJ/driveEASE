@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Footer from "../../components/shared/Footer.jsx";
-import { LogOut } from "lucide-react";
+
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [roleTab, setRoleTab] = useState("student");
 
-  const { login ,LogOut} = useAuth();
+  const { login, logout } = useAuth();
   const navigate = useNavigate();
 
   const validate = () => {
@@ -47,8 +47,8 @@ function LoginPage() {
       const isApproved = data.isApproved ?? data.user?.isApproved;
 
       if (role !== roleTab) {
-        LogOut();
-        setServerError("This is not registered as ${roleTab} account");
+        logout();
+        setServerError(`This is not registered as ${roleTab} account`);
         return;
       }
 
@@ -298,6 +298,14 @@ function LoginPage() {
                       {errors.password}
                     </p>
                   )}
+                  <div className="text-right mt-2">
+                    <a
+                      href="/forgot-password"
+                      className="text-xs text-[var(--color-accent)] hover:underline"
+                    >
+                      Forgot Password?
+                    </a>
+                  </div>
                 </div>
 
                 <button

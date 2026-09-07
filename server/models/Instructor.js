@@ -5,6 +5,12 @@ const instructorSchema = new mongoose.Schema({
     ref: "User",
     required: true,
 },
+    instructorId: {
+    type: String,
+    required: true,
+    unique: true,
+    
+},
     phone: {
     type: String,
     required: [true, "Phone number is required"],

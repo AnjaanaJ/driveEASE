@@ -40,6 +40,7 @@ import StudentRegistrationPage from "../pages/student/StudentRegistrationPage";
 import PaymentHistoryPage from "../pages/student/PaymentHistoryPage";
 import StudentListPage from "../pages/student/StudentListPage";
 import StudentProfilePage from "../pages/student/StudentProfilePage";
+import StudentInstructorPage from "../pages/student/StudentInstructorPage";
 
 
 // Courses
@@ -267,6 +268,14 @@ function AppRoutes() {
             <ProtectedRoute allowedRoles={["student"]}>
               <StudentProfilePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/instructors"
+          element={
+           <ProtectedRoute allowedRoles={["student"]}>
+            <StudentInstructorPage />
+           </ProtectedRoute>
           }
         />
 

@@ -155,16 +155,11 @@ function PaymentForm({ onSuccess }) {
 
           <div>
             <label className="block text-sm text-text-secondary mb-1">Method</label>
-            <select
-              name="method"
-              value={form.method}
-              onChange={handleChange}
-              className="w-full bg-background border border-white/10 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option>Cash</option>
-              <option>Card</option>
-              <option>Bank Transfer</option>
-            </select>
+            <input
+              disabled
+              value="Online Transfer"
+              className="w-full bg-background/50 border border-white/5 rounded-lg px-3 py-2 text-text-secondary/60 cursor-not-allowed"
+            />
           </div>
         </div>
 

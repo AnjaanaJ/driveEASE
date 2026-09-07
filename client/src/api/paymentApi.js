@@ -34,3 +34,6 @@ export const downloadInvoice = async (id) => {
   link.click();
   link.remove();
 };
+
+export const searchStudents = (query) =>
+  axios.get(`http://localhost:5000/api/students?search=${query}`, authHeader());

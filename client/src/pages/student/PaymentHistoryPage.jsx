@@ -1,19 +1,41 @@
 import { useEffect, useState } from 'react';
 import { getPaymentsByStudent, downloadInvoice } from '../../api/paymentApi';
+import { getMyStudentProfile } from '../../api/dashboardApi';
+import { useAuth} from '../../context/AuthContext';
 import PaymentStatusBadge from '../../components/payments/PaymentStatusBadge';
+import StudentPaymentForm from '../../components/payments/StudentPaymentForm';
 
 function PaymentHistoryPage() {
   const [payments, setPayments] = useState([]);
+  const [studentProfile, setStudentProfile] = useState(null);
+  const [studentId, setStudentId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const studentId = '650000000000000000000001';
+    const { user } = useAuth();
 
-    getPaymentsByStudent(studentId)
-      .then((res) => setPayments(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+  useEffect(() => {
+    if (!user) return;
+
+    const loadPayments = async () => {
+      try {
+        const userId = user._id || user.id;
+        const profileRes = await getMyStudentProfile(userId);
+        const studentId = profileRes.data._id;
+
+        setStudentProfile(profileRes.data);
+        setStudentId(studentId);
+
+        const paymentsRes = await getPaymentsByStudent(studentId);
+        setPayments(paymentsRes.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPayments();
+  }, [user]);
     const handleDownload = async (id) => {
       try {
         await downloadInvoice(id);
@@ -46,11 +68,32 @@ function PaymentHistoryPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-8 min-h-[280px]">
-            <h2 className="text-xl font-bold text-text-primary mb-4">Current package</h2>
-            <p className="text-text-secondary text-sm">
-              Package details will appear here once the Course module is connected.
-            </p>
+          {studentId && (
+          <div className="mb-6">
+            <StudentPaymentForm
+              studentId={studentId}
+              onSuccess={async () => {
+                const paymentsRes = await getPaymentsByStudent(studentId);
+                setPayments(paymentsRes.data);
+              }}
+            />
+          </div>
+        )}
+            <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <h2 className="text-lg font-bold text-text-primary mb-4">Current package</h2>
+            {studentProfile?.coursePackage ? (
+              <div className="space-y-2">
+                <p className="text-text-primary text-xl font-bold">{studentProfile.coursePackage.name}</p>
+                <p className="text-text-secondary text-sm">{studentProfile.coursePackage.type}</p>
+                <p className="text-accent text-2xl font-bold mt-3">
+                  LKR {studentProfile.coursePackage.price}
+                </p>
+              </div>
+            ) : (
+              <p className="text-text-secondary text-sm">
+                No course package selected yet.
+              </p>
+            )}
           </div>
 
           <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-8 min-h-[280px]">

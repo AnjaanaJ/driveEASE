@@ -340,7 +340,7 @@ useEffect(() => {
                       </span>
                     </span>
                     <span className="text-slate-400">
-                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
+                      Instructor: {typeof l.instructorId === "object" && l.instructorId !== null ? l.instructorId?.instructorId || l.instructorId?.user?.name || l.instructorId?._id : l.instructorId || "—"}
                       </span>
                     <LessonStatusBadge status={l.status} />
                   </li>
@@ -387,7 +387,7 @@ useEffect(() => {
           <span className="text-slate-400 text-sm">Instructor ID</span>
           <span className="text-white text-sm">
             {typeof expandedLesson.instructorId === "object" && expandedLesson.instructorId !== null
-            ? expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
+            ? expandedLesson.instructorId?.instructorId || expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
             : expandedLesson.instructorId || "—"}
           </span>
         </div>

@@ -35,7 +35,7 @@ function LessonTable({ lessons,onSelectLesson }) {
               </td>
               <td className="p-3">
                 {typeof lesson.instructorId === "object" && lesson.instructorId !== null
-                ? lesson.instructorId?.user?.name ||lesson.instructorId?.licenseNumber ||lesson.instructorId?._id || "—"
+                ? lesson.instructorId?.instructorId || lesson.instructorId?.user?.name ||lesson.instructorId?.licenseNumber ||lesson.instructorId?._id || "—"
                 : lesson.instructorId || "—"}
               </td>
               <td className="p-3">

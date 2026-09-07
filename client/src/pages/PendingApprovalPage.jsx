@@ -1,14 +1,37 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axiosInstance from "../services/axiosInstance";
 
 function PendingApprovalPage() {
-  const { user, logout } = useAuth();
-  const navigate=useNavigate();
+  const { user, setUser, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogout=()=>{
+  const handleLogout = () => {
     logout();
     navigate("/login");
   };
+  useEffect(() => {
+    const checkApproval = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/me");
+        const latestUser = res.data.user || res.data;
+        setUser(latestUser);
+
+        if (latestUser.isApproved) {
+          if (latestUser.role === "admin") navigate("/admin/dashboard");
+          else if (latestUser.role === "instructor")
+            navigate("/instructor/dashboard");
+          else navigate("/student/dashboard");
+        }
+      } catch (err) {
+        // Silently ignore - we'll just try again on the next interval tick
+      }
+    };
+
+    const intervalId = setInterval(checkApproval, 3000);
+    return () => clearInterval(intervalId);
+  }, [navigate, setUser]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
@@ -23,9 +46,9 @@ function PendingApprovalPage() {
             </h1>
             <p className="text-slate-300 text-sm mb-6">
               Hi {user?.name || "there"}, your account has been granted admin
-              privileges but it is still awaiting approval from another 
-              administrator . You'll gain access once your admin status 
-              is confirmed .
+              privileges but it is still awaiting approval from another
+              administrator . You'll gain access once your admin status is
+              confirmed .
             </p>
             <button
               onClick={handleLogout}

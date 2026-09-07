@@ -73,6 +73,20 @@ function StudentProfilePage() {
     if (user?.id || user?._id) fetchProfile();
   }, [user]);
 
+  useEffect(() => {
+    if (!(user?.id || user?._id)) return;
+
+    const intervalId = setInterval(() => {
+      if (!editing) {
+        fetchProfile();
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [user, editing]);
+
+  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({

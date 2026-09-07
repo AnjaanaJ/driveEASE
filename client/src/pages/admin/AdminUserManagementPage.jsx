@@ -49,7 +49,7 @@ function AdminUserManagementPage() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (isBackgroundRefresh = false) => {
       try {
         const [usersData, studentsData, coursesData] = await Promise.all([
           getAllUsers(),
@@ -60,14 +60,19 @@ function AdminUserManagementPage() {
         setStudentProfiles(studentsData);
         setCourses(coursesData);
       } catch (err) {
-        setError("Failed to load users. Please try again.");
+        if (!isBackgroundRefresh) {
+          setError("Failed to load users.Please Try again");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
+    const intervalId = setInterval(() => fetchData(true), 5000);
+    return () => clearInterval(intervalId);
   }, []);
+
   const updateUserInList = (id, updatedFields) => {
     setUsers((prevUsers) =>
       prevUsers.map((u) => (u._id === id ? { ...u, ...updatedFields } : u)),
@@ -383,7 +388,7 @@ function AdminUserManagementPage() {
                 {selectedStudent.coursePackage?.name || "Not selected"}
               </p>
             </div>
-           <div>
+            <div>
               <p className="text-slate-400 mb-1">Preferred vehicle type</p>
               <p className="font-medium text-white">
                 {selectedStudent.preferredVehicleType || "Not selected"}

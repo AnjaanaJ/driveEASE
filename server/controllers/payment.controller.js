@@ -16,7 +16,11 @@ const createPayment = async (req, res) => {
 
 const getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find().populate('studentId', 'name email');
+    const payments = await Payment.find().populate({
+      path: 'studentId',
+      select: 'studentId nic phone userId',
+      populate: { path: 'userId', select: 'name email' },
+    });
     res.status(200).json(payments);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -25,7 +29,11 @@ const getAllPayments = async (req, res) => {
 
 const getPaymentById = async (req, res) => {
   try {
-    const payment = await Payment.findById(req.params.id).populate('studentId','name email');
+    const payment = await Payment.findById(req.params.id).populate({
+      path: 'studentId',
+      select: 'studentId nic phone userId',
+      populate: { path: 'userId', select: 'name email' },
+    });
     if(!payment) {
       return res.status(404).json({ message: 'Payment not found'});
     }
@@ -86,7 +94,11 @@ const getMonthlySummary = async (req, res) => {
 
 const getInvoice = async (req, res) => {
   try {
-    const payment = await Payment.findById(req.params.id).populate('studentId', 'name email');
+    const payment = await Payment.findById(req.params.id).populate({
+      path: 'studentId',
+      select: 'studentId nic phone userId',
+      populate: { path: 'userId', select: 'name email' },
+    });
     if (!payment) {
       return res.status(404).json({ message: 'Payment not found' });
     }

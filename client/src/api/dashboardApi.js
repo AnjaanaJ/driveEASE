@@ -12,3 +12,6 @@ export const getInstructorDashboard = (id) =>
 
 export const getStudentDashboard = (id) =>
   axios.get(`${API_URL}/student/${id}`, authHeader());
+
+export const getMyStudentProfile = (userId) =>
+  axios.get(`http://localhost:5000/api/students/me/${userId}`, authHeader());

@@ -15,6 +15,7 @@ import LessonTable from "../../components/lessons/LessonTable";
 import LessonStatusBadge from "../../components/lessons/LessonStatusBadge";
 import NotificationBell from "../../components/lessons/NotificationBell";
 import axiosInstance from "../../services/axiosInstance";
+import { getStudentByUserId } from "../../api/studentApi";
 
 function LessonManagementPage() {
   const { user } = useAuth();
@@ -77,6 +78,21 @@ function LessonManagementPage() {
   fetchInstructorsAndVehicles();
 }, []);
 
+const [studentProfile, setStudentProfile] = useState(null);
+useEffect(() => {
+  const fetchStudentProfile = async () => {
+    if (user?.role === "student" && currentUserId) {
+      try {
+        const profile = await getStudentByUserId(currentUserId);
+        setStudentProfile(profile);
+      } catch (err) {
+        console.error("Failed to load student profile:", err);
+      }
+    }
+  };
+  if (user) fetchStudentProfile();
+}, [user]);
+
   // Group lessons by date,used for the admin/instructor "lessons on this day" view
   const lessonsByDate = {};
   lessons.forEach((l) => {
@@ -84,6 +100,17 @@ function LessonManagementPage() {
     if (!key) return;
     if (!lessonsByDate[key]) lessonsByDate[key] = [];
     lessonsByDate[key].push(l);
+  });
+
+  const filteredVehicles = vehicles.filter((v) => {
+    if (!studentProfile) return true;
+    if (studentProfile.preferredVehicleType === "Bike") {
+      return v.vehicleType === "Bike";
+    }
+    if (studentProfile.preferredVehicleType === "Car") {
+      return v.vehicleType === "Car" && v.transmission === studentProfile.preferredTransmission;
+    }
+    return true;
   });
 
   const handleSlotSelect = (slot) => {
@@ -435,9 +462,9 @@ function LessonManagementPage() {
                 <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-slate-900/60 text-white border border-slate-700">
                   <option value="">Select vehicle</option>
-                  {vehicles.map((v) => (
+                  {filteredVehicles.map((v) => (
                     <option key={v._id} value={v._id}>
-                      {v.brand} {v.model} - {v.registrationNumber}
+                    {v.vehicleType === "Bike" ? "🏍️" : "🚗"} {v.registrationNumber} | {v.brand} {v.model} | {v.transmission}
                     </option>
                   ))}
                 </select>

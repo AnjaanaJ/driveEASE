@@ -1,23 +1,49 @@
 import { useEffect, useState } from 'react';
-import { getStudentDashboard } from '../../api/dashboardApi';
+import { getStudentDashboard, getMyStudentProfile } from '../../api/dashboardApi';
+import { useAuth} from '../../context/AuthContext';
+import StatCard from '../../components/dashboard/StatCard';
 
 function StudentDashboardPage() {
+  const { user} = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const studentId = '650000000000000000000001';
+    if (!user) return;
 
-    getStudentDashboard(studentId)
-      .then((res) => setData(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+    const loadDashboard = async () => {
+      try {
+        const userId = user._id || user.id;
+        const profileRes = await getMyStudentProfile(userId);
+        const studentId = profileRes.data._id;
+
+        const dashboardRes = await getStudentDashboard(studentId);
+        setData(dashboardRes.data);
+      } catch (err) {
+        console.error(err);
+        setError('Could not load your dashboard. Make sure your student profile is set up.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, [user]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background p-8">
         <p className="text-text-secondary">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background p-8">
+        <p className="text-red-400">{error}</p>
       </div>
     );
   }
@@ -58,6 +84,26 @@ function StudentDashboardPage() {
         </div>
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">          
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 to-accent/15 rounded-3xl blur-xl"/>
+            <div className="relative bg-surface/70 backdrop-blur-xl border border-white/10 rounded-3xl p-10">
+              <h2 className="text-xl font-bold text-text-primary mb-5">Upcoming Lessons</h2>
+              {data?.upcomingLessons?.length === 0? (
+                <p className="text-text-secondary text-sm">No upcoming lessons scheduled.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {data?.upcomingLessons?.map((lesson) => (
+                    <li key={lesson._id} className="text-text-secondary text-sm border-b border-white/5 pb-2">
+                      {new Date(lesson.date).toLocaleDateString()} — {lesson.startTime} to {lesson.endTime}
+                    </li>
+                  ))}
+                </ul>
+              )
+    }
+            </div>
+            </div>
+          
         <div className="relative">
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/15 to-accent/15 rounded-3xl blur-xl"/>
         <div className="relative bg-surface/70 backdrop-blur-x1 border border-white/10 rounded-3xl p-10">
@@ -76,8 +122,10 @@ function StudentDashboardPage() {
           )}
         </div>
         </div>
+        </div>
+        </div>
       </div>
-    </div>
+    
   );
 }
 

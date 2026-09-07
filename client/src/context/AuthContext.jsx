@@ -39,12 +39,19 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axiosInstance.post("/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data.user || res.data);
+  console.log("FRONTEND LOGIN EMAIL:", JSON.stringify(email));
+  console.log("FRONTEND PASSWORD LENGTH:", password.length);
 
-    return res.data;
-  };
+  const res = await axiosInstance.post("/auth/login", {
+    email,
+    password,
+  });
+
+  localStorage.setItem("token", res.data.token);
+  setUser(res.data.user || res.data);
+
+  return res.data;
+};
 
   const register = async (name, email, password, role) => {
     const res = await axiosInstance.post("/auth/register", {

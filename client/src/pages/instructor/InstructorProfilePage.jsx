@@ -3,6 +3,7 @@ import axiosInstance from "../../services/axiosInstance";
 
 function InstructorProfilePage() {
   const [profile, setProfile] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -10,8 +11,10 @@ function InstructorProfilePage() {
     const fetchProfile = async () => {
       try {
         const response = await axiosInstance.get("/instructors/me");
+        const userResponse = await axiosInstance.get("/auth/me");
 
         setProfile(response.data.data);
+        setUser(userResponse.data.user);
       } catch (err) {
         console.error("Error fetching instructor profile:", err);
         setError("Failed to load instructor profile.");
@@ -87,6 +90,17 @@ function InstructorProfilePage() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* Name */}
+               <div className="rounded-2xl border border-white/10 bg-[var(--color-background)]/50 p-5">
+                <p className="text-slate-400 text-sm mb-2">
+                  Name
+                </p>
+
+                <p className="text-white text-lg font-medium">
+                {user?.name || "N/A"}
+                </p>
+               </div>
 
               {/* Phone */}
               <div className="rounded-2xl border border-white/10 bg-[var(--color-background)]/50 p-5">

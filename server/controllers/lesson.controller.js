@@ -107,7 +107,7 @@ const getLessons = async (req, res) => {
       })
       .populate({
         path: 'instructorId',
-        select: 'licenseNumber phone user',
+        select: 'licenseNumber phone user instructorId',
         populate: { path: 'user', select: 'name email' },
       })
       .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
@@ -126,7 +126,7 @@ const getLessonById = async (req, res) => {
       })
       .populate({
         path: 'instructorId',
-        select: 'licenseNumber phone user',
+        select: 'licenseNumber phone user instructorId',
         populate: { path: 'user', select: 'name email' },
       })
       .populate('vehicleId', 'registrationNumber brand model vehicleType transmission');
@@ -238,7 +238,7 @@ const updateLesson = async (req, res) => {
     const studentUserId = student ? student.userId : null;
     const studentDisplayId = student?.studentId || lesson.studentId;
     const instructorUserId = instructor ? instructor.user : null;
-    const instructorDisplayId = instructor?.licenseNumber || lesson.instructorId;
+    const instructorDisplayId = instructor?.instructorId || instructor?.licenseNumber || lesson.instructorId;
     const actorRole = req.user.role;
 
     const dateStr = lesson.date.toISOString().split('T')[0];
@@ -329,7 +329,7 @@ const cancelLesson = async (req, res) => {
     const studentUserId = student ? student.userId : null;
     const studentDisplayId = student?.studentId || lesson.studentId; 
     const instructorUserId = instructor ? instructor.user : null;
-    const instructorDisplayId = instructor?.licenseNumber || lesson.instructorId;
+    const instructorDisplayId = instructor?.instructorId || instructor?.licenseNumber || lesson.instructorId;
     const actorRole = req.user.role;
 
     if (actorRole === 'student') {
@@ -427,7 +427,7 @@ const getLessonsByStudent = async (req, res) => {
       })
       .populate({
         path: 'instructorId',
-        select: 'licenseNumber phone user',
+        select: 'licenseNumber phone user instructorId',
         populate: { path: 'user', select: 'name email' },
       })
       .populate('vehicleId', 'registrationNumber brand model vehicleType transmission')
@@ -487,7 +487,7 @@ const getLessonsByInstructor = async (req, res) => {
       })
       .populate({
         path: "instructorId",
-        select: "licenseNumber phone user",
+        select: "licenseNumber phone user instructorId",
         populate: {
           path: "user",
           select: "name email",

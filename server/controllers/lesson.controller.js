@@ -24,6 +24,9 @@ const createLesson = async (req, res) => {
     if (!student) {
       return res.status(400).json({ message: 'No student profile found for this account. Please complete your student registration first.' });
     }
+    if (student.status !== 'Approved') {
+      return res.status(403).json({ message: 'Your registration is pending admin approval. You cannot book lessons until approved.' });
+    }
     const studentId = student._id;
     const vehicle = await Vehicle.findById(vehicleId);
 

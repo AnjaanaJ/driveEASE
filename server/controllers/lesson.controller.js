@@ -43,10 +43,13 @@ const createLesson = async (req, res) => {
     }     
 
     const chosenDate = new Date(date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (chosenDate < today) {
-      return res.status(400).json({ message: 'Booking date cannot be in the past' });
+    const now = new Date();
+    const oneDayFromNow = new Date(now);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    oneDayFromNow.setHours(0, 0, 0, 0);
+
+    if (chosenDate < oneDayFromNow) {
+      return res.status(400).json({ message: 'Lessons must be booked at least one day in advance' });
     }
 
     if (endTime <= startTime) {
@@ -195,11 +198,13 @@ const updateLesson = async (req, res) => {
       const newStartTime = startTime || lesson.startTime;
       const newEndTime = endTime || lesson.endTime;
       const chosenDate = new Date(newDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const now= new Date();
+      const oneDayFromNow = new Date(now);
+      oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+      oneDayFromNow.setHours(0, 0, 0, 0);
 
-      if (chosenDate < today) {
-        return res.status(400).json({ message: 'Cannot reschedule to a past date' });
+      if (chosenDate < oneDayFromNow) {
+        return res.status(400).json({ message: 'Lessons must be rescheduled to at least one day in advance' });
       }
       if (newEndTime <= newStartTime) {
         return res.status(400).json({ message: 'End time must be after start time' });
@@ -304,6 +309,15 @@ const cancelLesson = async (req, res) => {
     }
     if (new Date(lesson.date) < new Date()) {
       return res.status(400).json({ message: 'Cannot cancel a lesson that has already occurred' });
+    }
+    const lessonDate = new Date(lesson.date);
+    const now = new Date();
+    const oneDayFromNow = new Date(now);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    oneDayFromNow.setHours(0, 0, 0, 0);
+
+    if (lessonDate < oneDayFromNow) {
+      return res.status(400).json({ message: 'Lessons can only be cancelled at least one day in advance' });
     }
     lesson.status = 'Cancelled';
     await lesson.save();

@@ -55,45 +55,51 @@ const registerUser = async (req, res) => {
 };
 // @desc   Login user
 // @route  POST /api/auth/login
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+const loginUser = async (req, res) => { 
+  try { 
+    const { email, password } = req.body; 
 
-    // 1. Check required fields
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Please provide email and password" });
+      return res.status(400).json({ message: "Please provide email and password" }); 
     }
 
-    // 2. Find the user by email
-    const user = await User.findOne({ email });
+    console.log("LOGIN EMAIL:", email);
+
+    const user = await User.findOne({ email }); 
+
+    console.log("USER FOUND:", !!user);
+
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password" }); 
     }
 
-    // 3. Compare entered password with hashed password in DB
+    console.log("USER ID:", user._id);
+    console.log("USER ROLE:", user.role);
+    console.log("APPROVED:", user.isApproved);
+
     const isMatch = await bcrypt.compare(password, user.password);
+
+    console.log("PASSWORD MATCH:", isMatch);
+
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password" }); 
     }
 
-    // 4. Generate token and respond
-    const token = generateToken(user._id, user.role);
+    const token = generateToken(user._id, user.role); 
 
-    res.status(200).json({
+    res.status(200).json({ 
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
       isApproved: user.isApproved,
-      token,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+      token
+    }); 
+
+  } catch(error) { 
+    // keep your existing catch code here
   }
 };
-
 const logoutUser = async (req, res) => {
   try {
     //logout is handled by the client deleting the account

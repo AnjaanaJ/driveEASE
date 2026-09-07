@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllPayments, downloadInvoice } from '../../api/paymentApi';
+import { getAllPayments, downloadInvoice, updatePaymentStatus } from '../../api/paymentApi';
 import PaymentForm from '../../components/payments/PaymentForm';
 import PaymentStatusBadge from '../../components/payments/PaymentStatusBadge';
 import { ClipboardList } from 'lucide-react';
@@ -31,6 +31,15 @@ function PaymentListPage() {
         await downloadInvoice(id);
     } catch (err) {
         console.error('Failed to download invoice', err);
+    }
+  };
+  
+  const handleMarkPaid = async (id) => {
+    try {
+      await updatePaymentStatus(id, 'Paid');
+      loadPayments(); 
+    } catch (err) {
+      console.error('Failed to update payment status', err);
     }
   };
 
@@ -96,7 +105,7 @@ function PaymentListPage() {
                         onClick={() => navigate(`/admin/payments/${p._id}`)}
                         className="border-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 transition-colors">
                       <td className="py-3 px-3 text-text-primary font-medium">
-                        {p.studentId?.name || p.studentId?._id || (typeof p.studentId === 'string' ? p.studentId : 'Unknown')}
+                        {p.studentId?.userId?.name || p.studentId?.studentId || p.studentId?._id || (typeof p.studentId === 'string' ? p.studentId : 'Unknown')}
                       </td>
                       <td className="py-3 px-3 text-text-secondary">{p.invoiceRef}</td>
                       <td className="py-3 px-3 text-text-primary">LKR {p.amount}</td>
@@ -107,16 +116,29 @@ function PaymentListPage() {
                       <td className="py-3 px-3">
                         <PaymentStatusBadge status={p.status} />
                       </td>
-                      <td className="py-3 px-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDownload(p._id);
-                          }}
-                          className="text-accent hover:opacity-80 text-sm underline underline-offset-2"
-                        >
-                          Download
-                        </button>
+                        <td className="py-3 px-3">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownload(p._id);
+                            }}
+                            className="text-accent hover:opacity-80 text-sm underline underline-offset-2"
+                          >
+                            Download
+                          </button>
+                          {p.status === 'Pending' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMarkPaid(p._id);
+                              }}
+                              className="text-sm bg-accent/10 text-accent border border-accent/30 rounded-lg px-2 py-1 hover:bg-accent/20 transition-colors"
+                            >
+                              Mark Paid
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

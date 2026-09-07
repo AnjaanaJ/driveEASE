@@ -7,7 +7,9 @@ const createPayment = async (req, res) => {
     const { studentId, amount, method, status } = req.body;
     const invoiceRef = 'INV-' + crypto.randomBytes(4).toString('hex').toUpperCase();
 
-    const payment = await Payment.create({ studentId, amount, method, status, invoiceRef });
+    const receiptUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
+
+    const payment = await Payment.create({ studentId, amount, method, status, invoiceRef, receiptUrl, });
     res.status(201).json({ message: 'Payment recorded successfully', payment });
   } catch (error) {
     res.status(400).json({ message: 'Failed to record payment', error: error.message });

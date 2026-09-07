@@ -7,6 +7,7 @@ function StudentPaymentForm({ studentId, onSuccess }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [receipt, setReceipt] = useState(null);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   
@@ -32,7 +33,7 @@ function StudentPaymentForm({ studentId, onSuccess }) {
 
     setSubmitting(true);
     try {
-      await recordPayment({
+      const res = await recordPayment({
         studentId,
         amount: Number(form.amount),
         method: 'Online Transfer',
@@ -40,7 +41,7 @@ function StudentPaymentForm({ studentId, onSuccess }) {
         receipt: form.receipt,
       });
 
-      setReceipt(res.data.payment);
+      
       setSuccess('Payment submitted. It will show as Pending until confirmed by our staff.');
       setForm({ amount: '', receipt: null });
       if (onSuccess) onSuccess();

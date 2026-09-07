@@ -245,6 +245,13 @@ const updateLesson = async (req, res) => {
     const actionLabel = isReschedule ? 'rescheduled' : `updated to "${lesson.status}"`;
 
     if (actorRole === 'student') {
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime}.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+       }
       if (instructorUserId) {
         await Notification.create({
           userId: instructorUserId,
@@ -333,6 +340,13 @@ const cancelLesson = async (req, res) => {
     const actorRole = req.user.role;
 
     if (actorRole === 'student') {
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
+          type: 'Cancellation',
+        });
+      }
       // Notify instructor
       if (instructorUserId) {
         await Notification.create({

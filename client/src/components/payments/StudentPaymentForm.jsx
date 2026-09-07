@@ -7,6 +7,7 @@ function StudentPaymentForm({ studentId, onSuccess }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [receipt, setReceipt] = useState(null);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   

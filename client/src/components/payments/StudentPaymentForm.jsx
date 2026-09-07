@@ -3,7 +3,7 @@ import { recordPayment } from '../../api/paymentApi';
 import { CreditCard } from 'lucide-react';
 
 function StudentPaymentForm({ studentId, onSuccess }) {
-  const [form, setForm] = useState({ amount: '', method: 'Cash' });
+  const [form, setForm] = useState({ amount: '', method: 'Online Transfer' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -58,31 +58,19 @@ function StudentPaymentForm({ studentId, onSuccess }) {
         {success && <p className="text-sm text-accent mb-3">{success}</p>}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div>
             <label className="block text-sm text-text-secondary mb-1">Amount (LKR)</label>
             <input
               name="amount"
               type="number"
               value={form.amount}
               onChange={handleChange}
-              placeholder="e.g. 5000"
+              placeholder="e.g. 12000"
               className="w-full bg-background border border-white/10 rounded-lg px-3 py-2 text-text-primary placeholder-text-secondary/50 focus:outline-none focus:ring-1 focus:ring-primary"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm text-text-secondary mb-1">Payment method</label>
-            <select
-              name="method"
-              value={form.method}
-              onChange={handleChange}
-              className="w-full bg-background border border-white/10 rounded-lg px-3 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option>Cash</option>
-              <option>Card</option>
-              <option>Bank Transfer</option>
-            </select>
-          </div>
+            <p className="text-text-secondary text-xs mt-2">
+            Payments are made via bank transfer. Please transfer the amount and submit this form to notify our staff.
+            </p>
+          
         </div>
 
         <button

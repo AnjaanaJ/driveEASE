@@ -1,3 +1,4 @@
+const bcrypt =require('bcryptjs');
 const User = require('../models/User');
 const ActivityLog = require('../models/ActivityLog');
 const Settings=require('../models/Settings');
@@ -9,6 +10,49 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password'); // exclude password field
     res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+//    Create a new admin account (admin only)
+//   POST /api/admin/admins
+const createAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Please provide name, email, and password' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email already exists' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: 'admin',
+      isApproved: true,
+    });
+
+    await ActivityLog.create({
+      userId: req.user.id,
+      action: `Created new admin account: ${user.email}`,
+    });
+
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isApproved: user.isApproved,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -156,4 +200,4 @@ const updateSettings = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings,updateUserRole ,getSettings};
+module.exports = { getAllUsers, approveUser, rejectUser, deleteUser, getActivityLogs,updateSettings,updateUserRole ,getSettings,createAdmin};

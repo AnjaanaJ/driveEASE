@@ -7,11 +7,10 @@ function CoursePackageCard({ course }) {
   const handleChoosePackage = () => {
     navigate(`/student/register-profile?course=${course._id}`);
   };
-  
 
   return (
     <div
-      className={`relative rounded-3xl p-7 border bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-colors ${
+      className={`relative rounded-3xl p-7 border bg-white/[0.03] backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-300 hover:-translate-y-2 hover:border-[var(--color-primary)] hover:shadow-[0_12px_40px_rgba(30,117,254,0.35)] ${
         isPopular ? "border-white/30" : "border-white/20"
       }`}
     >
@@ -19,10 +18,10 @@ function CoursePackageCard({ course }) {
       <div className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--color-primary)]/20 blur-3xl overflow-hidden" />
 
       {isPopular && (
-  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
-    Most popular
-  </span>
-)}
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
+          Most popular
+        </span>
+      )}
 
       <span className="inline-block bg-background text-accent text-xs font-semibold px-3 py-1 rounded-full mb-4 border border-slate-700">
         {course.type}
@@ -33,7 +32,7 @@ function CoursePackageCard({ course }) {
       <p className="text-text-secondary text-sm mb-6 min-h-[40px]">
         {course.description}
       </p>
-      <div className="text-accent text-3xl font-extrabold mb-1">
+      <div className="text-gradient-brand text-3xl font-extrabold mb-1">
         Rs. {course.price.toLocaleString()}
       </div>
       <div className="text-text-secondary text-sm mb-6">
@@ -47,7 +46,9 @@ function CoursePackageCard({ course }) {
               key={index}
               className="flex items-start gap-2 text-sm text-text-secondary"
             >
-              <span className="text-accent font-bold">✓</span>
+              <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent font-bold">
+                ✓
+              </span>
               <span>{feature}</span>
             </li>
           ))}
@@ -55,11 +56,11 @@ function CoursePackageCard({ course }) {
       )}
 
       <button
-  onClick={handleChoosePackage}
-  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity"
->
-  Choose Package
-</button>
+        onClick={handleChoosePackage}
+        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity"
+      >
+        Choose Package
+      </button>
     </div>
   );
 }

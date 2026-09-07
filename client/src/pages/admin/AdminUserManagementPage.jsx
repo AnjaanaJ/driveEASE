@@ -383,6 +383,20 @@ function AdminUserManagementPage() {
                 {selectedStudent.coursePackage?.name || "Not selected"}
               </p>
             </div>
+           <div>
+              <p className="text-slate-400 mb-1">Preferred vehicle type</p>
+              <p className="font-medium text-white">
+                {selectedStudent.preferredVehicleType || "Not selected"}
+              </p>
+            </div>
+            {selectedStudent.preferredVehicleType === "Car" && (
+              <div>
+                <p className="text-slate-400 mb-1">Transmission</p>
+                <p className="font-medium text-white">
+                  {selectedStudent.preferredTransmission || "Not selected"}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 flex items-center gap-4">

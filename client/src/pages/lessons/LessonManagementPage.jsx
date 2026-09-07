@@ -104,7 +104,13 @@ function LessonManagementPage() {
   );
    const canCancel = expandedLesson?.status === "Scheduled" && (isOwner || currentUserRole === "admin" || currentUserRole === "instructor");
    const canReschedule = expandedLesson?.status === "Scheduled" && isOwner;
-   const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student";
+
+   const now = new Date();
+   const lessonEndDateTime = expandedLesson
+    ? new Date(`${expandedLesson.date?.split("T")[0]}T${expandedLesson.endTime}`)
+    : null;
+   const isLessonInPast = lessonEndDateTime ? lessonEndDateTime <= now : false;
+   const canMarkCompleted = expandedLesson?.status === "Scheduled" && currentUserRole !== "student" && isLessonInPast;
 
    const handleCancelLesson = async () => {
     setActionLoading(true);
@@ -347,6 +353,14 @@ function LessonManagementPage() {
             {typeof expandedLesson.instructorId === "object" && expandedLesson.instructorId !== null
             ? expandedLesson.instructorId?.user?.name || expandedLesson.instructorId?.licenseNumber || expandedLesson.instructorId?._id
             : expandedLesson.instructorId || "—"}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400 text-sm">Vehicle</span>
+          <span className="text-white text-sm">
+            {typeof expandedLesson.vehicleId === "object" && expandedLesson.vehicleId !== null
+            ? `${expandedLesson.vehicleId?.brand || ""} ${expandedLesson.vehicleId?.model || ""} (${expandedLesson.vehicleId?.registrationNumber || "—"}) - ${expandedLesson.vehicleId?.vehicleType || ""}${expandedLesson.vehicleId?.transmission ? ` (${expandedLesson.vehicleId.transmission})` : ""}`
+            : expandedLesson.vehicleId || "—"}
           </span>
         </div>
 

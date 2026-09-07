@@ -60,6 +60,7 @@ import ReportsDashboardPage from "../pages/admin/ReportsDashboardPage";
 
 // Users
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
+import AdminManagementPage from "../pages/admin/AdminManagementPage";
 import AdminSystemSettingsPage from "../pages/admin/AdminSystemSettingsPage";
 import MySettingsPage from "../pages/MySettingsPage";
 
@@ -364,6 +365,14 @@ function AppRoutes() {
               <AdminUserManagementPage />
             </ProtectedRoute>
           }
+        />
+        <Route 
+        path="/admin/admins"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminManagementPage/>
+            </ProtectedRoute>
+        }
         />
         <Route
           path="/admin/settings"

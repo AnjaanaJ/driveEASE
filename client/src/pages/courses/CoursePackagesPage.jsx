@@ -39,7 +39,7 @@ const sortedCourses = [...courses].sort(
         <div className="mx-auto max-w-6xl p-8 md:p-12">
           <div className="mb-10">
             <span className="mb-4 inline-block rounded-full border border-sky-500/30 bg-sky-500/10 px-4 py-1.5 text-xs font-medium text-sky-300">
-              Course catalogue
+              Student panel 
             </span>
             <h1 className="mb-2 text-4xl font-bold text-white">
               <span>Course </span>

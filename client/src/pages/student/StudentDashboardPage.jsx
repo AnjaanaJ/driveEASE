@@ -1,23 +1,49 @@
 import { useEffect, useState } from 'react';
-import { getStudentDashboard } from '../../api/dashboardApi';
+import { getStudentDashboard, getMyStudentProfile } from '../../api/dashboardApi';
+import { useAuth} from '../../context/AuthContext';
+import StatCard from '../../components/dashboard/StatCard';
 
 function StudentDashboardPage() {
+  const { user} = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const studentId = '650000000000000000000001';
+    if (!user) return;
 
-    getStudentDashboard(studentId)
-      .then((res) => setData(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+    const loadDashboard = async () => {
+      try {
+        const userId = user._id || user.id;
+        const profileRes = await getMyStudentProfile(userId);
+        const studentId = profileRes.data._id;
+
+        const dashboardRes = await getStudentDashboard(studentId);
+        setData(dashboardRes.data);
+      } catch (err) {
+        console.error(err);
+        setError('Could not load your dashboard. Make sure your student profile is set up.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, [user]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background p-8">
         <p className="text-text-secondary">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background p-8">
+        <p className="text-red-400">{error}</p>
       </div>
     );
   }
@@ -69,7 +95,7 @@ function StudentDashboardPage() {
                 <ul className="space-y-2">
                   {data?.upcomingLessons?.map((lesson) => (
                     <li key={lesson._id} className="text-text-secondary text-sm border-b border-white/5 pb-2">
-                      {new Date(lesson.date).toLocalDateString()} - {lesson.startTime} to {lesson.endTime}
+                      {new Date(lesson.date).toLocaleDateString()} — {lesson.startTime} to {lesson.endTime}
                     </li>
                   ))}
                 </ul>

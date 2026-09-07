@@ -73,6 +73,20 @@ function StudentProfilePage() {
     if (user?.id || user?._id) fetchProfile();
   }, [user]);
 
+  useEffect(() => {
+    if (!(user?.id || user?._id)) return;
+
+    const intervalId = setInterval(() => {
+      if (!editing) {
+        fetchProfile();
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [user, editing]);
+
+  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({
@@ -361,10 +375,7 @@ function StudentProfilePage() {
                     : "Not selected yet"
                 }
               />
-              <OverviewItem
-  label="Assigned instructor"
-  value={student.assignedInstructor?.user?.name || "Not yet assigned"}
-/>
+              
               <OverviewItem
                 label="Attendance records"
                 value={attendance.length}
@@ -373,7 +384,7 @@ function StudentProfilePage() {
                 label="Uploaded documents"
                 value={student.documents?.length || 0}
               />
-                           <OverviewItem
+              <OverviewItem
                 label="Member since"
                 value={
                   student.createdAt
@@ -383,40 +394,6 @@ function StudentProfilePage() {
               />
             </div>
           </section>
-
-          {student.assignedInstructor && (
-            <section className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/[0.03] backdrop-blur-3xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)] sm:p-8">
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-              <h2 className="text-lg font-semibold text-white">
-                Your instructor
-              </h2>
-              <p className="mt-1 text-sm text-text-secondary">
-                Contact and qualification details of your assigned instructor.
-              </p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <DetailItem
-                  label="Name"
-                  value={student.assignedInstructor.user?.name || "-"}
-                />
-                <DetailItem
-                  label="Phone"
-                  value={student.assignedInstructor.phone || "-"}
-                />
-                <DetailItem
-                  label="Qualification"
-                  value={student.assignedInstructor.qualification || "-"}
-                />
-                <DetailItem
-                  label="Experience"
-                  value={
-                    student.assignedInstructor.experience !== undefined
-                      ? `${student.assignedInstructor.experience} years`
-                      : "-"
-                  }
-                />
-              </div>
-            </section>
-          )}
         </div>
 
         {isApproved && (

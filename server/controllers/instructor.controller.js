@@ -4,7 +4,29 @@ const Student = require("../models/Student");
 // Create Instructor
 const createInstructor = async (req, res) => {
   try {
-    const instructor = await Instructor.create(req.body);
+    const lastInstructor = await Instructor.findOne({
+      instructorId: { $regex: /^INS-\d+$/ },
+    }).sort({ instructorId: -1 });
+
+    let nextNumber = 1;
+
+    if (lastInstructor && lastInstructor.instructorId) {
+      const lastNumber = parseInt(
+        lastInstructor.instructorId.replace("INS-", ""),
+        10
+      );
+
+      if (!isNaN(lastNumber)) {
+        nextNumber = lastNumber + 1;
+      }
+    }
+
+    const instructorId = `INS-${String(nextNumber).padStart(4, "0")}`;
+
+    const instructor = await Instructor.create({
+      ...req.body,
+      instructorId,
+    });
 
     res.status(201).json({
       success: true,

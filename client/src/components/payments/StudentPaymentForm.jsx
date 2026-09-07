@@ -32,7 +32,7 @@ function StudentPaymentForm({ studentId, onSuccess }) {
       });
 
       setSuccess('Payment submitted. It will show as Pending until confirmed by an admin.');
-      setForm({ amount: '', method: 'Cash' });
+      setForm({ amount: '', method: 'Online Transfer' });
       if (onSuccess) onSuccess();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to submit payment.');

@@ -199,6 +199,12 @@ const updateLesson = async (req, res) => {
       const newEndTime = endTime || lesson.endTime;
       const chosenDate = new Date(newDate);
       const now= new Date();
+      const today = new Date(now);
+      today.setHours(0, 0, 0, 0);
+
+      if (chosenDate < today) {
+        return res.status(400).json({ message: 'Cannot reschedule to a past date' });
+      }
       const oneDayFromNow = new Date(now);
       oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
       oneDayFromNow.setHours(0, 0, 0, 0);
@@ -245,6 +251,13 @@ const updateLesson = async (req, res) => {
     const actionLabel = isReschedule ? 'rescheduled' : `updated to "${lesson.status}"`;
 
     if (actorRole === 'student') {
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson has been ${actionLabel} to ${dateStr} at ${lesson.startTime}.`,
+          type: isReschedule ? 'Reminder' : 'StatusUpdate',
+        });
+       }
       if (instructorUserId) {
         await Notification.create({
           userId: instructorUserId,
@@ -333,6 +346,13 @@ const cancelLesson = async (req, res) => {
     const actorRole = req.user.role;
 
     if (actorRole === 'student') {
+      if (studentUserId) {
+        await Notification.create({
+          userId: studentUserId,
+          message: `Your lesson on ${dateStr} at ${lesson.startTime} has been cancelled.`,
+          type: 'Cancellation',
+        });
+      }
       // Notify instructor
       if (instructorUserId) {
         await Notification.create({

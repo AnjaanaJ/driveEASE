@@ -199,6 +199,12 @@ const updateLesson = async (req, res) => {
       const newEndTime = endTime || lesson.endTime;
       const chosenDate = new Date(newDate);
       const now= new Date();
+      const today = new Date(now);
+      today.setHours(0, 0, 0, 0);
+
+      if (chosenDate < today) {
+        return res.status(400).json({ message: 'Cannot reschedule to a past date' });
+      }
       const oneDayFromNow = new Date(now);
       oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
       oneDayFromNow.setHours(0, 0, 0, 0);

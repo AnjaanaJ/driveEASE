@@ -3,10 +3,12 @@ import { getPaymentsByStudent, downloadInvoice } from '../../api/paymentApi';
 import { getMyStudentProfile } from '../../api/dashboardApi';
 import { useAuth} from '../../context/AuthContext';
 import PaymentStatusBadge from '../../components/payments/PaymentStatusBadge';
+import StudentPaymentForm from '../../components/payments/StudentPaymentForm';
 
 function PaymentHistoryPage() {
   const [payments, setPayments] = useState([]);
   const [studentProfile, setStudentProfile] = useState(null);
+  const [studentId, setStudentId] = useState(null);
   const [loading, setLoading] = useState(true);
 
     const { user } = useAuth();
@@ -21,6 +23,7 @@ function PaymentHistoryPage() {
         const studentId = profileRes.data._id;
 
         setStudentProfile(profileRes.data);
+        setStudentId(studentId);
 
         const paymentsRes = await getPaymentsByStudent(studentId);
         setPayments(paymentsRes.data);
@@ -65,6 +68,17 @@ function PaymentHistoryPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {studentId && (
+          <div className="mb-6">
+            <StudentPaymentForm
+              studentId={studentId}
+              onSuccess={async () => {
+                const paymentsRes = await getPaymentsByStudent(studentId);
+                setPayments(paymentsRes.data);
+              }}
+            />
+          </div>
+        )}
             <div className="bg-surface/70 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-lg font-bold text-text-primary mb-4">Current package</h2>
             {studentProfile?.coursePackage ? (

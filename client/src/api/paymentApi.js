@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/payments';
+   const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/payments`;
 
 const getToken = () => localStorage.getItem('token');
 const authHeader = () => ({ headers: { Authorization: `Bearer ${getToken()}` } });
@@ -45,4 +45,4 @@ export const downloadInvoice = async (id) => {
 };
 
 export const searchStudents = (query) =>
-  axios.get(`http://localhost:5000/api/students?search=${query}`, authHeader());
+    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/students?search=${query}`, authHeader());

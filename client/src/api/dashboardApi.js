@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/dashboard';
+   const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/dashboard`;
 
 const getToken = () => localStorage.getItem('token');
 const authHeader = () => ({ headers: { Authorization: `Bearer ${getToken()}` } });
@@ -14,4 +14,4 @@ export const getStudentDashboard = (id) =>
   axios.get(`${API_URL}/student/${id}`, authHeader());
 
 export const getMyStudentProfile = (userId) =>
-  axios.get(`http://localhost:5000/api/students/me/${userId}`, authHeader());
+     axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/students/me/${userId}`, authHeader());

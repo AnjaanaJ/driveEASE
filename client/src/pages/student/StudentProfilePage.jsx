@@ -419,7 +419,7 @@ function StudentProfilePage() {
                           <span className="text-accent">&#128196;</span>
 
                           <a
-                            href={`http://localhost:5000${doc.fileUrl}`}
+                               href={`${(import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '')}${doc.fileUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="truncate text-accent underline hover:text-white transition"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Footer from "../../components/shared/Footer.jsx";
 
@@ -299,12 +299,12 @@ function LoginPage() {
                     </p>
                   )}
                   <div className="text-right mt-2">
-                    <a
-                      href="/forgot-password"
+                    <Link
+                      to="/forgot-password"
                       className="text-xs text-[var(--color-accent)] hover:underline"
                     >
                       Forgot Password?
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
@@ -317,12 +317,12 @@ function LoginPage() {
                 </button>
                 <p className="text-center text-slate-400 text-sm mt-6">
                   Don't have an account?{" "}
-                  <a
-                    href="/register"
+                  <Link
+                    to="/register"
                     className="text-[var(--color-accent)] hover:underline"
                   >
                     Register
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Footer from "../../components/shared/Footer.jsx";
 
@@ -283,12 +283,12 @@ function RegisterPage() {
                 </button>
                 <p className="text-center text-slate-400 text-sm mt-6">
                   Already have an account?{" "}
-                  <a
-                    href="/login"
+                  <Link
+                    to="/login"
                     className="text-[var(--color-accent)] hover:underline"
                   >
                     Sign In
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>
